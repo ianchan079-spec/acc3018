@@ -943,6 +943,33 @@ function HypothesisBuilder() {
 // ═══════════════════════════════════════════════════════════════
 function DesignTab({next}){
   const { completeTab } = useGame();
+  const [cleaningView, setCleaningView] = useState('raw');
+  const rawData = [
+    { firm: 'A', x: 1, y: 3 },
+    { firm: 'B', x: 2, y: 5 },
+    { firm: 'C', x: 3, y: 6 },
+    { firm: 'D', x: 4, y: 8 },
+    { firm: 'E', x: 5, y: 10 },
+    { firm: 'F', x: 6, y: 28, outlier: true },
+  ];
+  const dataByView = {
+    raw: rawData,
+    winsor: rawData.map(d => d.outlier ? { ...d, y: 14, note: 'winsorised' } : d),
+    exclude: rawData.filter(d => !d.outlier),
+  };
+  const cleanData = dataByView[cleaningView];
+  const slope = (() => {
+    const meanX = cleanData.reduce((s, d) => s + d.x, 0) / cleanData.length;
+    const meanY = cleanData.reduce((s, d) => s + d.y, 0) / cleanData.length;
+    const cov = cleanData.reduce((s, d) => s + ((d.x - meanX) * (d.y - meanY)), 0);
+    const varX = cleanData.reduce((s, d) => s + ((d.x - meanX) ** 2), 0);
+    return cov / varX;
+  })();
+  const cleaningNotes = {
+    raw: 'The extreme firm-year is kept as-is. The slope becomes much steeper, so one observation can dominate the story.',
+    winsor: 'The extreme value is capped at a reasonable upper bound. The observation remains, but its influence is reduced.',
+    exclude: 'The unusual firm-year is removed after a documented rule. The slope reflects the typical pattern more closely.',
+  };
   return <div style={{paddingTop:56}}>
     <Wrap>
       <Reveal><Label>Research Design</Label><H>Building Your Regression Model</H><P>The research design translates your hypotheses into testable models. Every variable must be precisely defined.</P></Reveal>
@@ -953,6 +980,49 @@ function DesignTab({next}){
           {t:'Describe Your Sample',d:'Data sources (Compustat, CRSP, Bloomberg, etc.), time horizon, selection criteria, final sample size. Use precise notation: i (firm), t (year).'}
         ].map((s,i)=><div key={i} style={{display:'flex',gap:12,alignItems:'flex-start',background:C.black05,borderRadius:8,padding:'14px 16px'}}><div style={{width:26,height:26,background:C.red,borderRadius:4,display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:900,color:'#fff',flexShrink:0}}>{i+1}</div><div><div style={{fontSize:14,fontWeight:700,color:C.black,marginBottom:3}}>{s.t}</div><div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>{s.d}</div></div></div>)}
       </div></Reveal>
+    </Wrap>
+    <Wrap bg={C.black05}>
+      <Reveal><Label color={C.amber}>Before Regression</Label><H size={30}>Data Cleaning Can Change the Result</H><P>Regression is not just typing a model into software. Before estimating, researchers need to check whether unusual observations, miscoded values, missing data, or inconsistent units are shaping the result.</P></Reveal>
+      <Reveal delay={0.08}><div style={{display:'grid',gridTemplateColumns:'1.05fr 0.95fr',gap:16,alignItems:'stretch'}}>
+        <Card style={{height:'100%'}}>
+          <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:10}}>Mini-lab: one outlier, three choices</div>
+          <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:16}}>
+            {[
+              { id: 'raw', label: 'Raw data' },
+              { id: 'winsor', label: 'Winsorise' },
+              { id: 'exclude', label: 'Exclude' },
+            ].map(opt => <button key={opt.id} onClick={()=>setCleaningView(opt.id)} style={{background:cleaningView===opt.id?C.red:C.white,color:cleaningView===opt.id?C.white:C.black80,border:`1px solid ${cleaningView===opt.id?C.red:C.black20}`,borderRadius:6,padding:'8px 12px',fontSize:13,fontWeight:700,cursor:'pointer',fontFamily:"'Source Sans 3',sans-serif"}}>{opt.label}</button>)}
+          </div>
+          <div style={{position:'relative',height:220,background:C.white,border:`1px solid ${C.black10}`,borderRadius:8,overflow:'hidden',marginBottom:12}}>
+            <div style={{position:'absolute',left:34,right:14,bottom:30,height:1,background:C.black20}}/>
+            <div style={{position:'absolute',left:34,top:16,bottom:30,width:1,background:C.black20}}/>
+            <div style={{position:'absolute',left:8,bottom:7,fontSize:11,color:C.black60}}>Low X</div>
+            <div style={{position:'absolute',right:12,bottom:7,fontSize:11,color:C.black60}}>High X</div>
+            <div style={{position:'absolute',left:6,top:10,fontSize:11,color:C.black60}}>High Y</div>
+            {cleanData.map(d => {
+              const left = 34 + ((d.x - 1) / 5) * 250;
+              const top = 184 - ((d.y - 2) / 26) * 160;
+              return <div key={d.firm} title={`${d.firm}: X=${d.x}, Y=${d.y}`} style={{position:'absolute',left,top,width:d.outlier?18:14,height:d.outlier?18:14,borderRadius:'50%',background:d.outlier?C.amber:C.red,border:`2px solid ${C.white}`,boxShadow:'0 2px 8px rgba(0,0,0,0.18)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:900,color:C.white}}>{d.firm}</div>;
+            })}
+          </div>
+          <div style={{fontSize:13,color:C.black80,lineHeight:1.65}}>{cleaningNotes[cleaningView]}</div>
+        </Card>
+        <div style={{display:'flex',flexDirection:'column',gap:12}}>
+          <Card style={{background:C.black,color:C.white,borderColor:C.black}}>
+            <div style={{fontSize:11,fontWeight:700,letterSpacing:'0.08em',textTransform:'uppercase',color:C.red,marginBottom:6}}>Estimated relationship</div>
+            <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:15,background:'rgba(255,255,255,0.07)',borderRadius:6,padding:'10px 12px',marginBottom:10}}>Y = a + {slope.toFixed(2)}X + error</div>
+            <div style={{fontSize:13,color:'rgba(255,255,255,0.62)',lineHeight:1.6}}>A higher slope makes the key variable look more powerful. If that comes from one odd observation, the conclusion may not be robust.</div>
+          </Card>
+          <Card>
+            <div style={{fontSize:12,fontWeight:700,color:C.red,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>What to report</div>
+            <Li>State the cleaning rule before seeing the final result.</Li>
+            <Li>Explain whether outliers are errors, real but unusual cases, or theoretically meaningful observations.</Li>
+            <Li>Run a robustness check: raw sample, winsorised sample, and/or excluded outliers.</Li>
+            <Li>Never quietly delete observations just because they weaken your hypothesis.</Li>
+          </Card>
+        </div>
+      </div></Reveal>
+      <Reveal delay={0.16}><Callout accent={C.amber} bg={C.amberBg}><strong>Link to the activity:</strong> Roychowdhury-style regressions estimate "normal" activity first, then treat the residual as abnormal. If the estimation sample contains extreme sales, CFO, inventory, or production-cost values, the fitted "normal" benchmark can move, changing which firm-years look abnormal.</Callout></Reveal>
     </Wrap>
     <DarkWrap py={48}>
       <Reveal><div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:'rgba(255,255,255,0.3)',marginBottom:12}}>Example: General Regression Form</div>
