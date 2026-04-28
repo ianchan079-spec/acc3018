@@ -390,6 +390,28 @@ function RegressionTab({next}){
           <div style={{fontSize:13,color:'rgba(255,255,255,0.6)',lineHeight:1.6}}>We test H₀: β₁ = 0 vs H₁: β₁ ≠ 0. If the p-value on β₁ is {'<'} 0.05, then market excess return significantly explains fund returns. If not, the fund's returns are independent of the market.</div>
         </div>
       </Card></Reveal>
+      <Reveal delay={0.1}><Card style={{marginBottom:16}}>
+        <div style={{fontSize:12,fontWeight:700,color:C.red,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:10}}>Beyond p-values</div>
+        <P mb={12}>A regression table is not only asking "is the coefficient statistically significant?" It is also asking whether the result is meaningful, trustworthy, and robust.</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:12}}>
+          <div style={{background:C.black05,borderRadius:8,padding:'14px 16px',borderTop:`3px solid ${C.green}`}}>
+            <div style={{fontSize:13,fontWeight:800,color:C.black,marginBottom:5}}>Economic significance</div>
+            <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Asks whether the effect is large enough to matter in practice. A tiny coefficient can be statistically significant in a large sample but unimportant for managers, investors, or policymakers.</div>
+          </div>
+          <div style={{background:C.black05,borderRadius:8,padding:'14px 16px',borderTop:`3px solid ${C.amber}`}}>
+            <div style={{fontSize:13,fontWeight:800,color:C.black,marginBottom:5}}>Heteroskedasticity</div>
+            <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Means the error terms are more spread out for some observations than others, such as large firms having noisier dollar values than small firms. This mainly affects standard errors and p-values.</div>
+          </div>
+          <div style={{background:C.black05,borderRadius:8,padding:'14px 16px',borderTop:`3px solid ${C.blue}`}}>
+            <div style={{fontSize:13,fontWeight:800,color:C.black,marginBottom:5}}>Robust standard errors</div>
+            <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Adjust the standard errors when heteroskedasticity may be present. The coefficient stays the same, but the reported uncertainty around it becomes more reliable.</div>
+          </div>
+          <div style={{background:C.black05,borderRadius:8,padding:'14px 16px',borderTop:`3px solid ${C.red}`}}>
+            <div style={{fontSize:13,fontWeight:800,color:C.black,marginBottom:5}}>Clustered standard errors</div>
+            <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Adjust for observations that are related within a group, such as repeated firm-years for the same firm. They stop us from pretending every row is fully independent.</div>
+          </div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.15}><Card style={{borderLeft:`4px solid ${C.blue}`}}>
         <div style={{fontSize:12,fontWeight:700,color:C.blue,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>Reading Regression Tables Like A Researcher</div>
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:10}}>
