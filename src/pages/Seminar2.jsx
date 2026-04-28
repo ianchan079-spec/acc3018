@@ -321,6 +321,28 @@ function RegressionTab({next}){
         </div>
       </Card></Reveal>
     </Wrap>
+    <Wrap bg={C.white} py={44}>
+      <Reveal><Label color={C.amber}>Before The Interactive</Label><H size={28}>Data Cleaning Choices</H><P>Before estimating a regression, researchers inspect the data for observations that may distort the model. The goal is not to make results look better; it is to make the analysis transparent and credible.</P></Reveal>
+      <Reveal delay={0.06}><div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:12}}>
+        <Card style={{borderTop:`3px solid ${C.amber}`}}>
+          <div style={{fontSize:13,fontWeight:800,color:C.black,marginBottom:6}}>Outliers</div>
+          <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Very unusual observations, such as an extremely large firm-year or a one-off crisis year. They may be genuine, miscoded, or theoretically important. OLS is sensitive to them because it squares residuals.</div>
+        </Card>
+        <Card style={{borderTop:`3px solid ${C.blue}`}}>
+          <div style={{fontSize:13,fontWeight:800,color:C.black,marginBottom:6}}>Winsorising</div>
+          <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Capping extreme values at a chosen percentile, such as the 1st and 99th percentile. The observation stays in the sample, but its influence is reduced.</div>
+        </Card>
+        <Card style={{borderTop:`3px solid ${C.red}`}}>
+          <div style={{fontSize:13,fontWeight:800,color:C.black,marginBottom:6}}>Excluding Observations</div>
+          <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Removing observations using a documented rule, such as missing key variables, impossible values, or an industry outside the study scope. This should never be done silently after seeing the result.</div>
+        </Card>
+        <Card style={{borderTop:`3px solid ${C.green}`}}>
+          <div style={{fontSize:13,fontWeight:800,color:C.black,marginBottom:6}}>Missing Data</div>
+          <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Blank values can shrink the sample or bias it toward firms with better disclosure. Researchers should report how many observations are lost and whether the remaining sample is still representative.</div>
+        </Card>
+      </div></Reveal>
+      <Reveal delay={0.12}><Callout accent={C.amber} bg={C.amberBg}><strong>Research habit:</strong> decide and document cleaning rules before interpreting the main coefficient. Then show robustness checks so readers can see whether the conclusion survives reasonable alternatives.</Callout></Reveal>
+    </Wrap>
     {/* Interactive drag scatter */}
     <Wrap>
       <Reveal><Card style={{marginBottom:20}}>
