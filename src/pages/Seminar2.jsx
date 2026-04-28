@@ -260,7 +260,9 @@ function HypothesisTab({next}){
 function RegressionTab({next}){
   const{completeTab}=useGame();
   const initPts=[{x:1,y:2.1},{x:1.5,y:2.8},{x:2,y:3.0},{x:2.5,y:3.5},{x:3,y:3.2},{x:3.5,y:4.1},{x:4,y:4.8},{x:4.5,y:4.3},{x:5,y:5.5},{x:5.5,y:5.1},{x:6,y:6.0},{x:6.5,y:6.5},{x:7,y:6.8}];
-  const[pts,setPts]=useState(initPts);const[showLine,setShowLine]=useState(true);const[dragging,setDragging]=useState(null);const svgRef=useRef(null);
+  const outlierPts=[...initPts.slice(0,-1),{x:7,y:8.4}];
+  const winsorPts=[...initPts.slice(0,-1),{x:7,y:7.1}];
+  const[pts,setPts]=useState(initPts);const[showLine,setShowLine]=useState(true);const[dragging,setDragging]=useState(null);const[preset,setPreset]=useState('typical');const svgRef=useRef(null);
   const nn=pts.length,xBar=pts.reduce((s,p)=>s+p.x,0)/nn,yBar=pts.reduce((s,p)=>s+p.y,0)/nn;
   const b1Den=pts.reduce((s,p)=>s+Math.pow(p.x-xBar,2),0);const b1=b1Den?pts.reduce((s,p)=>s+(p.x-xBar)*(p.y-yBar),0)/b1Den:0;const b0=yBar-b1*xBar;
   const sst=pts.reduce((s,p)=>s+Math.pow(p.y-yBar,2),0);const sse=pts.reduce((s,p)=>s+Math.pow(p.y-(b0+b1*p.x),2),0);const r2=sst>0?(1-sse/sst):0;
@@ -270,6 +272,12 @@ function RegressionTab({next}){
   const onDown=(i,e)=>{e.preventDefault();setDragging(i)};
   const onMove=e=>{if(dragging===null||!svgRef.current)return;const r=svgRef.current.getBoundingClientRect();const sx=(e.clientX-r.left)*(W/r.width);const sy=(e.clientY-r.top)*(HH/r.height);let nx=fromSvgX(sx),ny=fromSvgY(sy);nx=Math.max(0.3,Math.min(7.7,nx));ny=Math.max(0.3,Math.min(8.5,ny));setPts(prev=>prev.map((p,i)=>i===dragging?{x:Math.round(nx*10)/10,y:Math.round(ny*10)/10}:p))};
   const onUp=()=>setDragging(null);
+  const loadPreset=(id)=>{
+    setPreset(id);
+    if(id==='typical')setPts(initPts);
+    if(id==='outlier')setPts(outlierPts);
+    if(id==='winsor')setPts(winsorPts);
+  };
 
   return <div style={{paddingTop:56}}>
     <Wrap>
@@ -299,16 +307,36 @@ function RegressionTab({next}){
         <Card style={{borderTop:`3px solid ${C.amber}`}}><div style={{fontSize:11,fontWeight:700,color:C.amber,marginBottom:4}}>SSE (Error)</div><Formula>Σ(Yᵢ − Ŷᵢ)²</Formula><div style={{fontSize:12,color:C.black60,lineHeight:1.5}}>Variation <strong>not explained</strong> — the residuals. This is what OLS minimises.</div></Card>
       </div></Reveal>
       <Reveal delay={0.2}><Callout><strong>R² = SSR / SST = 1 − SSE/SST.</strong> It tells you the proportion of total variation in Y that is explained by X. R²=0.75 means 75% of Y's variation is captured by the model.</Callout></Reveal>
+      <Reveal delay={0.24}><Card style={{marginTop:16}}>
+        <div style={{fontSize:12,fontWeight:700,color:C.red,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:10}}>What these pieces mean in plain English</div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:10}}>
+          <Li><strong>Y:</strong> the outcome you want to explain, such as ROA, stock return, or earnings quality.</Li>
+          <Li><strong>X:</strong> the factor you think explains Y, such as ESG score, leverage, or board independence.</Li>
+          <Li><strong>Fitted value (Ŷ):</strong> the model's predicted Y for one observation.</Li>
+          <Li><strong>Residual/error:</strong> actual Y minus predicted Y. Big residuals are cases the model struggles to explain.</Li>
+          <Li><strong>SST:</strong> how much Y varies before using the model.</Li>
+          <Li><strong>SSR:</strong> how much of that variation the model explains.</Li>
+          <Li><strong>SSE:</strong> how much variation is left unexplained after fitting the model.</Li>
+          <Li><strong>R²:</strong> the share of variation explained. High R² is not proof of causality; it only means the model fits Y better.</Li>
+        </div>
+      </Card></Reveal>
     </Wrap>
-
     {/* Interactive drag scatter */}
     <Wrap>
       <Reveal><Card style={{marginBottom:20}}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6,flexWrap:'wrap',gap:6}}>
           <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red}}>Interactive: Drag to Explore OLS</div>
-          <div style={{display:'flex',gap:6}}><button onClick={()=>setShowLine(!showLine)} style={{background:showLine?C.red:C.black05,color:showLine?'#fff':C.black,border:`1px solid ${showLine?C.red:C.black20}`,borderRadius:4,padding:'5px 12px',fontSize:11,fontWeight:600,cursor:'pointer',fontFamily:"'Source Sans 3',sans-serif"}}>{showLine?'Hide line':'Show line'}</button><button onClick={()=>setPts(initPts)} style={{background:C.black05,color:C.black60,border:`1px solid ${C.black20}`,borderRadius:4,padding:'5px 12px',fontSize:11,fontWeight:600,cursor:'pointer',fontFamily:"'Source Sans 3',sans-serif"}}>Reset</button></div>
+          <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+            {[
+              { id:'typical', label:'Typical data' },
+              { id:'outlier', label:'Add outlier' },
+              { id:'winsor', label:'Winsorise' },
+            ].map(opt=><button key={opt.id} onClick={()=>loadPreset(opt.id)} style={{background:preset===opt.id?C.red:C.black05,color:preset===opt.id?'#fff':C.black,border:`1px solid ${preset===opt.id?C.red:C.black20}`,borderRadius:4,padding:'5px 10px',fontSize:11,fontWeight:600,cursor:'pointer',fontFamily:"'Source Sans 3',sans-serif"}}>{opt.label}</button>)}
+            <button onClick={()=>setShowLine(!showLine)} style={{background:showLine?C.red:C.black05,color:showLine?'#fff':C.black,border:`1px solid ${showLine?C.red:C.black20}`,borderRadius:4,padding:'5px 12px',fontSize:11,fontWeight:600,cursor:'pointer',fontFamily:"'Source Sans 3',sans-serif"}}>{showLine?'Hide line':'Show line'}</button>
+            <button onClick={()=>loadPreset('typical')} style={{background:C.black05,color:C.black60,border:`1px solid ${C.black20}`,borderRadius:4,padding:'5px 12px',fontSize:11,fontWeight:600,cursor:'pointer',fontFamily:"'Source Sans 3',sans-serif"}}>Reset</button>
+          </div>
         </div>
-        <div style={{background:C.blueBg,border:'1px solid rgba(26,95,160,0.15)',borderRadius:6,padding:'7px 12px',marginBottom:8,fontSize:12,color:C.blue,lineHeight:1.5}}><strong>Drag any red dot</strong> to move it — the OLS line, equation, and R² recalculate instantly. Try dragging one point far away to see how outliers affect OLS.</div>
+                <div style={{background:C.blueBg,border:'1px solid rgba(26,95,160,0.15)',borderRadius:6,padding:'7px 12px',marginBottom:8,fontSize:12,color:C.blue,lineHeight:1.5}}><strong>Drag any red dot</strong> to move it - the OLS line, equation, and R-squared recalculate instantly. Use the outlier and winsorise buttons to see why researchers disclose data-cleaning choices before interpreting results.</div>
         <svg ref={svgRef} viewBox={`0 0 ${W} ${HH}`} style={{width:'100%',display:'block',background:C.black05,borderRadius:8,cursor:dragging!==null?'grabbing':'default',touchAction:'none',userSelect:'none'}} onPointerMove={onMove} onPointerUp={onUp} onPointerLeave={onUp}>
           {[1,2,3,4,5,6,7].map(x=> <line key={'gx'+x} x1={tx(x)} y1={ty(yMin)} x2={tx(x)} y2={ty(yMax)} stroke={C.black10} strokeWidth="0.4"/>)}
           {[1,2,3,4,5,6,7,8].map(y=> <line key={'gy'+y} x1={tx(xMin)} y1={ty(y)} x2={tx(xMax)} y2={ty(y)} stroke={C.black10} strokeWidth="0.4"/>)}
@@ -318,7 +346,7 @@ function RegressionTab({next}){
           {showLine&&<line x1={tx(xMin)} y1={ty(yBar)} x2={tx(xMax)} y2={ty(yBar)} stroke={C.black20} strokeWidth="0.8" strokeDasharray="5 3"/>}
           {showLine&&<line x1={tx(0.2)} y1={ty(b0+b1*0.2)} x2={tx(7.8)} y2={ty(b0+b1*7.8)} stroke={C.red} strokeWidth="2.5" opacity="0.85" strokeLinecap="round"/>}
           {showLine&&pts.map((p,i)=> <line key={'res'+i} x1={tx(p.x)} y1={ty(p.y)} x2={tx(p.x)} y2={ty(b0+b1*p.x)} stroke={C.amber} strokeWidth="1.5" strokeDasharray="3 2" opacity="0.5"/>)}
-          {pts.map((p,i)=>{const active=dragging===i;return <g key={i} onPointerDown={e=>onDown(i,e)} style={{cursor:'grab'}}><circle cx={tx(p.x)} cy={ty(p.y)} r="14" fill="transparent"/><circle cx={tx(p.x)} cy={ty(p.y)} r={active?7:5.5} fill={C.red} opacity={active?1:0.75} stroke="#fff" strokeWidth={active?2.5:1.5}/></g>})}
+          {pts.map((p,i)=>{const active=dragging===i;const isAdjusted=preset!=='typical'&&i===pts.length-1;return <g key={i} onPointerDown={e=>onDown(i,e)} style={{cursor:'grab'}}><circle cx={tx(p.x)} cy={ty(p.y)} r="14" fill="transparent"/><circle cx={tx(p.x)} cy={ty(p.y)} r={active?7:5.5} fill={isAdjusted?C.amber:C.red} opacity={active?1:0.75} stroke="#fff" strokeWidth={active?2.5:1.5}/></g>})}
           {showLine&&<g><rect x="52" y="4" width="190" height="18" rx="4" fill="rgba(255,255,255,0.85)"/><text x="56" y="16" fontSize="10.5" fill={C.red} fontWeight="700">Ŷ = {b0.toFixed(2)} {b1>=0?'+ ':'− '}{Math.abs(b1).toFixed(3)}X    R²={r2.toFixed(3)}</text></g>}
         </svg>
         <div style={{marginTop:10,display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:8}}><div style={{background:C.black05,borderRadius:6,padding:'7px',textAlign:'center'}}><div style={{fontSize:9,color:C.black60}}>β₀</div><div style={{fontSize:15,fontWeight:900,color:C.black}}>{b0.toFixed(2)}</div></div><div style={{background:C.redSubtle,borderRadius:6,padding:'7px',textAlign:'center'}}><div style={{fontSize:9,color:C.red}}>β₁</div><div style={{fontSize:15,fontWeight:900,color:C.red}}>{b1.toFixed(3)}</div></div><div style={{background:r2>0.7?C.greenBg:r2>0.3?C.amberBg:C.redSubtle,borderRadius:6,padding:'7px',textAlign:'center'}}><div style={{fontSize:9,color:r2>0.7?C.green:r2>0.3?C.amber:C.red}}>R²</div><div style={{fontSize:15,fontWeight:900,color:r2>0.7?C.green:r2>0.3?C.amber:C.red}}>{(r2*100).toFixed(1)}%</div></div><div style={{background:C.black05,borderRadius:6,padding:'7px',textAlign:'center'}}><div style={{fontSize:9,color:C.black60}}>Mean Ȳ</div><div style={{fontSize:15,fontWeight:900,color:C.black}}>{yBar.toFixed(2)}</div></div></div>
@@ -349,7 +377,6 @@ function RegressionTab({next}){
           <Li color={C.blue}><strong>Missing data:</strong> document filters and compare included versus excluded observations.</Li>
         </div>
       </Card></Reveal>
-      <DataCleaningMiniLab />
       <NextBtn onClick={()=>{completeTab('s2:regression');next();}}/>
     </Wrap>
   </div>;
@@ -359,79 +386,6 @@ function RegressionTab({next}){
 // TAB 6: DATA TYPES — expanded with raw data examples, dummy
 // variable event study models from slides 26-27
 // ═══════════════════════════════════════════════════════════════
-function DataCleaningMiniLab(){
-  const [cleaningView, setCleaningView] = useState('raw');
-  const rawData = [
-    { firm: 'A', x: 1, y: 3 },
-    { firm: 'B', x: 2, y: 5 },
-    { firm: 'C', x: 3, y: 6 },
-    { firm: 'D', x: 4, y: 8 },
-    { firm: 'E', x: 5, y: 10 },
-    { firm: 'F', x: 6, y: 28, outlier: true },
-  ];
-  const dataByView = {
-    raw: rawData,
-    winsor: rawData.map(d => d.outlier ? { ...d, y: 14 } : d),
-    exclude: rawData.filter(d => !d.outlier),
-  };
-  const cleanData = dataByView[cleaningView];
-  const meanX = cleanData.reduce((s, d) => s + d.x, 0) / cleanData.length;
-  const meanY = cleanData.reduce((s, d) => s + d.y, 0) / cleanData.length;
-  const cov = cleanData.reduce((s, d) => s + ((d.x - meanX) * (d.y - meanY)), 0);
-  const varX = cleanData.reduce((s, d) => s + ((d.x - meanX) ** 2), 0);
-  const slope = cov / varX;
-  const cleaningNotes = {
-    raw: 'The extreme firm-year is kept as-is. The slope becomes much steeper, so one observation can dominate the story.',
-    winsor: 'The extreme value is capped at a reasonable upper bound. The observation remains, but its influence is reduced.',
-    exclude: 'The unusual firm-year is removed after a documented rule. The slope reflects the typical pattern more closely.',
-  };
-
-  return <Reveal delay={0.22}><Card style={{marginTop:18,background:C.white,borderColor:C.amber}}>
-    <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.amber,marginBottom:8}}>Before the interactive activity</div>
-    <H size={26} mb={10}>Data Cleaning Can Change the Regression</H>
-    <P mb={14}>Before building a model, check whether outliers, miscoded values, missing data, or inconsistent units are shaping the result. Use the buttons below to see how one extreme observation changes the slope.</P>
-    <div style={{display:'grid',gridTemplateColumns:'1.05fr 0.95fr',gap:16,alignItems:'stretch'}}>
-      <div>
-        <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:14}}>
-          {[
-            { id: 'raw', label: 'Raw data' },
-            { id: 'winsor', label: 'Winsorise' },
-            { id: 'exclude', label: 'Exclude' },
-          ].map(opt => <button key={opt.id} onClick={()=>setCleaningView(opt.id)} style={{background:cleaningView===opt.id?C.red:C.white,color:cleaningView===opt.id?C.white:C.black80,border:`1px solid ${cleaningView===opt.id?C.red:C.black20}`,borderRadius:6,padding:'8px 12px',fontSize:13,fontWeight:700,cursor:'pointer',fontFamily:"'Source Sans 3',sans-serif"}}>{opt.label}</button>)}
-        </div>
-        <div style={{position:'relative',height:220,background:C.black05,border:`1px solid ${C.black10}`,borderRadius:8,overflow:'hidden',marginBottom:10}}>
-          <div style={{position:'absolute',left:34,right:14,bottom:30,height:1,background:C.black20}}/>
-          <div style={{position:'absolute',left:34,top:16,bottom:30,width:1,background:C.black20}}/>
-          <div style={{position:'absolute',left:8,bottom:7,fontSize:11,color:C.black60}}>Low X</div>
-          <div style={{position:'absolute',right:12,bottom:7,fontSize:11,color:C.black60}}>High X</div>
-          <div style={{position:'absolute',left:6,top:10,fontSize:11,color:C.black60}}>High Y</div>
-          {cleanData.map(d => {
-            const left = 34 + ((d.x - 1) / 5) * 250;
-            const top = 184 - ((d.y - 2) / 26) * 160;
-            return <div key={d.firm} title={`${d.firm}: X=${d.x}, Y=${d.y}`} style={{position:'absolute',left,top,width:d.outlier?18:14,height:d.outlier?18:14,borderRadius:'50%',background:d.outlier?C.amber:C.red,border:`2px solid ${C.white}`,boxShadow:'0 2px 8px rgba(0,0,0,0.18)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:900,color:C.white}}>{d.firm}</div>;
-          })}
-        </div>
-        <div style={{fontSize:13,color:C.black80,lineHeight:1.65}}>{cleaningNotes[cleaningView]}</div>
-      </div>
-      <div style={{display:'flex',flexDirection:'column',gap:12}}>
-        <Card style={{background:C.black,color:C.white,borderColor:C.black}}>
-          <div style={{fontSize:11,fontWeight:700,letterSpacing:'0.08em',textTransform:'uppercase',color:C.red,marginBottom:6}}>Estimated relationship</div>
-          <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:15,background:'rgba(255,255,255,0.07)',borderRadius:6,padding:'10px 12px',marginBottom:10}}>Y = a + {slope.toFixed(2)}X + error</div>
-          <div style={{fontSize:13,color:'rgba(255,255,255,0.62)',lineHeight:1.6}}>A higher slope makes the key variable look more powerful. If that comes from one odd observation, the conclusion may not be robust.</div>
-        </Card>
-        <Card>
-          <div style={{fontSize:12,fontWeight:700,color:C.red,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>What to report</div>
-          <Li>State the cleaning rule before seeing the final result.</Li>
-          <Li>Explain whether outliers are errors, real but unusual cases, or theoretically meaningful observations.</Li>
-          <Li>Run a robustness check: raw sample, winsorised sample, and/or excluded outliers.</Li>
-          <Li>Never quietly delete observations just because they weaken your hypothesis.</Li>
-        </Card>
-      </div>
-    </div>
-    <Callout accent={C.amber} bg={C.amberBg}><strong>Link to the regression builder:</strong> when students specify a model in the next activity, they should also be ready to defend the sample-cleaning rule and show whether the result survives reasonable alternatives.</Callout>
-  </Card></Reveal>;
-}
-
 function DataTypesTab({next}){
   const{completeTab}=useGame();
   const matchQs=[
