@@ -661,6 +661,7 @@ function IvTab({next}){
     {id:'cand6',context:'Studying effect of military service on earnings.',cand:'Voluntary enlistment status',rel:true,exo:false,verdict:'invalid',expl:'Voluntary enlistment is NOT exogenous — people self-select based on outside options. Use the Vietnam draft lottery instead (random).'},
   ];
   const[picks,setPicks]=useState({});const[checked,setChecked]=useState({});
+  const[activeInstrument,setActiveInstrument]=useState(null);
   const pick=(id,v)=>{if(checked[id])return;setPicks(p=>({...p,[id]:v}));};
   const check=id=>setChecked(c=>({...c,[id]:true}));
 
@@ -670,6 +671,36 @@ function IvTab({next}){
     {id:'iv3',q:'What does the SECOND stage of 2SLS do?',opts:['Regress y on x̂ from the first stage to estimate β₁','Regress z on y','Test for heteroskedasticity','Compute R²'],c:0,ex:'Stage 2: y = β₀ + β₁x̂ + φ. The coefficient β̂₁ is the IV estimate — using only the exogenous variation in x.'},
     {id:'iv4',q:'Why is the exogeneity of an instrument NOT testable in general?',opts:['Software cannot compute it','It requires data on ε, which is unobserved','It depends on theoretical knowledge of how the instrument relates to other unobservables','All of the above except the first'],c:2,ex:'Exogeneity is about z being uncorrelated with ε — but ε is unobserved. We can only argue from theory and design why z should not affect y except through x.'},
     {id:'iv5',q:'A "weak instrument" is one where:',opts:['z has many missing values','z is uncorrelated with x — first-stage F is small','z equals x exactly','z is a dummy variable'],c:1,ex:'Weak instruments produce 2SLS estimates with huge variance and large finite-sample bias. Rule of thumb: first-stage F > 10. If F is small, your instrument is too weak to identify β₁.'},
+  ];
+  const famousInstrumentRows=[
+    {y:'Earnings',x:'Schooling',endo:'Omitted (skill)',instruments:[
+      {name:'Quarter of birth',what:'The quarter of the year in which someone was born.',how:'Compulsory-schooling laws meant some pupils could legally leave school earlier than others, creating small differences in schooling that were not chosen by the pupil.'},
+      {name:'School construction',what:'New schools built near some communities but not others.',how:'More nearby schools made it easier to get education, shifting schooling without directly changing later wages except through education.'},
+      {name:'Proximity to college',what:'How close a student lived to a college when making schooling choices.',how:'Living nearer reduced the cost of attending college, nudging education upward for reasons not mainly about ability.'},
+    ]},
+    {y:'Newborn weight',x:'Maternal smoking',endo:'Omitted',instruments:[
+      {name:'Random assignment',what:'A treatment or encouragement assigned by chance.',how:'Random assignment changes smoking behaviour without being chosen by mothers, making treated and untreated groups more comparable.'},
+      {name:'State cigarette taxes',what:'Differences in cigarette taxes across places or time.',how:'Higher taxes make smoking more expensive, reducing smoking through price rather than through a mother\'s underlying health or preferences.'},
+    ]},
+    {y:'Demand',x:'Price',endo:'Simultaneity',instruments:[
+      {name:'Supply shifters',what:'Factors that move supply, such as input costs or producer taxes.',how:'They change price by moving the supply curve, while not directly changing consumers\' willingness to buy.'},
+    ]},
+    {y:'Supply',x:'Price',endo:'Simultaneity',instruments:[
+      {name:'Demand shifters',what:'Factors that move demand, such as income, population, or tastes.',how:'They change price by moving the demand curve, while not directly changing firms\' production costs.'},
+    ]},
+    {y:'Crime',x:'Police surveillance',endo:'Simultaneity',instruments:[
+      {name:'Electoral cycles',what:'Predictable timing around elections.',how:'Officials may change police staffing before elections, creating police variation that is not simply a response to current crime.'},
+      {name:'Papal trajectory',what:'The route of a papal visit through different areas.',how:'Police deployment changes along the route for security reasons, not because those places suddenly became more crime-prone.'},
+    ]},
+    {y:'Civil conflict',x:'GDP',endo:'Simultaneity',instruments:[
+      {name:'Rainfall',what:'Variation in rainfall across years or regions.',how:'In agrarian economies, rainfall shifts agricultural output and GDP, while plausibly affecting conflict mainly through income.'},
+    ]},
+    {y:'Labor supply',x:'Fertility',endo:'Simultaneity',instruments:[
+      {name:'Gender composition of children',what:'Whether earlier children are the same sex or different sexes.',how:'Some families are more likely to have another child when earlier children are the same sex, creating fertility variation not directly chosen for labour-market reasons.'},
+    ]},
+    {y:'Earnings',x:'Military service',endo:'Selection',instruments:[
+      {name:'Vietnam-era draft lottery',what:'Random lottery numbers that affected the chance of being drafted.',how:'The lottery changed military service through random assignment, not through a person\'s civilian job prospects.'},
+    ]},
   ];
   return <div style={{paddingTop:56}}>
     <Wrap>
@@ -784,22 +815,35 @@ function IvTab({next}){
       </Card></Reveal>
       <Reveal delay={0.05}><div style={{overflowX:'auto',marginBottom:14}}><table style={{width:'100%',borderCollapse:'collapse',fontSize:13,background:C.white,borderRadius:8,overflow:'hidden'}}>
         <thead><tr style={{background:C.black}}>{['Response (y)','Regressor (x)','Endogeneity','Instrument (z)'].map((h,i)=> <th key={i} style={{padding:'10px 14px',color:C.white,fontWeight:700,textAlign:'left',fontSize:12,letterSpacing:'0.04em'}}>{h}</th>)}</tr></thead>
-        <tbody>{[
-          {y:'Earnings',x:'Schooling',endo:'Omitted (skill)',iv:'Quarter of birth · school construction · proximity to college'},
-          {y:'Newborn weight',x:'Maternal smoking',endo:'Omitted',iv:'Random assignment · state cigarette taxes'},
-          {y:'Demand',x:'Price',endo:'Simultaneity',iv:'Supply shifters'},
-          {y:'Supply',x:'Price',endo:'Simultaneity',iv:'Demand shifters'},
-          {y:'Crime',x:'Police surveillance',endo:'Simultaneity',iv:'Electoral cycles · papal trajectory'},
-          {y:'Civil conflict',x:'GDP',endo:'Simultaneity',iv:'Rainfall'},
-          {y:'Labor supply',x:'Fertility',endo:'Simultaneity',iv:'Gender composition of children'},
-          {y:'Earnings',x:'Military service',endo:'Selection',iv:'Vietnam-era draft lottery'},
-        ].map((r,i)=> <tr key={i} style={{background:i%2===0?C.white:C.black05,borderBottom:`1px solid ${C.black10}`}}>
+        <tbody>{famousInstrumentRows.map((r,i)=> <tr key={i} style={{background:i%2===0?C.white:C.black05,borderBottom:`1px solid ${C.black10}`}}>
           <td style={{padding:'9px 14px',fontWeight:600,color:C.black}}>{r.y}</td>
           <td style={{padding:'9px 14px',color:C.black80}}>{r.x}</td>
           <td style={{padding:'9px 14px',color:C.amber,fontWeight:600,fontSize:12}}>{r.endo}</td>
-          <td style={{padding:'9px 14px',color:C.green,fontFamily:"'Source Sans 3',sans-serif",fontSize:12.5}}>{r.iv}</td>
+          <td style={{padding:'9px 14px'}}>
+            <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+              {r.instruments.map(inst=>{
+                const active=activeInstrument&&activeInstrument.name===inst.name&&activeInstrument.x===r.x&&activeInstrument.y===r.y;
+                return <button key={inst.name} onClick={()=>setActiveInstrument({...inst,y:r.y,x:r.x,endo:r.endo})} style={{border:`1px solid ${active?C.green:C.black20}`,background:active?C.greenBg:C.white,color:active?C.green:C.green,borderRadius:5,padding:'6px 9px',fontFamily:"'Source Sans 3',sans-serif",fontSize:12,fontWeight:700,cursor:'pointer',lineHeight:1.2}}>{inst.name}</button>;
+              })}
+            </div>
+          </td>
         </tr>)}</tbody>
-      </table></div></Reveal>
+      </table></div>
+      {activeInstrument&&<Card style={{marginTop:14,borderLeft:`4px solid ${C.green}`,background:C.greenBg}}>
+        <div style={{display:'flex',justifyContent:'space-between',gap:12,alignItems:'flex-start',marginBottom:8}}>
+          <div>
+            <div style={{fontSize:11,fontWeight:700,color:C.green,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:4}}>Instrument explainer</div>
+            <div style={{fontSize:18,fontWeight:900,color:C.black,lineHeight:1.2}}>{activeInstrument.name}</div>
+            <div style={{fontSize:12,color:C.black60,marginTop:3}}>{activeInstrument.x} to {activeInstrument.y} · {activeInstrument.endo}</div>
+          </div>
+          <button onClick={()=>setActiveInstrument(null)} style={{border:`1px solid ${C.black20}`,background:C.white,color:C.black80,borderRadius:5,padding:'6px 10px',fontFamily:"'Source Sans 3',sans-serif",fontSize:12,fontWeight:700,cursor:'pointer'}}>Close</button>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`}}><strong>What it is</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>{activeInstrument.what}</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`}}><strong>How it worked</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>{activeInstrument.how}</span></div>
+        </div>
+      </Card>}
+      </Reveal>
       <Reveal delay={0.1}><Callout><strong>Note the pattern:</strong> Good instruments are usually <em>quasi-random shocks</em> — weather, lottery numbers, geographic distance, electoral timing. They affect x but have no direct path to y.</Callout></Reveal>
     </Wrap>
 
