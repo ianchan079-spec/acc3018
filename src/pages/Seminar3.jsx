@@ -214,6 +214,15 @@ function OmittedTab({next}){
   return <div style={{paddingTop:56}}>
     <Wrap>
       <Reveal><Label>Source #1</Label><H>Omitted Variables</H><P>The most common source of endogeneity. The error term ε is a catch-all for everything else that drives y. If something in ε also correlates with x, you have a problem.</P></Reveal>
+      <Reveal delay={0.03}><Card style={{marginBottom:18,borderLeft:`4px solid ${C.red}`}}>
+        <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:8}}>Start with the intuition</div>
+        <P mb={8}>An omitted variable is an important explanation you left out of the regression. It becomes a serious problem only when that missing explanation is connected to both sides of your research question.</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>1. It affects y</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The missing factor helps explain the outcome.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>2. It is related to x</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The missing factor is more common when your main variable is high or low.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.redSubtle}}><strong>3. OLS gets confused</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The coefficient mixes the effect of x with the effect of the missing factor.</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.05}><Card style={{marginBottom:18}}>
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:8}}>Setup</div>
         <P mb={8}>The true model has two regressors:</P>
@@ -234,18 +243,48 @@ function OmittedTab({next}){
 
     {/* Worked example: schooling */}
     <Wrap bg={C.black05}>
-      <Reveal><H size={28}>Worked Example: Returns to Schooling</H><P>One of the most-studied questions in labour economics: how much does an extra year of schooling raise wages?</P></Reveal>
-      <Reveal delay={0.05}><Card style={{marginBottom:14}}>
-        <div style={{fontSize:12,fontWeight:700,color:C.red,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>The naïve regression</div>
-        <Formula>WAGEᵢ = β₀ + β₁·EDUᵢ + γxᵢ + εᵢ</Formula>
-        <P mb={8}>where xᵢ are observed controls (age, gender, parental education, etc.). The problem: <strong>innate skill</strong> is unobserved and goes into ε.</P>
+      <Reveal><H size={28}>Worked Example: Returns to Schooling</H><P>One of the most-studied questions in labour economics: how much does an extra year of schooling raise wages? The tricky part is that people who get more schooling may already differ from people who get less schooling.</P></Reveal>
+      <Reveal delay={0.05}><Card style={{marginBottom:14,borderLeft:`4px solid ${C.red}`}}>
+        <div style={{fontSize:12,fontWeight:700,color:C.red,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>The story before the math</div>
+        <div style={{display:'grid',gap:10}}>
+          {[
+            ['1','We want to estimate whether education itself raises wages.'],
+            ['2','But students also differ in things we do not observe well: motivation, confidence, family support, prior preparation, networks, and ability.'],
+            ['3','Those hidden traits may affect both education and wages. A motivated student may stay in education longer and may also earn more later.'],
+            ['4','If those traits are missing from the regression, the education coefficient can accidentally pick up their effect too.']
+          ].map(([n,text])=>(
+            <div key={n} style={{display:'grid',gridTemplateColumns:'28px 1fr',gap:10,alignItems:'start'}}>
+              <div style={{height:28,width:28,borderRadius:14,background:C.red,color:'#fff',display:'grid',placeItems:'center',fontWeight:800,fontSize:13}}>{n}</div>
+              <div style={{fontSize:14,color:C.black80,lineHeight:1.55}}>{text}</div>
+            </div>
+          ))}
+        </div>
       </Card></Reveal>
-      <Reveal delay={0.1}><div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:12,marginBottom:14}}>
-        <Card style={{borderTop:`3px solid ${C.amber}`}}><div style={{fontSize:11,fontWeight:700,color:C.amber,marginBottom:6,letterSpacing:'0.06em',textTransform:'uppercase'}}>Step 1: Skill ↔ Education</div><Formula>SKILLᵢ = α₀ + α₁·EDUᵢ + …</Formula><div style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Skilled students enjoy and persist in education longer. Expect <strong>α₁ &gt; 0</strong>.</div></Card>
-        <Card style={{borderTop:`3px solid ${C.amber}`}}><div style={{fontSize:11,fontWeight:700,color:C.amber,marginBottom:6,letterSpacing:'0.06em',textTransform:'uppercase'}}>Step 2: Skill → Wages</div><Formula>WAGEᵢ = β₀ + β₁·EDU + β₂·SKILL + …</Formula><div style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Skilled workers earn more, holding schooling fixed. Expect <strong>β₂ &gt; 0</strong>.</div></Card>
-        <Card style={{borderTop:`3px solid ${C.red}`}}><div style={{fontSize:11,fontWeight:700,color:C.red,marginBottom:6,letterSpacing:'0.06em',textTransform:'uppercase'}}>Step 3: The bias</div><Formula>E[β̂₁] = β₁ + α₁·β₂ &gt; β₁</Formula><div style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Both terms positive ⇒ OLS <strong>overestimates</strong> the return to schooling.</div></Card>
+      <Reveal delay={0.1}><Card style={{marginBottom:14}}>
+        <div style={{fontSize:12,fontWeight:700,color:C.amber,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:10}}>Visual logic</div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr auto 1fr auto 1fr',gap:8,alignItems:'center',marginBottom:10}}>
+          <div style={{padding:'12px 10px',border:`1px solid ${C.border}`,borderRadius:8,background:'#fff',textAlign:'center',fontWeight:800,color:C.black}}>Hidden skill</div>
+          <div style={{fontWeight:900,color:C.amber}}>→</div>
+          <div style={{padding:'12px 10px',border:`1px solid ${C.border}`,borderRadius:8,background:'#fff',textAlign:'center',fontWeight:800,color:C.black}}>Education</div>
+          <div style={{fontWeight:900,color:C.amber}}>→</div>
+          <div style={{padding:'12px 10px',border:`1px solid ${C.border}`,borderRadius:8,background:'#fff',textAlign:'center',fontWeight:800,color:C.black}}>Wages</div>
+        </div>
+        <P mb={8}>The regression includes education, but it does not directly observe hidden skill. The omitted variable problem appears because hidden skill also has its own route to wages.</P>
+        <div style={{padding:12,borderRadius:8,background:C.redSubtle,color:C.black80,fontSize:14,lineHeight:1.55}}><strong>Plain English:</strong> the model may credit education for wage differences that partly come from the kinds of people who receive more education.</div>
+      </Card></Reveal>
+      <Reveal delay={0.15}><Card style={{marginBottom:14}}>
+        <div style={{fontSize:12,fontWeight:700,color:C.red,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>The math version, translated</div>
+        <Formula>WAGEᵢ = β₀ + β₁·EDUCATIONᵢ + controls + errorᵢ</Formula>
+        <P mb={8}>The coefficient β₁ is supposed to mean: the wage difference associated with one more year of education, after accounting for the controls.</P>
+        <P mb={8}>But if skill is sitting inside the error term, and skill is related to education, the error term is no longer random. It is partly connected to the thing we are trying to study.</P>
+        <Formula>estimated education effect = true education effect + omitted skill effect</Formula>
+      </Card></Reveal>
+      <Reveal delay={0.2}><div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:12,marginBottom:14}}>
+        <Card style={{borderTop:`3px solid ${C.amber}`}}><div style={{fontSize:11,fontWeight:700,color:C.amber,marginBottom:6,letterSpacing:'0.06em',textTransform:'uppercase'}}>Step 1: Skill and education move together</div><div style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Students with stronger preparation, motivation, or support may be more likely to stay in education. So education is partly acting as a signal for these hidden traits.</div></Card>
+        <Card style={{borderTop:`3px solid ${C.amber}`}}><div style={{fontSize:11,fontWeight:700,color:C.amber,marginBottom:6,letterSpacing:'0.06em',textTransform:'uppercase'}}>Step 2: Skill also affects wages</div><div style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Those same hidden traits may help people earn more, even if two people have the same number of years of education.</div></Card>
+        <Card style={{borderTop:`3px solid ${C.red}`}}><div style={{fontSize:11,fontWeight:700,color:C.red,marginBottom:6,letterSpacing:'0.06em',textTransform:'uppercase'}}>Step 3: The coefficient is too big</div><div style={{fontSize:13,color:C.black80,lineHeight:1.55}}>If education is positively related to hidden skill, and hidden skill raises wages, OLS will usually <strong>overestimate</strong> the wage return to education.</div></Card>
       </div></Reveal>
-      <Reveal delay={0.15}><Callout accent={C.red} bg={C.redSubtle}><strong>The policy implication:</strong> If we read β̂₁ literally, we conclude that mass investment in schooling will produce huge wage gains. But part of β̂₁ is just innate skill leaking through. Building more schools doesn't change innate skill, so the actual return to schooling is smaller than OLS suggests.</Callout></Reveal>
+      <Reveal delay={0.25}><Callout accent={C.red} bg={C.redSubtle}><strong>The policy implication:</strong> If we read the education coefficient literally, we might conclude that simply adding more years of schooling will create very large wage gains. Omitted variable bias warns us to be more careful: part of the coefficient may reflect who receives more schooling, not only what schooling does.</Callout></Reveal>
     </Wrap>
 
     {/* GDP and LifeExp example */}
@@ -332,6 +371,15 @@ function SimultaneousTab({next}){
   return <div style={{paddingTop:56}}>
     <Wrap>
       <Reveal><Label>Source #2</Label><H>Simultaneous Equations</H><P>What if y doesn't just depend on x — but x also depends on y? When the dependent and independent variables move each other, the OLS coefficient is no longer the causal effect of x on y. It is a tangled mix of both directions.</P></Reveal>
+      <Reveal delay={0.03}><Card style={{marginBottom:18,borderLeft:`4px solid ${C.amber}`}}>
+        <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.amber,marginBottom:8}}>Real-world translation: two-way causation</div>
+        <P mb={8}>Simultaneity happens when cause and effect run in both directions at the same time. Your regression asks, "Does x affect y?" but the real world is also saying, "y affects x too."</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Direction 1</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>x changes y, which is the effect you want.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Direction 2</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>y also changes x, creating a feedback loop.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.amberBg}}><strong>The problem</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>OLS cannot separate the two directions by itself.</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.05}><Card style={{marginBottom:18}}>
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:8}}>The system</div>
         <Formula>y₁ᵢ = β₀ + β₁ y₂ᵢ + γxᵢ + εᵢ</Formula>
@@ -342,6 +390,15 @@ function SimultaneousTab({next}){
 
     <Wrap bg={C.black05}>
       <Reveal><H size={28}>Worked Example: Welfare and Political Stability</H><P>Civil wars are still common in many parts of the world. A natural question: does economic prosperity reduce political instability?</P></Reveal>
+      <Reveal delay={0.03}><Card style={{marginBottom:14}}>
+        <div style={{fontSize:12,fontWeight:700,color:C.amber,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>Read the example as a feedback loop</div>
+        <P mb={8}>Do not start by memorising the equations. Start by asking whether each variable can plausibly push the other one around.</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Prosperity may reduce conflict</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>People have more to lose, governments have more resources, and institutions may be stronger.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Conflict may reduce prosperity</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>War damages infrastructure, disrupts work, and scares off investment.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.amberBg}}><strong>So the coefficient is tangled</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>A simple regression gives a relationship, but not a clean one-way causal effect.</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.05}><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14,marginBottom:14}}>
         <Card style={{borderLeft:`3px solid ${C.green}`}}>
           <div style={{fontSize:11,fontWeight:700,color:C.green,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:6}}>Direction A: GDP → War</div>
@@ -394,6 +451,15 @@ function SelectionTab({next}){
   return <div style={{paddingTop:56}}>
     <Wrap>
       <Reveal><Label>Source #3</Label><H>Selection Bias</H><P>If your sample is not random — or if treatment status is not random within your sample — the relationship between x and y can be distorted by who got selected, not by the causal effect of x.</P></Reveal>
+      <Reveal delay={0.03}><Card style={{marginBottom:18,borderLeft:`4px solid ${C.blue}`}}>
+        <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.blue,marginBottom:8}}>Think about who enters the comparison</div>
+        <P mb={8}>Selection bias is about unfair comparison groups. The treated and untreated groups may differ before the treatment even happens.</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Good comparison</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The groups were similar before treatment.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Biased comparison</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>People chose, qualified, or were selected into treatment for reasons linked to the outcome.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.blueBg}}><strong>Research habit</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Always ask: would these groups have differed even without the treatment?</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.05}><Card style={{marginBottom:18}}>
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:8}}>Setup with a treatment dummy</div>
         <Formula>yᵢ = β₀ + β₁ dᵢ + εᵢ</Formula>
@@ -405,6 +471,15 @@ function SelectionTab({next}){
 
     <Wrap bg={C.black05}>
       <Reveal><H size={28}>Worked Example: Military Service and Wages</H><P>What is the long-term wage effect of military service for those who do <em>not</em> pursue a military career?</P></Reveal>
+      <Reveal delay={0.03}><Card style={{marginBottom:14}}>
+        <div style={{fontSize:12,fontWeight:700,color:C.blue,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>Why this is not just a military-service question</div>
+        <P mb={8}>The question is not only whether service changes wages. It is also whether the people who enter service are already different from the people who do not.</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>If enlistment were random</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The service and non-service groups would be comparable on average.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>If enlistment is voluntary</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>People with different job prospects may be more likely to enlist.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.blueBg}}><strong>What OLS may capture</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Not just the effect of service, but also pre-existing differences between the groups.</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.05}><Card style={{marginBottom:14}}>
         <Formula>WAGEᵢ = β₀ + β₁·MSᵢ + β₂·MSᵢ·AGEᵢ + β₃·MSᵢ·AGE²ᵢ + γxᵢ + εᵢ</Formula>
         <div style={{fontSize:14,color:C.black80,lineHeight:1.65,marginTop:8}}>The model looks fine — but enlistment is voluntary. Who self-selects into military service?</div>
@@ -450,6 +525,15 @@ function MeasurementTab({next}){
   return <div style={{paddingTop:56}}>
     <Wrap>
       <Reveal><Label>Source #4</Label><H>Measurement Error</H><P>If x is mismeasured, the variable that <em>actually enters</em> your regression isn't the true x — and the difference (the measurement error) typically ends up correlated with the regressor itself. Endogeneity again.</P></Reveal>
+      <Reveal delay={0.03}><Card style={{marginBottom:18,borderLeft:`4px solid ${C.purple}`}}>
+        <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.purple,marginBottom:8}}>Think about how the variable was recorded</div>
+        <P mb={8}>Measurement error means the number in your dataset is not the true concept you care about. Sometimes it is just noisy. Sometimes the error follows a pattern.</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>True variable</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What you wish you could observe perfectly.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Recorded variable</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What actually appears in the dataset.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.purpleBg}}><strong>The problem</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>If the error is systematic, the coefficient can be pulled in the wrong direction.</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.05}><Card style={{marginBottom:18}}>
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:8}}>Setup</div>
         <P mb={6}>True model:</P>
@@ -463,6 +547,15 @@ function MeasurementTab({next}){
 
     <Wrap bg={C.black05}>
       <Reveal><H size={28}>Worked Example: Health and Wealth</H><P>Wealthier people tend to be healthier — better nutrition, better medical access. But measuring wealth is hard.</P></Reveal>
+      <Reveal delay={0.03}><Card style={{marginBottom:14}}>
+        <div style={{fontSize:12,fontWeight:700,color:C.purple,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>Read the example through measurement quality</div>
+        <P mb={8}>The causal question is whether wealth improves health. But before estimating that relationship, we need to ask whether wealth is measured in a trustworthy way.</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Random mistakes</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Some people guess too high, others too low. This usually weakens the estimated relationship.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Patterned mistakes</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Rich respondents may systematically understate wealth for privacy.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.purpleBg}}><strong>Research habit</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Ask how the variable was collected before trusting the coefficient.</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.05}><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14,marginBottom:14}}>
         <Card style={{borderLeft:`3px solid ${C.amber}`}}>
           <div style={{fontSize:11,fontWeight:700,color:C.amber,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:6}}>Why wealth is mismeasured</div>

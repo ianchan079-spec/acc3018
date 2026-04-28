@@ -544,9 +544,20 @@ function AdvancedTab({next}){
     <DarkWrap py={56}><IdStrategyScenario/></DarkWrap>
 
     <Wrap bg={C.black05}>
-      <Reveal><H size={26}>Example: CEO Disaster Experience (Bernile et al. 2017, JF)</H><P>Panel regression with firm + year fixed effects. Shows how dummy variables, panel data, and fixed effects work together in a real paper.</P></Reveal>
-      <Reveal delay={0.05}><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}><div style={{background:C.white,borderRadius:8,padding:'14px',borderLeft:`3px solid ${C.red}`}}><div style={{fontSize:11,fontWeight:700,color:C.red,marginBottom:4}}>Medium fatality CEOs</div><div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>3.3% higher leverage, 1.2% less cash. More risk-tolerant — "what doesn't kill you makes you stronger."</div></div><div style={{background:C.white,borderRadius:8,padding:'14px',borderLeft:`3px solid ${C.black20}`}}><div style={{fontSize:11,fontWeight:700,color:C.black60,marginBottom:4}}>Extreme fatality CEOs</div><div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>3.5% lower leverage, 2.2% more cash. More cautious — "scarred" by extreme events.</div></div></div></Reveal>
+      <Reveal><Label color={C.blue}>Putting The Methods Together</Label><H size={26}>Example: CEO Disaster Experience (Bernile et al. 2017, JF)</H><P>This example combines several ideas from the tab: panel data, dummy variables, firm fixed effects, year fixed effects, and coefficient interpretation.</P></Reveal>
+      <Reveal delay={0.03}><Card style={{marginBottom:14,borderLeft:`4px solid ${C.blue}`}}>
+        <div style={{fontSize:12,fontWeight:700,color:C.blue,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:10}}>How this links back to the tab</div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:10}}>
+          <Li color={C.blue}><strong>Panel data:</strong> the study observes many firms across many years, so each firm can appear multiple times.</Li>
+          <Li color={C.blue}><strong>Dummy variables:</strong> CEO disaster experience is coded into categories, such as medium-fatality and extreme-fatality experiences.</Li>
+          <Li color={C.blue}><strong>Firm fixed effects:</strong> compare a firm against itself over time, removing stable firm traits like industry, culture, or business model.</Li>
+          <Li color={C.blue}><strong>Year fixed effects:</strong> remove shocks that affect all firms in the same year, such as recessions or market-wide conditions.</Li>
+        </div>
+      </Card></Reveal>
+      <Reveal delay={0.05}><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}><div style={{background:C.white,borderRadius:8,padding:'14px',borderLeft:`3px solid ${C.red}`}}><div style={{fontSize:11,fontWeight:700,color:C.red,marginBottom:4}}>Medium fatality CEOs</div><div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>3.3% higher leverage, 1.2% less cash. More risk-tolerant - "what doesn't kill you makes you stronger."</div></div><div style={{background:C.white,borderRadius:8,padding:'14px',borderLeft:`3px solid ${C.black20}`}}><div style={{fontSize:11,fontWeight:700,color:C.black60,marginBottom:4}}>Extreme fatality CEOs</div><div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>3.5% lower leverage, 2.2% more cash. More cautious - "scarred" by extreme events.</div></div></div></Reveal>
+      <Reveal delay={0.1}><Callout accent={C.amber} bg={C.amberBg}><strong>How to read it:</strong> the coefficients compare CEO groups while holding constant stable firm differences and common year shocks. That is why the example belongs with fixed effects and panel data, not just with a simple two-variable OLS regression.</Callout></Reveal>
       <NextBtn onClick={()=>{completeTab('s2:advanced');next();}} label="Now Apply: Build a Regression →"/>
+
     </Wrap>
   </div>;
 }
