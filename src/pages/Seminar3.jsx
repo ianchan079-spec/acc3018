@@ -674,6 +674,15 @@ function IvTab({next}){
   return <div style={{paddingTop:56}}>
     <Wrap>
       <Reveal><Label>The Solution</Label><H>Instrumental Variables & 2SLS</H><P>So far we've seen four ways orthogonality can fail. Now: how to fix it. The big idea — find a variable that affects x but is otherwise unrelated to y. Use only the variation in x that comes from this clean source.</P></Reveal>
+      <Reveal delay={0.03}><Card style={{marginBottom:18,borderLeft:`4px solid ${C.green}`}}>
+        <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.green,marginBottom:8}}>IV in one sentence</div>
+        <P mb={8}>An instrument is a source of movement in x that is as good as random. Instead of using all variation in x, IV uses only the part of x pushed around by that clean outside source.</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>OLS asks</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>When x is higher, is y higher?</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>IV asks</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>When x is higher because z pushed it higher, is y higher?</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.greenBg}}><strong>Why that helps</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The z-driven part of x is less contaminated by omitted variables, selection, simultaneity, or measurement error.</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.05}><Card style={{marginBottom:18,background:C.black,borderColor:C.black}}>
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:8}}>The core problem, restated</div>
         <div style={{fontSize:14,color:'rgba(255,255,255,0.85)',lineHeight:1.7}}>The variation in x is contaminated by other things in ε. We cannot disentangle them. <strong style={{color:C.white}}>If only we could observe variation in x that is independent of ε</strong>, we could estimate β₁ cleanly. That's exactly what an instrument does.</div>
@@ -682,6 +691,15 @@ function IvTab({next}){
 
     <Wrap bg={C.black05}>
       <Reveal><H size={28}>Natural Experiments</H><P>Controlled lab experiments are rare in economics. The next best thing: <strong>natural experiments</strong> — situations where some external event creates random variation in x.</P></Reveal>
+      <Reveal delay={0.03}><Card style={{marginBottom:14}}>
+        <div style={{fontSize:12,fontWeight:700,color:C.amber,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>What makes an event useful for IV?</div>
+        <P mb={8}>A natural experiment is useful when it changes the explanatory variable for reasons that are not chosen by the people or firms being studied.</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Good shock</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Weather, lotteries, law changes, distance, or timing that affects x from outside the usual decision process.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Bad shock</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>A variable chosen by people for the same reasons that affect y.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.amberBg}}><strong>Research habit</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Ask: did this source of variation happen to people, or did people choose it?</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.05}><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14,marginBottom:14}}>
         <Card style={{borderLeft:`3px solid ${C.green}`}}>
           <div style={{fontSize:11,fontWeight:700,color:C.green,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:6}}>Controlled experiment</div>
@@ -696,6 +714,14 @@ function IvTab({next}){
 
     <Wrap>
       <Reveal><H size={28}>What is an Instrument?</H><P>An instrumental variable z is a variable that:</P></Reveal>
+      <Reveal delay={0.03}><Card style={{marginBottom:14,borderLeft:`4px solid ${C.green}`}}>
+        <div style={{fontSize:12,fontWeight:700,color:C.green,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>The two checks in plain English</div>
+        <P mb={8}>A good instrument must pass two different tests. One is about whether it is useful. The other is about whether it is trustworthy.</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.greenBg}}><strong>Relevance: does z move x?</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>If the instrument barely changes the endogenous variable, it cannot teach us much.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.redSubtle}}><strong>Exogeneity: is z otherwise clean?</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The instrument should not affect y directly, or through another hidden channel.</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.05}><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14,marginBottom:18}}>
         <Card style={{borderTop:`3px solid ${C.green}`}}>
           <div style={{fontSize:11,fontWeight:700,color:C.green,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:6}}>1. Relevance</div>
@@ -716,6 +742,15 @@ function IvTab({next}){
     {/* The 2SLS procedure visualised */}
     <Wrap bg={C.black05}>
       <Reveal><H size={28}>Two-Stage Least Squares (2SLS)</H><P>The mechanical procedure for using an instrument. Two ordinary OLS regressions, run in sequence.</P></Reveal>
+      <Reveal delay={0.03}><Card style={{marginBottom:14}}>
+        <div style={{fontSize:12,fontWeight:700,color:C.red,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>The two stages, translated</div>
+        <P mb={8}>2SLS sounds technical, but the logic is simple: first clean x, then use the cleaned version of x to explain y.</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Stage 1: isolate the clean part of x</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Predict x using the instrument z. This gives x-hat: the part of x explained by z.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Stage 2: estimate the effect on y</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Regress y on x-hat. Now the coefficient uses only the instrument-driven variation.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.redSubtle}}><strong>Key warning</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>If z is not valid, x-hat is not clean. 2SLS cannot rescue a bad instrument.</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.05}>
         <Card style={{marginBottom:14,background:C.black,borderColor:C.black}}>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:18}}>
@@ -742,6 +777,11 @@ function IvTab({next}){
     {/* Real examples table */}
     <Wrap>
       <Reveal><H size={28}>Famous Instruments in Economics</H><P>The hard part of IV is finding a credible z. Here are some celebrated examples — each pairs an endogenous regressor with a natural-experiment instrument.</P></Reveal>
+      <Reveal delay={0.03}><Card style={{marginBottom:14}}>
+        <div style={{fontSize:12,fontWeight:700,color:C.green,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>How to read this table</div>
+        <P mb={8}>Each row has the same structure: the regressor is the variable we care about, the endogeneity column explains why OLS is not enough, and the instrument column shows the outside source of movement used to clean up the regressor.</P>
+        <div style={{fontSize:14,color:C.black80,lineHeight:1.6,padding:12,borderRadius:8,background:C.greenBg}}><strong>Reading habit:</strong> For every instrument, ask both questions: does it move x, and could it affect y through any other route?</div>
+      </Card></Reveal>
       <Reveal delay={0.05}><div style={{overflowX:'auto',marginBottom:14}}><table style={{width:'100%',borderCollapse:'collapse',fontSize:13,background:C.white,borderRadius:8,overflow:'hidden'}}>
         <thead><tr style={{background:C.black}}>{['Response (y)','Regressor (x)','Endogeneity','Instrument (z)'].map((h,i)=> <th key={i} style={{padding:'10px 14px',color:C.white,fontWeight:700,textAlign:'left',fontSize:12,letterSpacing:'0.04em'}}>{h}</th>)}</tr></thead>
         <tbody>{[
@@ -766,6 +806,14 @@ function IvTab({next}){
     {/* Market equilibrium example — supply/demand shifters */}
     <Wrap bg={C.black05}>
       <Reveal><H size={28}>Worked Case: Market Equilibrium</H><P>Demand and supply both depend on price — that's classic simultaneity. The fix: instrument demand-side regressions with supply shifters, and supply-side regressions with demand shifters.</P></Reveal>
+      <Reveal delay={0.03}><Card style={{marginBottom:14}}>
+        <div style={{fontSize:12,fontWeight:700,color:C.amber,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>Why shifters solve the price problem</div>
+        <P mb={8}>Price is endogenous because demand and supply both help determine it. A shifter is useful because it moves one side of the market while leaving the other side mostly alone.</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>To estimate demand</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Use something that shifts supply, such as input costs, because it changes price without directly changing consumers' desire to buy.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>To estimate supply</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Use something that shifts demand, such as population or income, because it changes price without directly changing firms' production costs.</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.05}><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
         <Card style={{borderLeft:`3px solid ${C.blue}`}}>
           <div style={{fontSize:11,fontWeight:700,color:C.blue,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>Demand shifters</div>
