@@ -392,25 +392,26 @@ function RegressionTab({next}){
       </Card></Reveal>
       <Reveal delay={0.1}><Card style={{marginBottom:16}}>
         <div style={{fontSize:12,fontWeight:700,color:C.red,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:10}}>Beyond p-values</div>
-        <P mb={12}>A regression table is not only asking "is the coefficient statistically significant?" It is also asking whether the result is meaningful, trustworthy, and robust.</P>
+        <P mb={12}>A regression table is not only asking "is the coefficient statistically significant?" It is also asking: is the effect big enough to care about, and can we trust the p-value?</P>
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:12}}>
           <div style={{background:C.black05,borderRadius:8,padding:'14px 16px',borderTop:`3px solid ${C.green}`}}>
             <div style={{fontSize:13,fontWeight:800,color:C.black,marginBottom:5}}>Economic significance</div>
-            <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Asks whether the effect is large enough to matter in practice. A tiny coefficient can be statistically significant in a large sample but unimportant for managers, investors, or policymakers.</div>
+            <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>This asks: "So what?" A coefficient may be statistically significant, but still too small to matter. <strong>Example:</strong> if ESG score increases ROA by only 0.001 percentage points, managers may not care even if the p-value is below 0.05.</div>
           </div>
           <div style={{background:C.black05,borderRadius:8,padding:'14px 16px',borderTop:`3px solid ${C.amber}`}}>
             <div style={{fontSize:13,fontWeight:800,color:C.black,marginBottom:5}}>Heteroskedasticity</div>
-            <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Means the error terms are more spread out for some observations than others, such as large firms having noisier dollar values than small firms. This mainly affects standard errors and p-values.</div>
+            <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>This means the "mistakes" made by the model are not equally sized for everyone. <strong>Example:</strong> profit values for huge firms vary much more than profit values for small firms. That can make the usual p-values too confident.</div>
           </div>
           <div style={{background:C.black05,borderRadius:8,padding:'14px 16px',borderTop:`3px solid ${C.blue}`}}>
             <div style={{fontSize:13,fontWeight:800,color:C.black,marginBottom:5}}>Robust standard errors</div>
-            <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Adjust the standard errors when heteroskedasticity may be present. The coefficient stays the same, but the reported uncertainty around it becomes more reliable.</div>
+            <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>These are a safer way to calculate uncertainty when heteroskedasticity may exist. <strong>Example:</strong> the coefficient on ESG stays 0.20, but the standard error may become larger, so the result may no longer be significant.</div>
           </div>
           <div style={{background:C.black05,borderRadius:8,padding:'14px 16px',borderTop:`3px solid ${C.red}`}}>
             <div style={{fontSize:13,fontWeight:800,color:C.black,marginBottom:5}}>Clustered standard errors</div>
-            <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Adjust for observations that are related within a group, such as repeated firm-years for the same firm. They stop us from pretending every row is fully independent.</div>
+            <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Use these when rows in the data are related to each other. <strong>Example:</strong> if Apple appears every year from 2012 to 2024, those Apple rows are not fully independent. Clustering by firm allows for that connection.</div>
           </div>
         </div>
+        <Callout accent={C.blue} bg={C.blueBg}><strong>Quick rule:</strong> coefficients tell us the size and direction of the relationship. Standard errors tell us how uncertain that estimate is. Robust or clustered standard errors are ways to avoid being overconfident.</Callout>
       </Card></Reveal>
       <Reveal delay={0.15}><Card style={{borderLeft:`4px solid ${C.blue}`}}>
         <div style={{fontSize:12,fontWeight:700,color:C.blue,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>Reading Regression Tables Like A Researcher</div>
