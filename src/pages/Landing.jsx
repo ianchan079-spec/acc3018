@@ -7,8 +7,8 @@ const SEMINARS = [
   { n: 1, title: 'Essentials of Applied Research', desc: 'Research ideas to thesis structure. Basic vs applied research, the research process, literature reviews, and hypothesis building.', ready: true },
   { n: 2, title: 'Quantitative Research Methods I', desc: 'Regression analysis fundamentals. OLS assumptions, variable types, model specification, and interpretation.', ready: true },
   { n: 3, title: 'Quantitative Research Methods II', desc: 'Endogeneity, omitted variables, simultaneous equations, selection bias, measurement error, and IV/2SLS identification.', ready: true },
-  { n: 4, title: 'Data Application I', desc: 'Hands-on data work with Compustat, CRSP, and Bloomberg. Sample construction and descriptive statistics.', draft: 'Planned interactives: sample filter builder, variable dictionary check, missing data triage.', ready: false },
-  { n: 5, title: 'Data Application II', desc: 'Running regressions, interpreting output, robustness checks. From raw data to publishable results tables.', draft: 'Planned interactives: regression output reader, table formatter, robustness decision tree.', ready: false },
+  { n: 4, title: 'Data Application I', desc: 'WRDS, CRSP, Compustat, ESG data, R cleaning and merging workflows, sentiment analysis, and applied IV cases.', ready: true },
+  { n: 5, title: 'Data Application II', desc: 'Stata basics, summary statistics, correlation matrices, fixed-effect regressions, subsamples, robustness checks, and event studies.', ready: true },
   { n: 6, title: 'Mini Group Assignment', desc: 'Collaborative research exercise. Apply everything from Seminars 1–5 in a team-based mini project.', draft: 'Planned interactives: team role board, proposal rubric self-check, peer feedback workflow.', ready: false },
 ];
 

@@ -48,6 +48,20 @@ export const BADGES = {
   'instrument-judge': { name: 'Instrument Judge',    desc: 'Perfect on Valid Instrument quiz',       icon: '◈' },
   'endogeneity-ace':  { name: 'Endogeneity Ace',     desc: 'Perfect on Seminar 3 final quiz',        icon: '◉' },
   's3-completionist': { name: 'S3 Complete',         desc: 'Finish every tab in Seminar 3',          icon: '✪' },
+  // Seminar 4 badges
+  'wrds-navigator':   { name: 'WRDS Navigator',      desc: 'Perfect on Seminar 4 database quiz',     icon: 'DB' },
+  'key-master':       { name: 'Key Master',          desc: 'Choose every identifier correctly',      icon: 'ID' },
+  'data-engineer':    { name: 'Data Engineer',       desc: 'Perfect on R workflow quiz',             icon: 'R' },
+  'sentiment-scout':  { name: 'Sentiment Scout',     desc: 'Complete the sentiment measurement check', icon: 'TX' },
+  'case-analyst':     { name: 'Case Analyst',        desc: 'Perfect on applied IV cases quiz',       icon: 'IV' },
+  's4-completionist': { name: 'S4 Complete',         desc: 'Finish the Seminar 4 activity',          icon: 'S4' },
+  // Seminar 5 badges
+  'stata-starter':    { name: 'Stata Starter',       desc: 'Perfect on Stata basics quiz',           icon: 'ST' },
+  'output-reader':    { name: 'Output Reader',       desc: 'Choose every inspection command correctly', icon: 'OR' },
+  'variable-builder': { name: 'Variable Builder',    desc: 'Perfect on variable construction quiz',  icon: 'VB' },
+  'table-builder':    { name: 'Table Builder',       desc: 'Perfect on regression table quiz',       icon: 'TB' },
+  'robustness-auditor': { name: 'Robustness Auditor', desc: 'Complete robustness decisions perfectly', icon: 'RA' },
+  's5-completionist': { name: 'S5 Complete',         desc: 'Finish the Seminar 5 activity',          icon: 'S5' },
 };
 
 export const LEVELS = [

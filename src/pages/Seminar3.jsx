@@ -823,26 +823,25 @@ function IvTab({next}){
             <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
               {r.instruments.map(inst=>{
                 const active=activeInstrument&&activeInstrument.name===inst.name&&activeInstrument.x===r.x&&activeInstrument.y===r.y;
-                return <button key={inst.name} onClick={()=>setActiveInstrument({...inst,y:r.y,x:r.x,endo:r.endo})} style={{border:`1px solid ${active?C.green:C.black20}`,background:active?C.greenBg:C.white,color:active?C.green:C.green,borderRadius:5,padding:'6px 9px',fontFamily:"'Source Sans 3',sans-serif",fontSize:12,fontWeight:700,cursor:'pointer',lineHeight:1.2}}>{inst.name}</button>;
+                return <div key={inst.name} style={{display:'flex',flexDirection:'column',gap:6,alignItems:'flex-start',maxWidth:330}}>
+                  <button onClick={()=>setActiveInstrument(active?null:{...inst,y:r.y,x:r.x,endo:r.endo})} style={{border:`1px solid ${active?C.green:C.black20}`,background:active?C.greenBg:C.white,color:C.green,borderRadius:5,padding:'6px 9px',fontFamily:"'Source Sans 3',sans-serif",fontSize:12,fontWeight:700,cursor:'pointer',lineHeight:1.2}}>{inst.name}</button>
+                  {active&&<div style={{width:310,maxWidth:'100%',background:C.greenBg,border:`1px solid ${C.green}`,borderRadius:8,padding:12,boxShadow:'0 8px 20px rgba(0,0,0,0.10)'}}>
+                    <div style={{display:'flex',justifyContent:'space-between',gap:10,alignItems:'flex-start',marginBottom:8}}>
+                      <div>
+                        <div style={{fontSize:10,fontWeight:800,color:C.green,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:3}}>Instrument explainer</div>
+                        <div style={{fontSize:14,fontWeight:900,color:C.black,lineHeight:1.2}}>{inst.name}</div>
+                      </div>
+                      <button onClick={()=>setActiveInstrument(null)} style={{border:`1px solid ${C.black20}`,background:C.white,color:C.black80,borderRadius:4,padding:'3px 7px',fontFamily:"'Source Sans 3',sans-serif",fontSize:11,fontWeight:700,cursor:'pointer'}}>Close</button>
+                    </div>
+                    <div style={{fontSize:12.5,color:C.black80,lineHeight:1.55,marginBottom:7}}><strong>What it is:</strong> {inst.what}</div>
+                    <div style={{fontSize:12.5,color:C.black80,lineHeight:1.55}}><strong>How it worked:</strong> {inst.how}</div>
+                  </div>}
+                </div>;
               })}
             </div>
           </td>
         </tr>)}</tbody>
       </table></div>
-      {activeInstrument&&<Card style={{marginTop:14,borderLeft:`4px solid ${C.green}`,background:C.greenBg}}>
-        <div style={{display:'flex',justifyContent:'space-between',gap:12,alignItems:'flex-start',marginBottom:8}}>
-          <div>
-            <div style={{fontSize:11,fontWeight:700,color:C.green,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:4}}>Instrument explainer</div>
-            <div style={{fontSize:18,fontWeight:900,color:C.black,lineHeight:1.2}}>{activeInstrument.name}</div>
-            <div style={{fontSize:12,color:C.black60,marginTop:3}}>{activeInstrument.x} to {activeInstrument.y} · {activeInstrument.endo}</div>
-          </div>
-          <button onClick={()=>setActiveInstrument(null)} style={{border:`1px solid ${C.black20}`,background:C.white,color:C.black80,borderRadius:5,padding:'6px 10px',fontFamily:"'Source Sans 3',sans-serif",fontSize:12,fontWeight:700,cursor:'pointer'}}>Close</button>
-        </div>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:10}}>
-          <div style={{padding:12,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`}}><strong>What it is</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>{activeInstrument.what}</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`}}><strong>How it worked</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>{activeInstrument.how}</span></div>
-        </div>
-      </Card>}
       </Reveal>
       <Reveal delay={0.1}><Callout><strong>Note the pattern:</strong> Good instruments are usually <em>quasi-random shocks</em> — weather, lottery numbers, geographic distance, electoral timing. They affect x but have no direct path to y.</Callout></Reveal>
     </Wrap>
