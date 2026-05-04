@@ -78,7 +78,51 @@ function StataBasicsTab({ next }) {
   return <div style={{ paddingTop: 56 }}>
     <Wrap>
       <Reveal><Label>Introduction to Stata</Label><H>Use the Interface Without Losing Reproducibility</H><P>The early slides introduce the Command window, Variables window, Properties window, do-file editor, import tools and browser. The key message is simple: use the interface to learn, but use do-files to preserve the research workflow.</P></Reveal>
-      <Reveal delay={0.05}><Card>
+      <Reveal delay={0.04}><Card style={{ marginBottom: 14, borderLeft: `4px solid ${C.red}` }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.red, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>First: what is Stata doing?</div>
+        <P mb={8}>Stata is a command-based statistics program. Students can click around the menus, but the real power is that every data step can be written as a command and rerun later.</P>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 10 }}>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Data live in memory</strong><br /><span style={text}>When you open a dataset, Stata works on the copy currently loaded into memory.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Commands change or inspect that data</strong><br /><span style={text}>Some commands describe the data; others create variables, clean values or estimate models.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.redSubtle }}><strong>Do-files make work reproducible</strong><br /><span style={text}>A do-file is a script that records the whole analysis so someone else can rerun it.</span></div>
+        </div>
+      </Card></Reveal>
+      <Reveal delay={0.08}><Card style={{ marginBottom: 14 }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.blue, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>How to read a Stata command</div>
+        <P mb={8}>Most beginner Stata commands follow a predictable pattern: command first, variable names next, then optional conditions and options.</P>
+        <Code>{`command variable1 variable2 if condition, option1 option2
+
+summarize read math if gender == 2, detail
+tabulate race ses, row
+areg Profit1 Profit Lev Size Cash, a(FE2)`}</Code>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 10 }}>
+          <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong>Command</strong><br /><span style={text}>What Stata should do, such as summarize, tabulate, replace or areg.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong>Variables</strong><br /><span style={text}>The columns Stata should use, such as read, math, Profit or Size.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong>if condition</strong><br /><span style={text}>Limits the command to certain rows, such as female students or COVID years.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong>Options</strong><br /><span style={text}>Come after a comma and change what Stata reports or absorbs.</span></div>
+        </div>
+      </Card></Reveal>
+      <Reveal delay={0.12}><Card style={{ marginBottom: 14 }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.green, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>A sensible first do-file</div>
+        <P mb={8}>Students should begin every analysis with a small, repeatable setup. This is the Stata equivalent of keeping a clean lab notebook.</P>
+        <Code>{`* 1. Open the dataset
+use "mydata.dta", clear
+
+* 2. Understand what is inside
+describe
+browse
+
+* 3. Check main variables before modelling
+summarize Profit Lev Size Cash
+cor Profit1 Profit Lev Size Cash
+
+* 4. Only then run models
+areg Profit1 Profit Lev Size Cash, a(FE2)`}</Code>
+        <Callout accent={C.green} bg={C.greenBg}><strong>Plain-English rule:</strong> do not run regressions until you have opened the data, inspected the variables, checked missing values and understood the sample.</Callout>
+      </Card></Reveal>
+      <Reveal delay={0.16}><Card>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.red, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Guided tour of the Stata screen</div>
+        <P mb={12}>Now that students know the workflow, use the buttons below to connect that workflow to the parts of the Stata interface.</P>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
           {Object.entries(panels).map(([k, p]) => <button key={k} onClick={() => setActive(k)} style={{ padding: '8px 12px', border: `1px solid ${active === k ? C.red : C.black20}`, background: active === k ? C.redSubtle : C.white, color: active === k ? C.red : C.black80, borderRadius: 6, fontFamily: "'Source Sans 3',sans-serif", fontWeight: 800, cursor: 'pointer' }}>{p[0]}</button>)}
         </div>

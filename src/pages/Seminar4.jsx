@@ -91,10 +91,26 @@ function DatabasesTab({ next }) {
         { k: 'Public sources', t: 'Macro and local data', d: 'World Bank, SingStat and URA property data can support country, Singapore and property-market research designs.' },
         { k: 'Bloomberg', t: 'Market terminal data', d: 'Useful for firm, security and market information, but students must document extraction choices clearly.' },
       ]} /></Reveal>
+      <Reveal delay={0.08}><Card style={{ marginTop: 14, borderLeft: `4px solid ${C.blue}` }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.blue, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>How to choose the right database</div>
+        <P mb={8}>Students should not start by asking "Where can I download something?" They should start by translating the research question into the kind of data they need.</P>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: 10 }}>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>What is the unit?</strong><br /><span style={small}>Country-year, firm-year, security-month, article, property transaction?</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>What is the variable?</strong><br /><span style={small}>Price, return, accounting item, ESG score, GDP, property value?</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>What is the frequency?</strong><br /><span style={small}>Daily, monthly, quarterly, annual, or event-level?</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong>What is the coverage?</strong><br /><span style={small}>Which countries, firms, exchanges, years and active/inactive observations?</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.1}><Callout><strong>Plain-English warning:</strong> databases are not neutral spreadsheets. Each one has a coverage rule, update schedule, identifier system and survivorship issue. Good research begins by understanding those choices.</Callout></Reveal>
     </Wrap>
     <Wrap bg={C.black05}>
       <Reveal><Label color={C.blue}>WRDS walkthrough</Label><H size={28}>The CRSP Query Path</H><P>The slides walk through a simple WRDS extraction for IBM, Amazon and Walmart monthly stock prices in 2020. Click each step to see what students should notice.</P></Reveal>
+      <Reveal delay={0.03}><Card style={{ marginBottom: 14 }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.blue, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Before clicking: what a WRDS query is</div>
+        <P mb={8}>A WRDS query is just a structured request: "Give me these variables, for these entities, over this time period, from this file, in this output format."</P>
+        <Formula>dataset + date range + entity list + variables + output format = reproducible extract</Formula>
+        <div style={small}>Once students understand that structure, the screenshots become less intimidating: every page is asking for one part of the request.</div>
+      </Card></Reveal>
       <Reveal delay={0.05}><Card>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
           {steps.map((s, i) => <button key={s[0]} onClick={() => setStep(i)} style={{ padding: '8px 12px', border: `1px solid ${step === i ? C.blue : C.black20}`, background: step === i ? C.blueBg : C.white, color: step === i ? C.blue : C.black80, borderRadius: 6, fontFamily: "'Source Sans 3',sans-serif", fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>{i + 1}. {s[0]}</button>)}
@@ -138,6 +154,21 @@ function IdentifiersTab({ next }) {
         { k: 'Ticker', t: 'Convenient but unstable', d: 'Exchange-specific, recyclable and can change over time. Good for lookup, weaker for merging.' },
         { k: 'CUSIP / CIK', t: 'Useful but imperfect', d: 'CUSIP can change; CIK is an SEC filing identifier. Always inspect whether it fits the merge task.' },
       ]} /></Reveal>
+      <Reveal delay={0.08}><Card style={{ marginTop: 14, borderLeft: `4px solid ${C.red}` }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.red, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Start with the unit of observation</div>
+        <P mb={8}>The same company can have multiple securities, different tickers over time, and different records across databases. That is why the first question is always: what does one row represent?</P>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 10 }}>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Security-month</strong><br /><span style={small}>Use a security-level key such as PERMNO, then align by month.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Firm-year</strong><br /><span style={small}>Use a firm-level key such as GVKEY or a vetted CRSP-Compustat link, then align by fiscal year.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.redSubtle }}><strong>Danger zone</strong><br /><span style={small}>Company names and tickers are readable, but they are not stable research keys.</span></div>
+        </div>
+      </Card></Reveal>
+      <Reveal delay={0.11}><Card style={{ marginTop: 14 }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>The merge sentence</div>
+        <P mb={8}>Before any merge, students should be able to say the sentence below out loud.</P>
+        <Formula>I am merging [left dataset] to [right dataset] at the [unit] level using [key] and [time].</Formula>
+        <div style={small}>Example: "I am merging annual CRSP market variables to Compustat fundamentals at the firm-year level using a CRSP-Compustat link key and fiscal year."</div>
+      </Card></Reveal>
       <Reveal delay={0.1}><Callout accent={C.red} bg={C.redSubtle}><strong>Research habit:</strong> before merging, write one sentence: "My unit of observation is ___, so my merge key is ___." If that sentence is vague, the merge is not ready.</Callout></Reveal>
     </Wrap>
     <Wrap bg={C.black05}>
@@ -176,6 +207,25 @@ function RWorkflowTab({ next }) {
         { k: '5', t: 'Merge carefully', d: 'Merge CRSP and Compustat by appropriate firm/security identifiers and aligned time periods.' },
         { k: '6', t: 'Define subsamples', d: 'Create groups such as small vs large firms or risky vs safer firms for heterogeneity tests.' },
       ]} /></Reveal>
+      <Reveal delay={0.08}><Card style={{ marginTop: 14, borderLeft: `4px solid ${C.green}` }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.green, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>How to think like R</div>
+        <P mb={8}>R is not a spreadsheet. Students should think of each dataset as a table object, each variable as a column, and each cleaning step as a line of code that creates a new, reproducible version of the data.</P>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: 10 }}>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Rows are observations</strong><br /><span style={small}>A row might be a firm-year, security-day, country-year or article.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Columns are variables</strong><br /><span style={small}>Variables include raw fields and constructed measures such as Size or RET1.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.greenBg }}><strong>Code is the audit trail</strong><br /><span style={small}>Every filter, merge and variable definition should be visible in the script.</span></div>
+        </div>
+      </Card></Reveal>
+      <Reveal delay={0.11}><Card style={{ marginTop: 14 }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>The cleaning pipeline before code</div>
+        <P mb={8}>Students should understand the pipeline before they read individual R commands.</P>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(170px,1fr))', gap: 10 }}>
+          {['Import', 'Inspect', 'Filter', 'Create variables', 'Merge', 'Validate', 'Model'].map((s, i) => <div key={s} style={{ padding: 12, borderRadius: 8, background: i === 6 ? C.amberBg : C.black05 }}>
+            <div style={{ fontSize: 11, fontWeight: 900, color: i === 6 ? C.amber : C.black60, marginBottom: 4 }}>STEP {i + 1}</div>
+            <div style={{ fontSize: 14, fontWeight: 900, color: C.black }}>{s}</div>
+          </div>)}
+        </div>
+      </Card></Reveal>
     </Wrap>
     <Wrap bg={C.black05}>
       <Reveal><H size={28}>Code Patterns Students Should Recognise</H><P>These are not meant as copy-paste recipes; they show the intent behind common R operations from the slides.</P></Reveal>
@@ -222,6 +272,15 @@ function SentimentTab({ next }) {
         { k: 'Score', t: 'Apply a dictionary or model', d: 'Compute positive, negative or net sentiment using a documented method.' },
         { k: 'Validate', t: 'Read examples', d: 'Check whether high and low scores make sense in actual articles.' },
       ]} /></Reveal>
+      <Reveal delay={0.08}><Card style={{ marginTop: 14, borderLeft: `4px solid ${C.amber}` }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>What students must understand first</div>
+        <P mb={8}>Sentiment analysis is a measurement method. It turns words into a number, but that number is only meaningful if students can explain the measurement choices.</P>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 10 }}>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>The text sample matters</strong><br /><span style={small}>One article, all articles, headlines only, or full text can produce different scores.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>The dictionary/model matters</strong><br /><span style={small}>A finance-specific dictionary may classify words differently from a general dictionary.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.amberBg }}><strong>The interpretation matters</strong><br /><span style={small}>A score measures language tone, not whether the claim is correct or economically important.</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.1}><Callout accent={C.amber} bg={C.amberBg}><strong>Plain-English warning:</strong> sentiment is not the same as truth, tone is not the same as impact, and a dictionary score is only as credible as the text cleaning behind it.</Callout></Reveal>
     </Wrap>
     <Wrap bg={C.black05}>
@@ -273,6 +332,15 @@ function IvCasesTab({ next }) {
   return <div style={{ paddingTop: 56 }}>
     <Wrap>
       <Reveal><Label>Applied cases</Label><H>Connecting Data Work Back to Identification</H><P>The later Seminar 4 slides revisit endogeneity and IV through applied R cases. This tab keeps the causal logic visible while students think through the data steps.</P></Reveal>
+      <Reveal delay={0.04}><Card style={{ marginBottom: 14, borderLeft: `4px solid ${C.red}` }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.red, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>How to read an applied methods case</div>
+        <P mb={8}>Each case combines two questions: a data question and an identification question. Students should separate them before reading code or coefficients.</P>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 10 }}>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Data question</strong><br /><span style={small}>What are Y, X, controls, identifiers, time period and sample?</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Endogeneity question</strong><br /><span style={small}>Why might ordinary regression be biased or misleading?</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.redSubtle }}><strong>Design question</strong><br /><span style={small}>What variation is being used to make the estimate more credible?</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.05}><div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
         {Object.entries(cases).map(([k, v]) => <button key={k} onClick={() => setActive(k)} style={{ padding: '9px 13px', border: `1px solid ${active === k ? C.red : C.black20}`, background: active === k ? C.redSubtle : C.white, color: active === k ? C.red : C.black80, borderRadius: 6, fontFamily: "'Source Sans 3',sans-serif", fontWeight: 800, cursor: 'pointer' }}>{v.badge}</button>)}
       </div></Reveal>
