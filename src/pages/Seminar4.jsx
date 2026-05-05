@@ -196,70 +196,96 @@ function StataWorkflowTab({ next }) {
     { id: 'r2', q: 'Why might the slides drop utility and financial firms?', opts: ['They are always wrong', 'They often have different accounting and regulatory structures', 'They have no stock prices', 'They cannot be merged'], c: 1, ex: 'Utilities and financial firms often have different balance sheets and regulation, so many accounting studies exclude them.' },
     { id: 'r3', q: 'When converting daily data to annual data, returns are often:', opts: ['Summed or compounded depending on definition', 'Always averaged', 'Always deleted', 'Always converted to strings'], c: 0, ex: 'Spreads and turnover may be averaged; returns need careful aggregation such as summing log returns or compounding simple returns.' },
   ];
+  const stages = [
+    { k: '1', t: 'What am I building?', q: 'A firm-year panel: one row per firm per year.', cmds: 'describe, codebook, isid', d: 'Before doing anything technical, students should know the intended row structure. If the final dataset should be firm-year, then firm and year together should identify a row.' },
+    { k: '2', t: 'What is in the raw file?', q: 'Which variables exist, how are they coded, and are there odd values?', cmds: 'browse, summarize, summarize, detail', d: 'This is the data equivalent of looking at the ingredients before cooking. Students should inspect the raw file before changing it.' },
+    { k: '3', t: 'What should I exclude?', q: 'Are exclusions based on a research reason rather than convenience?', cmds: 'keep if, drop if, tabulate', d: 'Dropping observations changes the sample. Students need to explain the rule, such as excluding financial firms because their balance sheets are structurally different.' },
+    { k: '4', t: 'What variables do I need?', q: 'How do raw columns become research measures?', cmds: 'gen, replace, egen, bysort', d: 'This is where accounting concepts become variables: size, leverage, profitability, future returns, industry-year groups and other controls.' },
+    { k: '5', t: 'Can the files join safely?', q: 'Do the merge keys match the unit and time period?', cmds: 'duplicates report, isid, merge, tab _merge', d: 'A merge is not automatically correct because Stata runs it. Students must check whether rows matched as expected.' },
+    { k: '6', t: 'Would I trust this for regression?', q: 'Does the panel have the right structure and sensible ranges?', cmds: 'xtset, summarize, correlate, save', d: 'The final check asks whether the dataset is ready for Seminar 5: summary stats, correlations, regression tables and robustness checks.' },
+  ];
   return <div style={{ paddingTop: 56 }}>
     <Wrap>
-      <Reveal><Label>Stata workflow</Label><H>From Raw Files to a Research Panel</H><P>This tab turns data acquisition into a Stata workflow students can reuse: open the file, inspect it, clean obvious problems, create variables, merge carefully, validate the result, and only then model.</P></Reveal>
-      <Reveal delay={0.05}><InfoGrid color={C.green} items={[
-        { k: '1', t: 'Set a working folder', d: 'Tell Stata where files live, and keep raw data, do-files and outputs separate.' },
-        { k: '2', t: 'Open and inspect', d: 'Use describe, browse, summarize and codebook before changing anything.' },
-        { k: '3', t: 'Clean the sample', d: 'Drop observations only when there is a research reason, such as excluding financial firms in some accounting designs.' },
-        { k: '4', t: 'Create variables', d: 'Use gen, replace and egen to build size, leverage, profitability, future returns and grouping variables.' },
-        { k: '5', t: 'Merge carefully', d: 'Use the right identifier and time period, then check whether the merge behaved as expected.' },
-        { k: '6', t: 'Document decisions', d: 'Every exclusion, recoding and merge choice should be visible in a do-file.' },
-      ]} /></Reveal>
-      <Reveal delay={0.08}><Card style={{ marginTop: 14, borderLeft: `4px solid ${C.green}` }}>
-        <div style={{ fontSize: 12, fontWeight: 800, color: C.green, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>How to think like Stata</div>
-        <P mb={8}>Stata works on one dataset in memory at a time. Students should imagine the current dataset as a table: rows are observations, columns are variables, and commands either inspect, change or analyse that table.</P>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: 10 }}>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Rows are observations</strong><br /><span style={small}>A row might be a firm-year, security-day, country-year or article.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Columns are variables</strong><br /><span style={small}>Variables include raw fields and constructed measures such as Size or RET1.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.greenBg }}><strong>The do-file is the audit trail</strong><br /><span style={small}>Every filter, merge and variable definition should be visible as a command that can be rerun.</span></div>
+      <Reveal><Label>Stata workflow</Label><H>From Raw Files to a Research Panel</H><P>This tab is a guided lab, not a command list. Students first learn what they are trying to build, then which Stata commands help them answer each research-data question.</P></Reveal>
+      <Reveal delay={0.04}><Card style={{ marginBottom: 14, borderLeft: `4px solid ${C.green}` }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.green, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>The target dataset</div>
+        <P mb={8}>For the capstone-style analysis, students are usually trying to build a clean firm-year panel: one row for one firm in one year, with market variables, accounting variables and future outcome variables sitting in the same row.</P>
+        <Formula>firm + year + market data + accounting data + constructed variables = analysis panel</Formula>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 10 }}>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>One row means one observation</strong><br /><span style={small}>If the study is firm-year, Apple in 2022 should be one row, not five accidental rows.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>One column means one variable</strong><br /><span style={small}>Columns might be returns, spread, turnover, assets, leverage, future return or industry.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.greenBg }}><strong>The do-file explains the journey</strong><br /><span style={small}>A reader should be able to rerun the do-file and recreate the dataset from raw files.</span></div>
         </div>
       </Card></Reveal>
-      <Reveal delay={0.11}><Card style={{ marginTop: 14 }}>
-        <div style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>The cleaning pipeline before code</div>
-        <P mb={8}>Students should understand the pipeline before they read individual Stata commands. The point is not to memorise syntax; the point is to know what each step is trying to protect.</P>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(170px,1fr))', gap: 10 }}>
-          {['Import', 'Inspect', 'Filter', 'Create variables', 'Merge', 'Validate', 'Model'].map((s, i) => <div key={s} style={{ padding: 12, borderRadius: 8, background: i === 6 ? C.amberBg : C.black05 }}>
-            <div style={{ fontSize: 11, fontWeight: 900, color: i === 6 ? C.amber : C.black60, marginBottom: 4 }}>STEP {i + 1}</div>
-            <div style={{ fontSize: 14, fontWeight: 900, color: C.black }}>{s}</div>
-          </div>)}
+      <Reveal delay={0.08}><Card style={{ marginBottom: 14 }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>What can go wrong?</div>
+        <P mb={8}>Most beginner mistakes happen before the regression. The commands below are useful because they reveal specific risks.</P>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10 }}>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Wrong row level</strong><br /><span style={small}><code>isid</code> and <code>duplicates report</code> check whether firm-year really identifies one row.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Hidden missing values</strong><br /><span style={small}><code>codebook</code> and <code>summarize</code> show missingness, ranges and strange values.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Unjustified exclusions</strong><br /><span style={small}><code>tabulate</code>, <code>keep if</code> and <code>drop if</code> should be tied to a research reason.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.amberBg }}><strong>Bad merges</strong><br /><span style={small}><code>merge</code> creates <code>_merge</code>; <code>tab _merge</code> tells students what matched and what did not.</span></div>
         </div>
-        <Callout accent={C.amber} bg={C.amberBg}><strong>Beginner rule:</strong> if students cannot explain what a command is protecting against, they should pause before running the next command.</Callout>
       </Card></Reveal>
+      <Reveal delay={0.12}><div style={{ display: 'grid', gap: 12 }}>
+        {stages.map((s, i) => <Card key={s.k} style={{ borderLeft: `4px solid ${i < 2 ? C.blue : i < 4 ? C.amber : C.red}` }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '68px 1fr', gap: 12, alignItems: 'start' }}>
+            <div style={{ width: 48, height: 48, borderRadius: '50%', background: i < 2 ? C.blueBg : i < 4 ? C.amberBg : C.redSubtle, color: i < 2 ? C.blue : i < 4 ? C.amber : C.red, display: 'grid', placeItems: 'center', fontSize: 18, fontWeight: 900 }}>{s.k}</div>
+            <div>
+              <div style={{ fontSize: 18, fontWeight: 900, color: C.black, marginBottom: 4 }}>{s.t}</div>
+              <P mb={7} color={C.black}><strong>Student question:</strong> {s.q}</P>
+              <div style={{ ...small, marginBottom: 8 }}>{s.d}</div>
+              <div style={{ padding: 10, borderRadius: 8, background: C.black05 }}><strong>Commands used here:</strong> <code>{s.cmds}</code></div>
+            </div>
+          </div>
+        </Card>)}
+      </div></Reveal>
     </Wrap>
     <Wrap bg={C.black05}>
-      <Reveal><H size={28}>Stata Patterns Students Should Recognise</H><P>These are not meant as copy-paste recipes. They show the purpose behind common Stata operations students will use again in Seminar 5.</P></Reveal>
+      <Reveal><H size={28}>A Guided Do-File Skeleton</H><P>This shows how the commands fit into the research workflow. Students do not need to memorise every line; they should understand when each command becomes useful.</P></Reveal>
       <Reveal delay={0.05}><div style={{ display: 'grid', gap: 12 }}>
-        <Card><P mb={6} color={C.black}><strong>Open a file and check what is inside</strong></P><Code>{`cd "C:/ACC3018/data"
+        <Card><P mb={6} color={C.black}><strong>1. Start: open the raw file and inspect it</strong></P><Code>{`cd "C:/ACC3018/data"
 use "crsp_monthly.dta", clear
 
+* Use these before changing the data
 describe
 codebook permno year ret prc
-summarize ret prc, detail`}</Code><div style={small}>Students should check variable names, types, labels, missing values and extreme values before cleaning.</div></Card>
-        <Card><P mb={6} color={C.black}><strong>Check whether the merge key repeats</strong></P><Code>{`duplicates report permno year
+summarize ret prc, detail`}</Code><div style={small}>Use <code>describe</code> for variable names and types, <code>codebook</code> for coding and missingness, and <code>summarize, detail</code> for ranges, percentiles and possible outliers.</div></Card>
+        <Card><P mb={6} color={C.black}><strong>2. Check the row level before merging</strong></P><Code>{`* Does permno-year identify one row?
+isid permno year
+duplicates report permno year
 duplicates list permno year
 
-* If duplicates are expected, understand why before merging
-browse if missing(permno) | missing(year)`}</Code><div style={small}>If firm-year keys repeat unexpectedly, a later merge may create duplicated observations and fake precision.</div></Card>
-        <Card><P mb={6} color={C.black}><strong>Drop observations only with a research reason</strong></P><Code>{`* Example: remove financials and utilities by SIC code
+* Inspect rows that might cause trouble
+browse if missing(permno) | missing(year)`}</Code><div style={small}>Use <code>isid</code> when the key should be unique. Use <code>duplicates</code> when Stata says it is not unique and students need to see why.</div></Card>
+        <Card><P mb={6} color={C.black}><strong>3. Apply sample rules, but explain them</strong></P><Code>{`* Example: remove financials and utilities by SIC code
 gen sic2 = floor(sic / 100)
+tab sic2
+
 drop if inrange(sic2, 60, 67)
-drop if sic2 == 49`}</Code><div style={small}>The purpose is comparability, not convenience. Students should state the exclusion rule in the methods section.</div></Card>
-        <Card><P mb={6} color={C.black}><strong>Create panel variables</strong></P><Code>{`gen size = ln(market_cap)
+drop if sic2 == 49`}</Code><div style={small}>Use <code>tab</code> before dropping to see what the sample contains. Use <code>drop if</code> only when students can explain why those observations do not fit the design.</div></Card>
+        <Card><P mb={6} color={C.black}><strong>4. Create research variables from raw columns</strong></P><Code>{`gen size = ln(market_cap)
 gen leverage = total_liabilities / total_assets
 
 sort firm_id year
-by firm_id: gen ret1 = ret[_n+1]`}</Code><div style={small}>Future variables such as RET1 must be created within firm, after sorting by time.</div></Card>
-        <Card><P mb={6} color={C.black}><strong>Merge by keys and check the result</strong></P><Code>{`merge 1:1 firm_id year using "compustat_annual.dta"
+by firm_id: gen ret1 = ret[_n+1]
+egen industry_year = group(sic2 year)`}</Code><div style={small}>Use <code>gen</code> for formulas, <code>by</code> when calculations must happen within each firm, and <code>egen</code> for grouped or extended variables.</div></Card>
+        <Card><P mb={6} color={C.black}><strong>5. Merge, then audit the merge</strong></P><Code>{`merge 1:1 firm_id year using "compustat_annual.dta"
 
 tab _merge
+list firm_id year if _merge != 3 in 1/20
+
 keep if _merge == 3
-drop _merge`}</Code><div style={small}>A good merge uses the correct firm or security key and aligned year fields. Students should always inspect <code>_merge</code>.</div></Card>
-        <Card><P mb={6} color={C.black}><strong>Save a clean research dataset</strong></P><Code>{`order firm_id year ret ret1 size leverage
+drop _merge`}</Code><div style={small}>Use <code>tab _merge</code> to see matched and unmatched rows. Use <code>list</code> to inspect examples before deciding what to keep.</div></Card>
+        <Card><P mb={6} color={C.black}><strong>6. Validate and save the analysis panel</strong></P><Code>{`xtset firm_id year
+summarize ret ret1 size leverage
+correlate ret1 ret size leverage
+
+order firm_id year ret ret1 size leverage
 compress
-save "analysis_panel_clean.dta", replace`}</Code><div style={small}>The clean dataset is what Seminar 5 can use for summary statistics, correlations and regression tables.</div></Card>
+save "analysis_panel_clean.dta", replace`}</Code><div style={small}>Use <code>xtset</code> when the data are ready to be treated as a panel. Save the clean dataset only after the structure and variables look sensible.</div></Card>
       </div></Reveal>
+      <Reveal delay={0.1}><Callout accent={C.amber} bg={C.amberBg}><strong>Command habit:</strong> every command should answer a student question. If the question is unclear, the command is probably being used mechanically.</Callout></Reveal>
     </Wrap>
     <Wrap>
       <Reveal><Label color={C.blue}>Check</Label><H size={26}>Stata Workflow Quiz</H></Reveal>
