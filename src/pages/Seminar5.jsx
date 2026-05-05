@@ -133,7 +133,25 @@ areg Profit1 Profit Lev Size Cash, a(FE2)`}</Code>
         </div>
         <Callout accent={C.amber} bg={C.amberBg}><strong>Useful add-ons:</strong> commands such as <code>winsor2</code>, <code>esttab</code> and <code>outreg2</code> are often user-written. Students may need to install them once with <code>ssc install</code>.</Callout>
       </Card></Reveal>
-      <Reveal delay={0.2}><Card>
+      <Reveal delay={0.2}><Card style={{ marginBottom: 14, borderLeft: `4px solid ${C.blue}` }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.blue, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Panel data and <code>xtreg</code></div>
+        <P mb={8}>Most students in this module will work with panel data: the same firms observed repeatedly across years. Stata needs to know this structure before it can run panel models properly.</P>
+        <Code>{`* Declare the panel structure first
+xtset firm_id year
+
+* Firm fixed effects model
+xtreg Profit1 Profit Lev Size Cash, fe
+
+* Firm fixed effects with clustered standard errors
+xtreg Profit1 Profit Lev Size Cash, fe vce(cluster firm_id)`}</Code>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 10 }}>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong><code>xtset</code></strong><br /><span style={text}>Tells Stata the panel ID and time variable. Example: firm and year.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong><code>fe</code></strong><br /><span style={text}>Uses within-firm changes over time and removes time-invariant firm differences.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong><code>vce(cluster firm_id)</code></strong><br /><span style={text}>Allows errors to be correlated within the same firm over time.</span></div>
+        </div>
+        <Callout accent={C.blue} bg={C.blueBg}><strong>Plain-English version:</strong> <code>xtreg, fe</code> compares a firm to itself over time, rather than mainly comparing different firms to each other.</Callout>
+      </Card></Reveal>
+      <Reveal delay={0.24}><Card>
         <div style={{ fontSize: 12, fontWeight: 800, color: C.red, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Guided tour of the Stata screen</div>
         <P mb={12}>Now that students know the workflow, use the buttons below to connect that workflow to the parts of the Stata interface.</P>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
@@ -246,6 +264,22 @@ function ModelsTab({ next }) {
           <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong><code>xtreg, fe</code></strong><br /><span style={text}>Panel fixed-effects regression after declaring the panel with <code>xtset firmid year</code>.</span></div>
           <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong><code>ivregress 2sls</code></strong><br /><span style={text}>Instrumental-variable regression when X is endogenous and a valid instrument is available.</span></div>
         </div>
+      </Card></Reveal>
+      <Reveal delay={0.045}><Card style={{ marginBottom: 14 }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.red, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>A closer look at <code>xtreg, fe</code></div>
+        <P mb={8}>Use <code>xtreg, fe</code> when the dataset follows the same firms, people, countries or other units over time, and you want to control for stable differences across those units.</P>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10, marginBottom: 12 }}>
+          <div style={{ padding: 12, borderRadius: 8, background: C.redSubtle }}><strong>What it controls for</strong><br /><span style={text}>All time-invariant firm traits: business model, founding culture, long-run industry positioning, location, and other stable features.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>What it estimates from</strong><br /><span style={text}>Within-firm changes. If Profit changes inside the same firm over time, does Profit1 change too?</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>What it cannot estimate</strong><br /><span style={text}>A variable that never changes within firm will be absorbed by firm fixed effects.</span></div>
+        </div>
+        <Code>{`xtset cusip fyear
+
+xtreg Profit1 Profit Lev Size Cash, fe vce(cluster cusip)
+
+* Optional: add year fixed effects with factor variables
+xtreg Profit1 Profit Lev Size Cash i.fyear, fe vce(cluster cusip)`}</Code>
+        <Callout accent={C.amber} bg={C.amberBg}><strong>Common interpretation:</strong> the coefficient on <code>Profit</code> asks whether years when a firm is more profitable than its own usual level are followed by higher future profitability, after controlling for the other variables.</Callout>
       </Card></Reveal>
       <Reveal delay={0.05}><Card style={{ marginBottom: 14 }}>
         <P color={C.black} mb={6}><strong>Core Stata pattern</strong></P>
