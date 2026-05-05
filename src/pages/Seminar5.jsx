@@ -120,7 +120,20 @@ cor Profit1 Profit Lev Size Cash
 areg Profit1 Profit Lev Size Cash, a(FE2)`}</Code>
         <Callout accent={C.green} bg={C.greenBg}><strong>Plain-English rule:</strong> do not run regressions until you have opened the data, inspected the variables, checked missing values and understood the sample.</Callout>
       </Card></Reveal>
-      <Reveal delay={0.16}><Card>
+      <Reveal delay={0.16}><Card style={{ marginBottom: 14 }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>The command map students will reuse</div>
+        <P mb={8}>Students do not need to memorise every Stata command. They need a map of the small set they will use repeatedly.</P>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10 }}>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Open and inspect</strong><br /><span style={text}><code>use</code>, <code>import excel</code>, <code>describe</code>, <code>browse</code>, <code>codebook</code></span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Summarise</strong><br /><span style={text}><code>summarize</code>, <code>summarize, detail</code>, <code>tabulate</code>, <code>correlate</code></span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Create and clean</strong><br /><span style={text}><code>gen</code>, <code>replace</code>, <code>egen</code>, <code>sort</code>, <code>bysort</code>, <code>merge</code></span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Prepare panels</strong><br /><span style={text}><code>xtset firm year</code>, then use panel commands such as <code>xtreg</code>.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.redSubtle }}><strong>Run models</strong><br /><span style={text}><code>regress</code> for OLS, <code>areg</code> for absorbed fixed effects, <code>xtreg, fe</code> for panel fixed effects.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.amberBg }}><strong>Export tables</strong><br /><span style={text}><code>eststo</code>, <code>esttab</code>, <code>outreg2</code>, <code>asdoc</code>, and newer Stata <code>etable</code>/<code>collect</code> workflows.</span></div>
+        </div>
+        <Callout accent={C.amber} bg={C.amberBg}><strong>Useful add-ons:</strong> commands such as <code>winsor2</code>, <code>esttab</code> and <code>outreg2</code> are often user-written. Students may need to install them once with <code>ssc install</code>.</Callout>
+      </Card></Reveal>
+      <Reveal delay={0.2}><Card>
         <div style={{ fontSize: 12, fontWeight: 800, color: C.red, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Guided tour of the Stata screen</div>
         <P mb={12}>Now that students know the workflow, use the buttons below to connect that workflow to the parts of the Stata interface.</P>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
@@ -224,6 +237,16 @@ function ModelsTab({ next }) {
   return <div style={{ paddingTop: 56 }}>
     <Wrap>
       <Reveal><Label>Main regression</Label><H>Building Results Tables Model by Model</H><P>The slides move from summary and correlation work to nine regression models. The important idea is not that students memorise d1 to d9; it is that each column answers a slightly different specification question.</P></Reveal>
+      <Reveal delay={0.04}><Card style={{ marginBottom: 14, borderLeft: `4px solid ${C.blue}` }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.blue, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Which regression command should I use?</div>
+        <P mb={8}>Stata has several regression commands because research designs differ. Students should choose the command that matches the model, not the one they saw most recently.</P>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10 }}>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong><code>regress</code></strong><br /><span style={text}>Standard OLS. Add <code>, vce(robust)</code> or <code>, vce(cluster firmid)</code> for robust or clustered standard errors.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong><code>areg</code></strong><br /><span style={text}>Linear regression with one absorbed fixed effect, such as industry or year.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong><code>xtreg, fe</code></strong><br /><span style={text}>Panel fixed-effects regression after declaring the panel with <code>xtset firmid year</code>.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong><code>ivregress 2sls</code></strong><br /><span style={text}>Instrumental-variable regression when X is endogenous and a valid instrument is available.</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.05}><Card style={{ marginBottom: 14 }}>
         <P color={C.black} mb={6}><strong>Core Stata pattern</strong></P>
         <Code>{`areg Profit1 Profit, a(industry)
@@ -235,6 +258,22 @@ est store d3
 
 esttab d1 d2 d3 using maintable.csv, nogaps replace t b(3) ar2 star(* 0.10 ** 0.05 *** 0.01)`}</Code>
         <div style={text}>The workflow is: run a model, store it, run the next model, then export the group as a table.</div>
+      </Card></Reveal>
+      <Reveal delay={0.08}><Card style={{ marginBottom: 14 }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.green, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Journal-style table workflow</div>
+        <P mb={8}>A results table is not raw Stata output. It is a curated comparison of model columns, usually with consistent coefficients, t-statistics or standard errors, adjusted R-squared, fixed-effect labels and significance stars.</P>
+        <Code>{`* install once if needed
+ssc install estout
+
+* run and store models
+eststo clear
+eststo m1: regress Profit1 Profit, vce(robust)
+eststo m2: areg Profit1 Profit Lev Size Cash, a(industry) vce(robust)
+eststo m3: xtreg Profit1 Profit Lev Size Cash, fe vce(cluster cusip)
+
+* export a table
+esttab m1 m2 m3 using maintable.rtf, replace b(3) t ar2 star(* 0.10 ** 0.05 *** 0.01)`}</Code>
+        <Callout accent={C.green} bg={C.greenBg}><strong>Plain-English rule:</strong> the table should let a reader compare specifications. Do not make them hunt through separate blocks of raw output.</Callout>
       </Card></Reveal>
       <Reveal delay={0.1}><Card>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>{Object.keys(models).map(k => <button key={k} onClick={() => setModel(k)} style={{ padding: '8px 12px', border: `1px solid ${model === k ? C.red : C.black20}`, background: model === k ? C.redSubtle : C.white, color: model === k ? C.red : C.black80, borderRadius: 6, fontFamily: "'Source Sans 3',sans-serif", fontWeight: 800, cursor: 'pointer' }}>{k}</button>)}</div>
