@@ -175,50 +175,82 @@ xtreg Profit1 Profit Lev Size Cash, fe vce(cluster firm_id)`}</Code>
 
 function CommandMapTab({ next }) {
   const { completeTab } = useGame();
+  const [activeCommand, setActiveCommand] = useState(null);
+  const commandGroups = [
+    { group: 'Open and inspect', color: C.blue, commands: [
+      { cmd: 'use', purpose: 'Open a Stata .dta dataset.', example: 'use "mydata.dta", clear', note: 'The clear option removes the dataset currently in memory before opening the new one.' },
+      { cmd: 'import excel', purpose: 'Bring an Excel file into Stata.', example: 'import excel "data.xlsx", firstrow clear', note: 'firstrow tells Stata to use the first row as variable names.' },
+      { cmd: 'describe', purpose: 'Show variable names, storage types, labels and dataset information.', example: 'describe', note: 'Use this immediately after opening data to understand the file structure.' },
+      { cmd: 'browse', purpose: 'Open the dataset in spreadsheet view.', example: 'browse', note: 'Useful for spotting obvious coding issues, but do not edit research data manually.' },
+      { cmd: 'codebook', purpose: 'Inspect values, labels, missingness and basic variable diagnostics.', example: 'codebook Profit Lev Size', note: 'Especially useful when you are unsure how a variable is coded.' },
+    ]},
+    { group: 'Summarise', color: C.green, commands: [
+      { cmd: 'summarize', purpose: 'Report observations, mean, standard deviation, minimum and maximum.', example: 'summarize Profit Lev Size Cash', note: 'This is the first command to check continuous variables.' },
+      { cmd: 'summarize, detail', purpose: 'Add percentiles, variance, skewness and kurtosis.', example: 'summarize Profit, detail', note: 'Use detail when you want to understand outliers and distribution shape.' },
+      { cmd: 'tabulate', purpose: 'Count categories and percentages.', example: 'tabulate industry', note: 'Use row or column options for two-way tables.' },
+      { cmd: 'correlate', purpose: 'Create a correlation matrix.', example: 'correlate Profit1 Profit Lev Size Cash', note: 'Good for an early look at relationships before regressions.' },
+    ]},
+    { group: 'Create and clean', color: C.amber, commands: [
+      { cmd: 'gen', purpose: 'Create a new variable.', example: 'gen Lev = lt / at', note: 'Use gen when the variable does not already exist.' },
+      { cmd: 'replace', purpose: 'Change values in an existing variable.', example: 'replace academic = 1 if prgtype == "academic"', note: 'Always use conditions carefully; replace can overwrite valid data.' },
+      { cmd: 'egen', purpose: 'Create variables using extended functions.', example: 'egen FE2 = group(industry fyear)', note: 'Useful for grouped IDs, medians, row means and other extended operations.' },
+      { cmd: 'sort', purpose: 'Order data by one or more variables.', example: 'sort cusip fyear', note: 'Sorting matters before creating leads/lags with observation order.' },
+      { cmd: 'bysort', purpose: 'Run a command separately inside each group.', example: 'bysort FE2: egen size_median = median(Size)', note: 'Read this as: within each FE2 group, compute the median Size.' },
+      { cmd: 'merge', purpose: 'Combine datasets using shared keys.', example: 'merge 1:1 cusip fyear using compustat.dta', note: 'Always inspect merge results before keeping or dropping observations.' },
+    ]},
+    { group: 'Panels and models', color: C.red, commands: [
+      { cmd: 'xtset', purpose: 'Declare the panel ID and time variable.', example: 'xtset cusip fyear', note: 'Required before xtreg; tells Stata which rows belong to the same firm over time.' },
+      { cmd: 'regress', purpose: 'Run standard OLS regression.', example: 'regress Profit1 Profit Lev Size Cash, vce(robust)', note: 'Use for simple linear models without panel fixed effects.' },
+      { cmd: 'areg', purpose: 'Run OLS while absorbing one fixed effect.', example: 'areg Profit1 Profit Lev Size Cash, a(industry)', note: 'Useful for one high-dimensional fixed effect such as industry.' },
+      { cmd: 'xtreg, fe', purpose: 'Run panel fixed-effects regression.', example: 'xtreg Profit1 Profit Lev Size Cash, fe vce(cluster cusip)', note: 'Compares each firm to itself over time and controls for stable firm traits.' },
+      { cmd: 'ivregress 2sls', purpose: 'Run instrumental-variable regression.', example: 'ivregress 2sls y controls (x = z)', note: 'Use when the main regressor is endogenous and you have a credible instrument.' },
+    ]},
+    { group: 'Export tables', color: C.blue, commands: [
+      { cmd: 'eststo', purpose: 'Store model estimates for later table export.', example: 'eststo m1: regress Profit1 Profit', note: 'This is part of the estout package.' },
+      { cmd: 'esttab', purpose: 'Export stored models as a clean regression table.', example: 'esttab m1 m2 using table.rtf, replace b(3) t ar2', note: 'Useful for journal-style tables with stars and model columns.' },
+      { cmd: 'outreg2', purpose: 'Alternative user-written command for exporting regression tables.', example: 'outreg2 using table.doc, replace ctitle(Model 1)', note: 'Often used in applied accounting and finance workflows.' },
+      { cmd: 'asdoc', purpose: 'Export summaries, correlations and regressions to Word-friendly tables.', example: 'asdoc summarize Profit Lev Size, replace', note: 'Handy for quick draft outputs, but still check formatting before submission.' },
+      { cmd: 'etable / collect', purpose: 'Newer official Stata table-building workflow.', example: 'etable, estimates(m1 m2)', note: 'More flexible, but can feel heavier for beginners.' },
+    ]},
+  ];
   const qs = [
     { id: 'cmd1', q: 'Before using xtreg, what command tells Stata the panel ID and time variable?', opts: ['xtset', 'esttab', 'summarize', 'browse'], c: 0, ex: 'xtset declares the panel structure, such as firm and year.' },
-    { id: 'cmd2', q: 'Which command is best for a standard OLS regression?', opts: ['regress', 'tabulate', 'describe', 'egen'], c: 0, ex: 'regress is Stata’s standard OLS command.' },
+    { id: 'cmd2', q: 'Which command is best for a standard OLS regression?', opts: ['regress', 'tabulate', 'describe', 'egen'], c: 0, ex: "regress is Stata's standard OLS command." },
     { id: 'cmd3', q: 'Which command is commonly used to export stored regression models into a clean table?', opts: ['esttab', 'browse', 'replace', 'xtset'], c: 0, ex: 'esttab is commonly used to export stored model results into publication-style tables.' },
   ];
   return <div style={{ paddingTop: 56 }}>
     <Wrap>
-      <Reveal><Label>Command map</Label><H>The Stata Toolkit Students Will Reuse</H><P>This tab is the quick-reference map for the commands students are most likely to use in the capstone. The aim is not memorisation; it is knowing which command family solves which research task.</P></Reveal>
+      <Reveal><Label>Command map</Label><H>The Stata Toolkit Students Will Reuse</H><P>This tab is the quick-reference map for the commands students are most likely to use in the capstone. Click a command to see what it does, what it looks like, and when to use it.</P></Reveal>
       <Reveal delay={0.05}><Card style={{ marginBottom: 14, borderLeft: `4px solid ${C.amber}` }}>
-        <div style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Command families</div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10 }}>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Open and inspect</strong><br /><span style={text}><code>use</code>, <code>import excel</code>, <code>describe</code>, <code>browse</code>, <code>codebook</code></span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Summarise</strong><br /><span style={text}><code>summarize</code>, <code>summarize, detail</code>, <code>tabulate</code>, <code>correlate</code></span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Create and clean</strong><br /><span style={text}><code>gen</code>, <code>replace</code>, <code>egen</code>, <code>sort</code>, <code>bysort</code>, <code>merge</code></span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong>Panel setup</strong><br /><span style={text}><code>xtset firm year</code>, then panel models such as <code>xtreg</code>.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.redSubtle }}><strong>Run models</strong><br /><span style={text}><code>regress</code>, <code>areg</code>, <code>xtreg, fe</code>, <code>ivregress 2sls</code></span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.amberBg }}><strong>Export tables</strong><br /><span style={text}><code>eststo</code>, <code>esttab</code>, <code>outreg2</code>, <code>asdoc</code>, <code>etable</code>, <code>collect</code></span></div>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Clickable command families</div>
+        <div style={{ display: 'grid', gap: 14 }}>
+          {commandGroups.map((group, gi) => <div key={group.group} style={{ borderTop: gi ? `1px solid ${C.black10}` : 'none', paddingTop: gi ? 14 : 0 }}>
+            <div style={{ fontSize: 14, fontWeight: 900, color: group.color, marginBottom: 8 }}>{group.group}</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+              {group.commands.map(command => {
+                const key = `${group.group}:${command.cmd}`;
+                const active = activeCommand === key;
+                return <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: 6, maxWidth: 360 }}>
+                  <button onClick={() => setActiveCommand(active ? null : key)} style={{ border: `1px solid ${active ? group.color : C.black20}`, background: active ? `${group.color}18` : C.white, color: group.color, borderRadius: 6, padding: '7px 10px', fontFamily: "'Source Sans 3',sans-serif", fontSize: 12.5, fontWeight: 800, cursor: 'pointer', textAlign: 'left' }}><code>{command.cmd}</code></button>
+                  {active && <div style={{ width: 340, maxWidth: '100%', background: C.white, border: `1px solid ${group.color}`, borderLeft: `4px solid ${group.color}`, borderRadius: 8, padding: 12, boxShadow: '0 8px 20px rgba(0,0,0,0.10)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'flex-start', marginBottom: 8 }}>
+                      <div>
+                        <div style={{ fontSize: 10, fontWeight: 900, color: group.color, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 3 }}>{group.group}</div>
+                        <div style={{ fontSize: 15, fontWeight: 900, color: C.black }}><code>{command.cmd}</code></div>
+                      </div>
+                      <button onClick={() => setActiveCommand(null)} style={{ border: `1px solid ${C.black20}`, background: C.white, color: C.black80, borderRadius: 4, padding: '3px 7px', fontFamily: "'Source Sans 3',sans-serif", fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>Close</button>
+                    </div>
+                    <div style={{ fontSize: 13, color: C.black80, lineHeight: 1.55, marginBottom: 7 }}><strong>Function:</strong> {command.purpose}</div>
+                    <Code>{command.example}</Code>
+                    <div style={{ fontSize: 13, color: C.black80, lineHeight: 1.55 }}><strong>Student note:</strong> {command.note}</div>
+                  </div>}
+                </div>;
+              })}
+            </div>
+          </div>)}
         </div>
         <Callout accent={C.amber} bg={C.amberBg}><strong>Useful add-ons:</strong> commands such as <code>winsor2</code>, <code>esttab</code> and <code>outreg2</code> are often user-written. Students may need to install them once with <code>ssc install</code>.</Callout>
       </Card></Reveal>
-    </Wrap>
-    <Wrap bg={C.black05}>
-      <Reveal><Label color={C.blue}>Most important for capstone panels</Label><H size={30}>Understanding <code>xtreg</code></H><P>Most capstone datasets will look like firm-year panels: the same firms observed across multiple years. <code>xtreg</code> is designed for that structure.</P></Reveal>
-      <Reveal delay={0.05}><Card style={{ marginBottom: 14 }}>
-        <div style={{ fontSize: 12, fontWeight: 800, color: C.blue, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>The basic sequence</div>
-        <Code>{`* 1. Declare the panel
-xtset firm_id year
-
-* 2. Estimate a firm fixed-effects model
-xtreg Profit1 Profit Lev Size Cash, fe
-
-* 3. Cluster standard errors by firm
-xtreg Profit1 Profit Lev Size Cash, fe vce(cluster firm_id)
-
-* 4. Add year fixed effects when needed
-xtreg Profit1 Profit Lev Size Cash i.year, fe vce(cluster firm_id)`}</Code>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10 }}>
-          <div style={{ padding: 12, borderRadius: 8, background: C.white, border: `1px solid ${C.black10}` }}><strong><code>xtset</code></strong><br /><span style={text}>Tells Stata that observations belong to repeated units over time.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.white, border: `1px solid ${C.black10}` }}><strong><code>fe</code></strong><br /><span style={text}>Controls for all stable differences across firms, even if those differences are unobserved.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.white, border: `1px solid ${C.black10}` }}><strong><code>i.year</code></strong><br /><span style={text}>Adds year indicators, controlling for shocks common to all firms in a year.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.white, border: `1px solid ${C.black10}` }}><strong><code>vce(cluster firm_id)</code></strong><br /><span style={text}>Allows errors to be related within the same firm across years.</span></div>
-        </div>
-      </Card></Reveal>
-      <Reveal delay={0.1}><Callout accent={C.blue} bg={C.blueBg}><strong>Plain-English interpretation:</strong> <code>xtreg, fe</code> asks whether changes within the same firm over time are associated with changes in the outcome. It is not mainly comparing Apple to Walmart; it is comparing Apple to Apple in different years.</Callout></Reveal>
     </Wrap>
     <Wrap>
       <Reveal><Label color={C.blue}>Check</Label><H size={26}>Command Map Quiz</H></Reveal>
@@ -320,6 +352,32 @@ function ModelsTab({ next }) {
           <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong><code>xtreg, fe</code></strong><br /><span style={text}>Panel fixed-effects regression after declaring the panel with <code>xtset firmid year</code>.</span></div>
           <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong><code>ivregress 2sls</code></strong><br /><span style={text}>Instrumental-variable regression when X is endogenous and a valid instrument is available.</span></div>
         </div>
+      </Card></Reveal>
+      <Reveal delay={0.043}><Card style={{ marginBottom: 14 }}>
+        <Label color={C.blue}>Most important for capstone panels</Label>
+        <H size={30}>Understanding <code>xtreg</code></H>
+        <P mb={14}>Most capstone datasets will look like firm-year panels: the same firms observed across multiple years. <code>xtreg</code> is designed for that structure.</P>
+        <div style={{ marginBottom: 14, padding: '20px 22px', border: `1px solid ${C.black10}`, borderRadius: 8, background: C.white, boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+          <div style={{ fontSize: 12, fontWeight: 800, color: C.blue, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>The basic sequence</div>
+          <Code>{`* 1. Declare the panel
+xtset firm_id year
+
+* 2. Estimate a firm fixed-effects model
+xtreg Profit1 Profit Lev Size Cash, fe
+
+* 3. Cluster standard errors by firm
+xtreg Profit1 Profit Lev Size Cash, fe vce(cluster firm_id)
+
+* 4. Add year fixed effects when needed
+xtreg Profit1 Profit Lev Size Cash i.year, fe vce(cluster firm_id)`}</Code>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10 }}>
+            <div style={{ padding: 12, borderRadius: 8, background: C.white, border: `1px solid ${C.black10}` }}><strong><code>xtset</code></strong><br /><span style={text}>Tells Stata that observations belong to repeated units over time.</span></div>
+            <div style={{ padding: 12, borderRadius: 8, background: C.white, border: `1px solid ${C.black10}` }}><strong><code>fe</code></strong><br /><span style={text}>Controls for all stable differences across firms, even if those differences are unobserved.</span></div>
+            <div style={{ padding: 12, borderRadius: 8, background: C.white, border: `1px solid ${C.black10}` }}><strong><code>i.year</code></strong><br /><span style={text}>Adds year indicators, controlling for shocks common to all firms in a year.</span></div>
+            <div style={{ padding: 12, borderRadius: 8, background: C.white, border: `1px solid ${C.black10}` }}><strong><code>vce(cluster firm_id)</code></strong><br /><span style={text}>Allows errors to be related within the same firm across years.</span></div>
+          </div>
+        </div>
+        <Callout accent={C.blue} bg={C.blueBg}><strong>Plain-English interpretation:</strong> <code>xtreg, fe</code> asks whether changes within the same firm over time are associated with changes in the outcome. It is not mainly comparing Apple to Walmart; it is comparing Apple to Apple in different years.</Callout>
       </Card></Reveal>
       <Reveal delay={0.045}><Card style={{ marginBottom: 14 }}>
         <div style={{ fontSize: 12, fontWeight: 800, color: C.red, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>A closer look at <code>xtreg, fe</code></div>
