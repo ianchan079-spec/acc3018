@@ -9,6 +9,7 @@ import {
 const TABS = [
   { id: 's5:overview', label: 'Overview' },
   { id: 's5:stata', label: 'Stata Basics' },
+  { id: 's5:commands', label: 'Command Map' },
   { id: 's5:inspect', label: 'Inspect Data' },
   { id: 's5:variables', label: 'Variables' },
   { id: 's5:models', label: 'Models' },
@@ -167,7 +168,62 @@ xtreg Profit1 Profit Lev Size Cash, fe vce(cluster firm_id)`}</Code>
     <Wrap bg={C.black05}>
       <Reveal><Label color={C.blue}>Check</Label><H size={26}>Stata Basics Quiz</H></Reveal>
       <GamifiedQuiz quizId="s5:stata" questions={qs} xpPerQ={10} perfectBonus={15} badgeOnPerfect="stata-starter" />
-      <NextBtn onClick={() => { completeTab('s5:stata'); next(); }} label="Continue to inspecting data ->" />
+      <NextBtn onClick={() => { completeTab('s5:stata'); next(); }} label="Continue to the command map ->" />
+    </Wrap>
+  </div>;
+}
+
+function CommandMapTab({ next }) {
+  const { completeTab } = useGame();
+  const qs = [
+    { id: 'cmd1', q: 'Before using xtreg, what command tells Stata the panel ID and time variable?', opts: ['xtset', 'esttab', 'summarize', 'browse'], c: 0, ex: 'xtset declares the panel structure, such as firm and year.' },
+    { id: 'cmd2', q: 'Which command is best for a standard OLS regression?', opts: ['regress', 'tabulate', 'describe', 'egen'], c: 0, ex: 'regress is Stata’s standard OLS command.' },
+    { id: 'cmd3', q: 'Which command is commonly used to export stored regression models into a clean table?', opts: ['esttab', 'browse', 'replace', 'xtset'], c: 0, ex: 'esttab is commonly used to export stored model results into publication-style tables.' },
+  ];
+  return <div style={{ paddingTop: 56 }}>
+    <Wrap>
+      <Reveal><Label>Command map</Label><H>The Stata Toolkit Students Will Reuse</H><P>This tab is the quick-reference map for the commands students are most likely to use in the capstone. The aim is not memorisation; it is knowing which command family solves which research task.</P></Reveal>
+      <Reveal delay={0.05}><Card style={{ marginBottom: 14, borderLeft: `4px solid ${C.amber}` }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Command families</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10 }}>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Open and inspect</strong><br /><span style={text}><code>use</code>, <code>import excel</code>, <code>describe</code>, <code>browse</code>, <code>codebook</code></span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Summarise</strong><br /><span style={text}><code>summarize</code>, <code>summarize, detail</code>, <code>tabulate</code>, <code>correlate</code></span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Create and clean</strong><br /><span style={text}><code>gen</code>, <code>replace</code>, <code>egen</code>, <code>sort</code>, <code>bysort</code>, <code>merge</code></span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong>Panel setup</strong><br /><span style={text}><code>xtset firm year</code>, then panel models such as <code>xtreg</code>.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.redSubtle }}><strong>Run models</strong><br /><span style={text}><code>regress</code>, <code>areg</code>, <code>xtreg, fe</code>, <code>ivregress 2sls</code></span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.amberBg }}><strong>Export tables</strong><br /><span style={text}><code>eststo</code>, <code>esttab</code>, <code>outreg2</code>, <code>asdoc</code>, <code>etable</code>, <code>collect</code></span></div>
+        </div>
+        <Callout accent={C.amber} bg={C.amberBg}><strong>Useful add-ons:</strong> commands such as <code>winsor2</code>, <code>esttab</code> and <code>outreg2</code> are often user-written. Students may need to install them once with <code>ssc install</code>.</Callout>
+      </Card></Reveal>
+    </Wrap>
+    <Wrap bg={C.black05}>
+      <Reveal><Label color={C.blue}>Most important for capstone panels</Label><H size={30}>Understanding <code>xtreg</code></H><P>Most capstone datasets will look like firm-year panels: the same firms observed across multiple years. <code>xtreg</code> is designed for that structure.</P></Reveal>
+      <Reveal delay={0.05}><Card style={{ marginBottom: 14 }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.blue, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>The basic sequence</div>
+        <Code>{`* 1. Declare the panel
+xtset firm_id year
+
+* 2. Estimate a firm fixed-effects model
+xtreg Profit1 Profit Lev Size Cash, fe
+
+* 3. Cluster standard errors by firm
+xtreg Profit1 Profit Lev Size Cash, fe vce(cluster firm_id)
+
+* 4. Add year fixed effects when needed
+xtreg Profit1 Profit Lev Size Cash i.year, fe vce(cluster firm_id)`}</Code>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10 }}>
+          <div style={{ padding: 12, borderRadius: 8, background: C.white, border: `1px solid ${C.black10}` }}><strong><code>xtset</code></strong><br /><span style={text}>Tells Stata that observations belong to repeated units over time.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.white, border: `1px solid ${C.black10}` }}><strong><code>fe</code></strong><br /><span style={text}>Controls for all stable differences across firms, even if those differences are unobserved.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.white, border: `1px solid ${C.black10}` }}><strong><code>i.year</code></strong><br /><span style={text}>Adds year indicators, controlling for shocks common to all firms in a year.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.white, border: `1px solid ${C.black10}` }}><strong><code>vce(cluster firm_id)</code></strong><br /><span style={text}>Allows errors to be related within the same firm across years.</span></div>
+        </div>
+      </Card></Reveal>
+      <Reveal delay={0.1}><Callout accent={C.blue} bg={C.blueBg}><strong>Plain-English interpretation:</strong> <code>xtreg, fe</code> asks whether changes within the same firm over time are associated with changes in the outcome. It is not mainly comparing Apple to Walmart; it is comparing Apple to Apple in different years.</Callout></Reveal>
+    </Wrap>
+    <Wrap>
+      <Reveal><Label color={C.blue}>Check</Label><H size={26}>Command Map Quiz</H></Reveal>
+      <GamifiedQuiz quizId="s5:commands" questions={qs} xpPerQ={10} perfectBonus={15} />
+      <NextBtn onClick={() => { completeTab('s5:commands'); next(); }} label="Continue to inspecting data ->" />
     </Wrap>
   </div>;
 }
@@ -420,6 +476,7 @@ export default function Seminar5() {
     <ProgressWidget tabs={TABS} />
     {tab === 's5:overview' && <OverviewTab next={nextTab} />}
     {tab === 's5:stata' && <StataBasicsTab next={nextTab} />}
+    {tab === 's5:commands' && <CommandMapTab next={nextTab} />}
     {tab === 's5:inspect' && <InspectDataTab next={nextTab} />}
     {tab === 's5:variables' && <VariablesTab next={nextTab} />}
     {tab === 's5:models' && <ModelsTab next={nextTab} />}
