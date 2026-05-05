@@ -10,7 +10,7 @@ const TABS = [
   { id: 's4:overview', label: 'Overview' },
   { id: 's4:databases', label: 'Databases' },
   { id: 's4:identifiers', label: 'Identifiers' },
-  { id: 's4:r-clean', label: 'R Workflow' },
+  { id: 's4:r-clean', label: 'Stata Workflow' },
   { id: 's4:sentiment', label: 'Sentiment' },
   { id: 's4:iv-cases', label: 'IV Cases' },
   { id: 's4:activity', label: 'Activity' },
@@ -45,13 +45,13 @@ function OverviewTab({ next }) {
       <div style={{ maxWidth: 840, margin: '0 auto', padding: '44px 36px', width: '100%', position: 'relative' }}>
         <Reveal>
           <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: C.red, marginBottom: 14 }}>ACC3018 · Seminar 4</div>
-          <h1 style={{ fontSize: 'clamp(32px,5.5vw,60px)', fontWeight: 900, lineHeight: 1.06, letterSpacing: '-0.025em', color: C.white, marginBottom: 14 }}>Data Acquisition<br />and Applied R Workflows</h1>
+          <h1 style={{ fontSize: 'clamp(32px,5.5vw,60px)', fontWeight: 900, lineHeight: 1.06, letterSpacing: '-0.025em', color: C.white, marginBottom: 14 }}>Data Acquisition<br />and Applied Stata Workflows</h1>
           <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.48)', maxWidth: 590, lineHeight: 1.6 }}>From WRDS, CRSP, Compustat and ESG data to cleaned panels, merged identifiers, sentiment measures, and applied IV cases.</p>
         </Reveal>
       </div>
     </div>
     <Wrap bg={C.black05}>
-      <Reveal><Label>Roadmap</Label><H size={30}>What this seminar builds</H><P>This session turns the methods from Seminars 2 and 3 into a practical data workflow: where data come from, how identifiers work, how to clean and merge panels, and how IV logic appears in real R examples.</P></Reveal>
+      <Reveal><Label>Roadmap</Label><H size={30}>What this seminar builds</H><P>This session turns the methods from Seminars 2 and 3 into a practical data workflow: where data come from, how identifiers work, how to clean and merge panels, and how IV logic appears in applied research examples.</P></Reveal>
       <Reveal delay={0.06}><InfoGrid items={[
         { k: '01', t: 'Find data', d: 'WRDS, CRSP, Compustat, LSEG ESG, World Bank, SingStat, URA and Bloomberg.' },
         { k: '02', t: 'Respect identifiers', d: 'Why PERMNO, PERMCO, GVKEY and IID are safer than tickers or company names.' },
@@ -184,68 +184,85 @@ function IdentifiersTab({ next }) {
         })}
         {!done ? <Btn onClick={submit} disabled={Object.keys(ans).length < tasks.length}>Check keys</Btn> : <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}><P mb={0} color={score === tasks.length ? C.green : C.amber}>{score}/{tasks.length} correct</P><Btn onClick={() => { setDone(false); setAns({}); }} style={{ background: C.black }}>Retry</Btn></div>}
       </Card></Reveal>
-      <NextBtn onClick={() => { completeTab('s4:identifiers'); next(); }} label="Continue to R workflow ->" />
+      <NextBtn onClick={() => { completeTab('s4:identifiers'); next(); }} label="Continue to Stata workflow ->" />
     </Wrap>
   </div>;
 }
 
-function RWorkflowTab({ next }) {
+function StataWorkflowTab({ next }) {
   const { completeTab } = useGame();
   const qs = [
-    { id: 'r1', q: 'Why check duplicates before merging?', opts: ['To make the file prettier', 'Because duplicated keys can multiply rows and distort results', 'Because R requires no duplicates anywhere', 'Because duplicates remove missing data'], c: 1, ex: 'If a merge key is duplicated unexpectedly, the merge can create extra rows and fake observations.' },
+    { id: 'r1', q: 'Why check duplicates before merging?', opts: ['To make the file prettier', 'Because duplicated keys can multiply rows and distort results', 'Because Stata requires no duplicates anywhere', 'Because duplicates remove missing data'], c: 1, ex: 'If a merge key is duplicated unexpectedly, the merge can create extra rows and fake observations.' },
     { id: 'r2', q: 'Why might the slides drop utility and financial firms?', opts: ['They are always wrong', 'They often have different accounting and regulatory structures', 'They have no stock prices', 'They cannot be merged'], c: 1, ex: 'Utilities and financial firms often have different balance sheets and regulation, so many accounting studies exclude them.' },
     { id: 'r3', q: 'When converting daily data to annual data, returns are often:', opts: ['Summed or compounded depending on definition', 'Always averaged', 'Always deleted', 'Always converted to strings'], c: 0, ex: 'Spreads and turnover may be averaged; returns need careful aggregation such as summing log returns or compounding simple returns.' },
   ];
   return <div style={{ paddingTop: 56 }}>
     <Wrap>
-      <Reveal><Label>R programming</Label><H>From Raw Files to a Research Panel</H><P>The slides emphasise practical R tasks: set the folder, inspect size, remove inappropriate observations, create variables, aggregate daily to monthly or annual values, merge datasets and build subsamples.</P></Reveal>
+      <Reveal><Label>Stata workflow</Label><H>From Raw Files to a Research Panel</H><P>This tab turns data acquisition into a Stata workflow students can reuse: open the file, inspect it, clean obvious problems, create variables, merge carefully, validate the result, and only then model.</P></Reveal>
       <Reveal delay={0.05}><InfoGrid color={C.green} items={[
-        { k: '1', t: 'Set the workspace', d: 'Keep code, data and output in a reproducible folder structure.' },
-        { k: '2', t: 'Audit the raw data', d: 'Check dimensions, duplicates, missing values and obvious coding errors before modelling.' },
-        { k: '3', t: 'Clean the sample', d: 'Drop funds, penny stocks, utilities or financial firms when the research design requires it.' },
-        { k: '4', t: 'Create variables', d: 'Use stable formulas for spreads, turnover, returns, size, leverage, profitability and lags/leads.' },
-        { k: '5', t: 'Merge carefully', d: 'Merge CRSP and Compustat by appropriate firm/security identifiers and aligned time periods.' },
-        { k: '6', t: 'Define subsamples', d: 'Create groups such as small vs large firms or risky vs safer firms for heterogeneity tests.' },
+        { k: '1', t: 'Set a working folder', d: 'Tell Stata where files live, and keep raw data, do-files and outputs separate.' },
+        { k: '2', t: 'Open and inspect', d: 'Use describe, browse, summarize and codebook before changing anything.' },
+        { k: '3', t: 'Clean the sample', d: 'Drop observations only when there is a research reason, such as excluding financial firms in some accounting designs.' },
+        { k: '4', t: 'Create variables', d: 'Use gen, replace and egen to build size, leverage, profitability, future returns and grouping variables.' },
+        { k: '5', t: 'Merge carefully', d: 'Use the right identifier and time period, then check whether the merge behaved as expected.' },
+        { k: '6', t: 'Document decisions', d: 'Every exclusion, recoding and merge choice should be visible in a do-file.' },
       ]} /></Reveal>
       <Reveal delay={0.08}><Card style={{ marginTop: 14, borderLeft: `4px solid ${C.green}` }}>
-        <div style={{ fontSize: 12, fontWeight: 800, color: C.green, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>How to think like R</div>
-        <P mb={8}>R is not a spreadsheet. Students should think of each dataset as a table object, each variable as a column, and each cleaning step as a line of code that creates a new, reproducible version of the data.</P>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.green, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>How to think like Stata</div>
+        <P mb={8}>Stata works on one dataset in memory at a time. Students should imagine the current dataset as a table: rows are observations, columns are variables, and commands either inspect, change or analyse that table.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: 10 }}>
           <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Rows are observations</strong><br /><span style={small}>A row might be a firm-year, security-day, country-year or article.</span></div>
           <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Columns are variables</strong><br /><span style={small}>Variables include raw fields and constructed measures such as Size or RET1.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.greenBg }}><strong>Code is the audit trail</strong><br /><span style={small}>Every filter, merge and variable definition should be visible in the script.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.greenBg }}><strong>The do-file is the audit trail</strong><br /><span style={small}>Every filter, merge and variable definition should be visible as a command that can be rerun.</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.11}><Card style={{ marginTop: 14 }}>
         <div style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>The cleaning pipeline before code</div>
-        <P mb={8}>Students should understand the pipeline before they read individual R commands.</P>
+        <P mb={8}>Students should understand the pipeline before they read individual Stata commands. The point is not to memorise syntax; the point is to know what each step is trying to protect.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(170px,1fr))', gap: 10 }}>
           {['Import', 'Inspect', 'Filter', 'Create variables', 'Merge', 'Validate', 'Model'].map((s, i) => <div key={s} style={{ padding: 12, borderRadius: 8, background: i === 6 ? C.amberBg : C.black05 }}>
             <div style={{ fontSize: 11, fontWeight: 900, color: i === 6 ? C.amber : C.black60, marginBottom: 4 }}>STEP {i + 1}</div>
             <div style={{ fontSize: 14, fontWeight: 900, color: C.black }}>{s}</div>
           </div>)}
         </div>
+        <Callout accent={C.amber} bg={C.amberBg}><strong>Beginner rule:</strong> if students cannot explain what a command is protecting against, they should pause before running the next command.</Callout>
       </Card></Reveal>
     </Wrap>
     <Wrap bg={C.black05}>
-      <Reveal><H size={28}>Code Patterns Students Should Recognise</H><P>These are not meant as copy-paste recipes; they show the intent behind common R operations from the slides.</P></Reveal>
+      <Reveal><H size={28}>Stata Patterns Students Should Recognise</H><P>These are not meant as copy-paste recipes. They show the purpose behind common Stata operations students will use again in Seminar 5.</P></Reveal>
       <Reveal delay={0.05}><div style={{ display: 'grid', gap: 12 }}>
-        <Card><P mb={6} color={C.black}><strong>Check data size and duplication</strong></P><Code>{`setwd("your/data/folder")
-dim(raw_data)
-raw_data[, .N, by = .(firm_id, year)][N > 1]`}</Code><div style={small}>If firm-year keys repeat unexpectedly, a later merge may create duplicated observations.</div></Card>
-        <Card><P mb={6} color={C.black}><strong>Drop industries when the design requires it</strong></P><Code>{`# Example logic: remove utilities and financials
-sample <- sample[!(sic2 %in% c("49", "60", "61", "62", "63", "64", "65", "67"))]`}</Code><div style={small}>The purpose is comparability, not convenience. Students should state the exclusion rule in the methods section.</div></Card>
-        <Card><P mb={6} color={C.black}><strong>Create panel variables</strong></P><Code>{`panel[, size := log(market_cap)]
-panel[, leverage := total_liabilities / total_assets]
-panel[, ret1 := shift(ret, type = "lead"), by = firm_id]`}</Code><div style={small}>Lead variables such as future return must be created within firm, after sorting by time.</div></Card>
-        <Card><P mb={6} color={C.black}><strong>Merge by keys and time</strong></P><Code>{`merged <- merge(crsp_annual, compustat,
-  by = c("firm_key", "year"),
-  all = FALSE
-)`}</Code><div style={small}>A good merge uses the correct firm/security key and aligned year or year-month fields.</div></Card>
+        <Card><P mb={6} color={C.black}><strong>Open a file and check what is inside</strong></P><Code>{`cd "C:/ACC3018/data"
+use "crsp_monthly.dta", clear
+
+describe
+codebook permno year ret prc
+summarize ret prc, detail`}</Code><div style={small}>Students should check variable names, types, labels, missing values and extreme values before cleaning.</div></Card>
+        <Card><P mb={6} color={C.black}><strong>Check whether the merge key repeats</strong></P><Code>{`duplicates report permno year
+duplicates list permno year
+
+* If duplicates are expected, understand why before merging
+browse if missing(permno) | missing(year)`}</Code><div style={small}>If firm-year keys repeat unexpectedly, a later merge may create duplicated observations and fake precision.</div></Card>
+        <Card><P mb={6} color={C.black}><strong>Drop observations only with a research reason</strong></P><Code>{`* Example: remove financials and utilities by SIC code
+gen sic2 = floor(sic / 100)
+drop if inrange(sic2, 60, 67)
+drop if sic2 == 49`}</Code><div style={small}>The purpose is comparability, not convenience. Students should state the exclusion rule in the methods section.</div></Card>
+        <Card><P mb={6} color={C.black}><strong>Create panel variables</strong></P><Code>{`gen size = ln(market_cap)
+gen leverage = total_liabilities / total_assets
+
+sort firm_id year
+by firm_id: gen ret1 = ret[_n+1]`}</Code><div style={small}>Future variables such as RET1 must be created within firm, after sorting by time.</div></Card>
+        <Card><P mb={6} color={C.black}><strong>Merge by keys and check the result</strong></P><Code>{`merge 1:1 firm_id year using "compustat_annual.dta"
+
+tab _merge
+keep if _merge == 3
+drop _merge`}</Code><div style={small}>A good merge uses the correct firm or security key and aligned year fields. Students should always inspect <code>_merge</code>.</div></Card>
+        <Card><P mb={6} color={C.black}><strong>Save a clean research dataset</strong></P><Code>{`order firm_id year ret ret1 size leverage
+compress
+save "analysis_panel_clean.dta", replace`}</Code><div style={small}>The clean dataset is what Seminar 5 can use for summary statistics, correlations and regression tables.</div></Card>
       </div></Reveal>
     </Wrap>
     <Wrap>
-      <Reveal><Label color={C.blue}>Check</Label><H size={26}>R Workflow Quiz</H></Reveal>
+      <Reveal><Label color={C.blue}>Check</Label><H size={26}>Stata Workflow Quiz</H></Reveal>
       <GamifiedQuiz quizId="s4:r-clean" questions={qs} xpPerQ={10} perfectBonus={15} badgeOnPerfect="data-engineer" />
       <NextBtn onClick={() => { completeTab('s4:r-clean'); next(); }} label="Continue to sentiment ->" />
     </Wrap>
@@ -304,7 +321,8 @@ function IvCasesTab({ next }) {
     gapminder: {
       title: 'Case 1: GDP and life expectancy',
       badge: 'Gapminder',
-      story: 'The gapminder library provides country-year data on life expectancy, GDP per capita and population. It is useful for practising panel thinking and omitted-variable concerns.',
+      story: 'The Gapminder dataset provides country-year data on life expectancy, GDP per capita and population. It is useful for practising panel thinking and omitted-variable concerns.',
+      plain: 'Plain-English question: do richer countries tend to have longer life expectancy, and what else might explain that relationship?',
       steps: ['Load gapminder and inspect country-year structure.', 'Plot or regress life expectancy on GDP per capita.', 'Ask what country, continent and year differences may be hidden in the error term.'],
       takeaway: 'A strong relationship is not automatically a causal claim; it may reflect geography, institutions, healthcare systems and time trends.',
     },
@@ -312,6 +330,7 @@ function IvCasesTab({ next }) {
       title: 'Case 2: Cigarette prices and consumption',
       badge: '2SLS',
       story: 'The slides use cigarette panel data where log packs is the outcome, log real price is the endogenous regressor, and real sales tax per pack is the instrument.',
+      plain: 'Plain-English question: if cigarette prices rise, do people buy fewer cigarettes, and can tax changes help isolate price changes that are not just caused by demand?',
       steps: ['Create real price as price divided by CPI.', 'Create log real price and log packs.', 'Use sales tax as an instrument for price.', 'First stage: predict log real price using sales tax.', 'Second stage: regress log packs on predicted log real price.'],
       takeaway: 'Sales tax helps isolate price variation that is less driven by demand for cigarettes, making it a practical IV example.',
     },
@@ -319,6 +338,7 @@ function IvCasesTab({ next }) {
       title: 'Case 3: Schooling and earnings',
       badge: 'Wages',
       story: 'The wage example uses education, experience, demographics and proximity to college instruments to compare ordinary regression with IV estimates.',
+      plain: 'Plain-English question: how much does education increase earnings, and how can we separate the effect of education from family background, ability or opportunity?',
       steps: ['Model wage as a function of education and controls.', 'Use polynomial experience terms to allow nonlinear labour-market experience effects.', 'Use near-college variables as instruments for education.', 'Compare the OLS education coefficient with the IV education coefficient.'],
       takeaway: 'The slides report a larger IV education coefficient than OLS, reinforcing that the identifying variation matters.',
     },
@@ -327,11 +347,11 @@ function IvCasesTab({ next }) {
   const qs = [
     { id: 'case1', q: 'In the cigarette example, what is the instrument?', opts: ['Log packs', 'Real sales tax per pack', 'Population', 'CPI'], c: 1, ex: 'Sales tax is used to move price in the first stage.' },
     { id: 'case2', q: 'In the wage example, why use near-college variables?', opts: ['They help predict education', 'They directly measure wages', 'They remove all missing values', 'They are firm identifiers'], c: 0, ex: 'Living near a college can shift education decisions, making it a candidate instrument for schooling.' },
-    { id: 'case3', q: 'What does vcovHC address in the cigarette case?', opts: ['Heteroskedasticity-consistent standard errors', 'Missing tickers', 'Company name changes', 'Sentiment scoring'], c: 0, ex: 'vcovHC is used for heteroskedasticity-consistent covariance estimation.' },
+    { id: 'case3', q: 'What does vce(robust) address in the cigarette case?', opts: ['Heteroskedasticity-consistent standard errors', 'Missing tickers', 'Company name changes', 'Sentiment scoring'], c: 0, ex: 'Robust standard errors adjust inference when the error variance is not constant across observations.' },
   ];
   return <div style={{ paddingTop: 56 }}>
     <Wrap>
-      <Reveal><Label>Applied cases</Label><H>Connecting Data Work Back to Identification</H><P>The later Seminar 4 slides revisit endogeneity and IV through applied R cases. This tab keeps the causal logic visible while students think through the data steps.</P></Reveal>
+      <Reveal><Label>Applied cases</Label><H>Connecting Data Work Back to Identification</H><P>The later Seminar 4 slides revisit endogeneity and IV through applied examples. This tab keeps the causal logic visible while students think through the data steps.</P></Reveal>
       <Reveal delay={0.04}><Card style={{ marginBottom: 14, borderLeft: `4px solid ${C.red}` }}>
         <div style={{ fontSize: 12, fontWeight: 800, color: C.red, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>How to read an applied methods case</div>
         <P mb={8}>Each case combines two questions: a data question and an identification question. Students should separate them before reading code or coefficients.</P>
@@ -348,11 +368,26 @@ function IvCasesTab({ next }) {
         <Pill>{c.badge}</Pill>
         <H size={26} mb={10}>{c.title}</H>
         <P mb={10}>{c.story}</P>
+        <Callout accent={C.amber} bg={C.amberBg}><strong>{c.plain}</strong></Callout>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: 10, marginBottom: 12 }}>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Outcome</strong><br /><span style={small}>The variable the study wants to explain.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Main X</strong><br /><span style={small}>The variable whose effect the researcher cares about.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.redSubtle }}><strong>Threat</strong><br /><span style={small}>The reason ordinary regression might not be enough.</span></div>
+        </div>
         <div style={{ display: 'grid', gap: 8, marginBottom: 12 }}>{c.steps.map((s, i) => <Num key={s} n={i + 1}>{s}</Num>)}</div>
         <Callout accent={C.green} bg={C.greenBg}><strong>Takeaway:</strong> {c.takeaway}</Callout>
       </Card></Reveal>
     </Wrap>
     <Wrap bg={C.black05}>
+      <Reveal delay={0.02}><Card style={{ marginBottom: 14, borderLeft: `4px solid ${C.blue}` }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.blue, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Before the quiz: what students are choosing</div>
+        <P mb={8}>The applied cases are not asking students to memorise famous datasets. They are asking students to recognise the same research structure in different examples.</P>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 10 }}>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Outcome</strong><br /><span style={small}>What is the study trying to explain?</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Treatment or X</strong><br /><span style={small}>What main explanatory variable might be endogenous?</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong>Instrument or design</strong><br /><span style={small}>What outside source of variation makes the estimate more credible?</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal><Label color={C.blue}>Check</Label><H size={26}>Applied IV Quiz</H></Reveal>
       <GamifiedQuiz quizId="s4:iv-cases" questions={qs} xpPerQ={10} perfectBonus={20} badgeOnPerfect="case-analyst" />
       <NextBtn onClick={() => { completeTab('s4:iv-cases'); next(); }} label="Continue to Seminar 4 activity ->" />
@@ -380,6 +415,15 @@ function ActivityTab() {
       <Reveal><Label>Seminar activity</Label><H color={C.white}>Build the Dataset for the Capstone Analysis</H><P color="rgba(255,255,255,0.55)">This activity translates the slide instructions into a structured research workflow. Students should leave with a dataset that can support descriptive statistics, correlations and regressions.</P></Reveal>
     </DarkWrap>
     <Wrap bg={C.black05}>
+      <Reveal><Card style={{ marginBottom: 14, borderLeft: `4px solid ${C.amber}` }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Before the checklist: what this activity is for</div>
+        <P mb={8}>This is not just a technical data task. Students are creating the bridge between a research question and a regression table. Every item below protects one part of that bridge.</P>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 10 }}>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Download</strong><br /><span style={small}>Defines the sample and raw variables students can study.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Aggregate and merge</strong><br /><span style={small}>Turns separate sources into one firm-year analysis panel.</span></div>
+          <div style={{ padding: 12, borderRadius: 8, background: C.amberBg }}><strong>Validate</strong><br /><span style={small}>Checks whether the final dataset is credible enough for Seminar 5 regressions.</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal><Card>
         <P color={C.black} mb={12}><strong>Activity checklist</strong></P>
         {tasks.map((t, i) => <label key={t} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', padding: '10px 0', borderTop: i ? `1px solid ${C.black10}` : 'none', cursor: 'pointer' }}>
@@ -413,7 +457,7 @@ export default function Seminar4() {
     {tab === 's4:overview' && <OverviewTab next={nextTab} />}
     {tab === 's4:databases' && <DatabasesTab next={nextTab} />}
     {tab === 's4:identifiers' && <IdentifiersTab next={nextTab} />}
-    {tab === 's4:r-clean' && <RWorkflowTab next={nextTab} />}
+    {tab === 's4:r-clean' && <StataWorkflowTab next={nextTab} />}
     {tab === 's4:sentiment' && <SentimentTab next={nextTab} />}
     {tab === 's4:iv-cases' && <IvCasesTab next={nextTab} />}
     {tab === 's4:activity' && <ActivityTab />}

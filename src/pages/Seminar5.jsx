@@ -33,6 +33,62 @@ function Grid({ items, color = C.red }) {
   </div>;
 }
 
+function StataScreenPreview({ area }) {
+  const box = (name, label, style = {}) => <div style={{
+    border: `1px solid ${area === name ? C.red : C.black20}`,
+    background: area === name ? C.redSubtle : C.white,
+    borderRadius: 5,
+    padding: 8,
+    minHeight: 42,
+    position: 'relative',
+    boxShadow: area === name ? '0 0 0 2px rgba(228,0,43,0.12)' : 'none',
+    ...style,
+  }}>
+    <div style={{ fontSize: 10, fontWeight: 900, color: area === name ? C.red : C.black60, letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: 5 }}>{label}</div>
+    {area === name && <div style={{ position: 'absolute', top: -10, right: 8, padding: '2px 6px', background: C.red, color: C.white, borderRadius: 4, fontSize: 9, fontWeight: 900 }}>look here</div>}
+  </div>;
+
+  if (area === 'dofile') {
+    return <div style={{ border: `1px solid ${C.black20}`, borderRadius: 8, overflow: 'hidden', background: C.white, boxShadow: '0 8px 18px rgba(0,0,0,0.08)' }}>
+      <div style={{ height: 24, background: C.black05, borderBottom: `1px solid ${C.black10}`, display: 'flex', alignItems: 'center', gap: 6, padding: '0 8px', fontSize: 10, fontWeight: 900, color: C.black60 }}>Do-file Editor</div>
+      <div style={{ padding: 10, background: '#fff8fb', fontFamily: "'JetBrains Mono',monospace", fontSize: 10, lineHeight: 1.65, color: C.black, borderLeft: `4px solid ${C.red}` }}>
+        <div style={{ color: C.green }}>* open and inspect data</div>
+        <div><span style={{ color: C.blue }}>use</span> "mydata.dta", clear</div>
+        <div><span style={{ color: C.blue }}>summarize</span> Profit Lev Size</div>
+        <div><span style={{ color: C.blue }}>xtreg</span> Profit1 Profit Lev, fe</div>
+      </div>
+    </div>;
+  }
+
+  if (area === 'import') {
+    return <div style={{ border: `1px solid ${C.black20}`, borderRadius: 8, overflow: 'hidden', background: C.white, boxShadow: '0 8px 18px rgba(0,0,0,0.08)' }}>
+      <div style={{ display: 'flex', gap: 7, padding: '7px 9px', background: C.black05, borderBottom: `1px solid ${C.black10}` }}>
+        {['File', 'Edit', 'Data', 'Statistics'].map(item => <div key={item} style={{ padding: '3px 7px', borderRadius: 4, background: item === 'File' ? C.redSubtle : C.white, color: item === 'File' ? C.red : C.black70, fontSize: 10, fontWeight: 900 }}>{item}</div>)}
+      </div>
+      <div style={{ padding: 8, display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 3, borderLeft: `4px solid ${C.red}` }}>
+        {['firm_id', 'year', 'profit', 'lev', 'AAPL', '2022', '0.14', '0.31', 'AAPL', '2023', '0.18', '0.29'].map((cell, i) => <div key={i} style={{ padding: '4px 5px', background: i < 4 ? C.redSubtle : C.black05, color: i < 4 ? C.red : C.black70, fontSize: 9, fontWeight: i < 4 ? 900 : 700 }}>{cell}</div>)}
+      </div>
+    </div>;
+  }
+
+  return <div style={{ border: `1px solid ${C.black20}`, borderRadius: 8, overflow: 'hidden', background: C.black05, boxShadow: '0 8px 18px rgba(0,0,0,0.08)' }}>
+    <div style={{ height: 24, background: C.white, borderBottom: `1px solid ${C.black10}`, display: 'flex', alignItems: 'center', gap: 6, padding: '0 8px' }}>
+      <span style={{ width: 8, height: 8, borderRadius: '50%', background: C.red }} />
+      <span style={{ width: 8, height: 8, borderRadius: '50%', background: C.amber }} />
+      <span style={{ width: 8, height: 8, borderRadius: '50%', background: C.green }} />
+      <span style={{ marginLeft: 4, fontSize: 10, fontWeight: 900, color: C.black60 }}>Stata workspace</span>
+    </div>
+    <div style={{ display: 'grid', gridTemplateColumns: '1.15fr 0.85fr', gap: 6, padding: 8 }}>
+      {box('results', 'Results', { minHeight: 72 })}
+      <div style={{ display: 'grid', gap: 6 }}>
+        {box('variables', 'Variables', { minHeight: 46 })}
+        {box('properties', 'Properties', { minHeight: 46 })}
+      </div>
+      {box('command', 'Command', { gridColumn: '1 / 3', minHeight: 42 })}
+    </div>
+  </div>;
+}
+
 function OverviewTab({ next }) {
   const { completeTab } = useGame();
   return <div>
@@ -65,11 +121,11 @@ function StataBasicsTab({ next }) {
   const { completeTab } = useGame();
   const [active, setActive] = useState('command');
   const panels = {
-    command: ['Command window', 'Students can type commands directly here. This is useful for quick checks, but do-files are better for reproducible research.'],
-    variables: ['Variables window', 'Clicking a variable shows its description; double-clicking can insert the variable name into the command window.'],
-    properties: ['Properties window', 'Shows information about the selected variable and the dataset, helping students understand labels, storage type and metadata.'],
-    dofile: ['Do-file editor', 'A specialised text editor for Stata scripts. Commands appear in blue; comments usually begin with * and are not executed.'],
-    import: ['Import and browse', 'Use File -> Import for files, then browse the loaded dataset to inspect rows and variable types. Numeric, string and labelled variables appear differently.'],
+    command: { title: 'Command window', area: 'command', desc: 'Students can type commands directly here. This is useful for quick checks, but do-files are better for reproducible research.' },
+    variables: { title: 'Variables window', area: 'variables', desc: 'Clicking a variable shows its description; double-clicking can insert the variable name into the command window.' },
+    properties: { title: 'Properties window', area: 'properties', desc: 'Shows information about the selected variable and the dataset, helping students understand labels, storage type and metadata.' },
+    dofile: { title: 'Do-file editor', area: 'dofile', desc: 'A specialised text editor for Stata scripts. Commands appear in blue; comments usually begin with * and are not executed.' },
+    import: { title: 'Import and browse', area: 'import', desc: 'Use File -> Import for files, then browse the loaded dataset to inspect rows and variable types. Numeric, string and labelled variables appear differently.' },
   };
   const qs = [
     { id: 'st1', q: 'Why use a do-file instead of only typing commands interactively?', opts: ['It makes analysis reproducible', 'It prevents all errors', 'It removes missing values', 'It changes strings to numbers'], c: 0, ex: 'A do-file records the exact commands, making the analysis easier to rerun and check.' },
@@ -156,11 +212,14 @@ xtreg Profit1 Profit Lev Size Cash, fe vce(cluster firm_id)`}</Code>
         <div style={{ fontSize: 12, fontWeight: 800, color: C.red, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Guided tour of the Stata screen</div>
         <P mb={12}>Now that students know the workflow, use the buttons below to connect that workflow to the parts of the Stata interface.</P>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
-          {Object.entries(panels).map(([k, p]) => <button key={k} onClick={() => setActive(k)} style={{ padding: '8px 12px', border: `1px solid ${active === k ? C.red : C.black20}`, background: active === k ? C.redSubtle : C.white, color: active === k ? C.red : C.black80, borderRadius: 6, fontFamily: "'Source Sans 3',sans-serif", fontWeight: 800, cursor: 'pointer' }}>{p[0]}</button>)}
+          {Object.entries(panels).map(([k, p]) => <button key={k} onClick={() => setActive(k)} style={{ padding: '8px 12px', border: `1px solid ${active === k ? C.red : C.black20}`, background: active === k ? C.redSubtle : C.white, color: active === k ? C.red : C.black80, borderRadius: 6, fontFamily: "'Source Sans 3',sans-serif", fontWeight: 800, cursor: 'pointer' }}>{p.title}</button>)}
         </div>
-        <div style={{ padding: 14, background: C.redSubtle, borderLeft: `4px solid ${C.red}`, borderRadius: '0 8px 8px 0' }}>
-          <div style={{ fontSize: 18, fontWeight: 900, color: C.black, marginBottom: 4 }}>{panels[active][0]}</div>
-          <div style={text}>{panels[active][1]}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 14, alignItems: 'stretch', padding: 14, background: C.redSubtle, borderLeft: `4px solid ${C.red}`, borderRadius: '0 8px 8px 0' }}>
+          <div>
+            <div style={{ fontSize: 18, fontWeight: 900, color: C.black, marginBottom: 4 }}>{panels[active].title}</div>
+            <div style={text}>{panels[active].desc}</div>
+          </div>
+          <StataScreenPreview area={panels[active].area} />
         </div>
       </Card></Reveal>
       <Reveal delay={0.1}><Callout accent={C.amber} bg={C.amberBg}><strong>Teaching note:</strong> students often focus on clicking the right menu. Push them one step further: every important action should become a line in a do-file.</Callout></Reveal>
