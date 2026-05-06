@@ -276,6 +276,31 @@ function ProcessTab({next}){
   const allClickable = [...PROCESS_STEPS, ...ANALYSIS_STEPS];
   const activeStep = active !== null ? allClickable.find(s => s.id === active) : null;
   const [activeMethod, setActiveMethod] = useState(null);
+  const [activeLens, setActiveLens] = useState('early');
+  const PROCESS_LENSES = [
+    {
+      id: 'early',
+      label: 'Early stage',
+      question: 'What is interesting, feasible, and worth studying?',
+      explain: 'At the beginning, you are not trying to write the final research question. You are trying to notice promising puzzles, discard weak ideas, and choose a topic that can become a real study.',
+      prompt: 'Student check: can I explain why this topic matters in one plain sentence?',
+    },
+    {
+      id: 'middle',
+      label: 'Middle stage',
+      question: 'What does prior literature say, and what exact gap can I fill?',
+      explain: 'This is where a topic becomes academic. You compare studies, look for disagreement or missing contexts, and turn a broad interest into a focused gap.',
+      prompt: 'Student check: can I name at least three papers that shape my question?',
+    },
+    {
+      id: 'design',
+      label: 'Design stage',
+      question: 'What data, variables, model, and tests would convince a reader?',
+      explain: 'A research question is only useful if it can be tested. This stage forces you to define Y, X, controls, sample, and the kind of evidence that would support or weaken your hypothesis.',
+      prompt: 'Student check: can I point to where each hypothesis appears in my regression model?',
+    },
+  ];
+  const selectedLens = PROCESS_LENSES.find(l => l.id === activeLens) || PROCESS_LENSES[0];
 
   const StepNode = ({ step, isActive, onClick, width = '100%', compact = false }) => (
     <button onClick={onClick} style={{
@@ -356,10 +381,14 @@ function ProcessTab({next}){
       <Reveal delay={0.05}><Card style={{marginBottom:22,borderLeft:`4px solid ${C.blue}`}}>
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.blue,marginBottom:8}}>How to read this process</div>
         <P mb={10}>Do not treat the research process as a checklist you complete once. Treat it as a set of questions you keep returning to as your project becomes clearer.</P>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))',gap:10}}>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Early stage</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What is interesting, feasible, and worth studying?</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Middle stage</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What does prior literature say, and what exact gap can I fill?</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.blueBg}}><strong>Design stage</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What data, variables, model, and tests would convince a reader?</span></div>
+        <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>
+          {PROCESS_LENSES.map(l=><button key={l.id} onClick={()=>setActiveLens(l.id)} style={{padding:'9px 13px',border:`1px solid ${activeLens===l.id?C.blue:C.black20}`,background:activeLens===l.id?C.blueBg:C.white,color:activeLens===l.id?C.blue:C.black80,borderRadius:6,fontFamily:"'Source Sans 3',sans-serif",fontSize:13,fontWeight:800,cursor:'pointer',textAlign:'left'}}>{l.label}</button>)}
+        </div>
+        <div style={{padding:14,borderRadius:8,background:C.blueBg,borderLeft:`4px solid ${C.blue}`}}>
+          <div style={{fontSize:18,fontWeight:900,color:C.black,marginBottom:4}}>{selectedLens.label}</div>
+          <div style={{fontSize:14,fontWeight:800,color:C.blue,marginBottom:8}}>{selectedLens.question}</div>
+          <div style={{fontSize:14,color:C.black80,lineHeight:1.6,marginBottom:10}}>{selectedLens.explain}</div>
+          <div style={{fontSize:13,color:C.black80,lineHeight:1.55,background:C.white,border:`1px solid ${C.black10}`,borderRadius:6,padding:'10px 12px'}}><strong>Check yourself:</strong> {selectedLens.prompt}</div>
         </div>
       </Card></Reveal>
 
@@ -516,6 +545,8 @@ function IdeasTab({next}){
     {cat:'Capability',qs:['Do you have the necessary research skills within the timeframe?','Is it achievable within the available time?','Is it achievable within the financial resources available?','Are you reasonably certain of being able to gain access to the data you need?']},
     {cat:'Fulfilment',qs:['Does the topic really interest and motivate you?','Will it help towards the achievement of your future aspirations or career goals?']},
   ];
+  const [activeCheck, setActiveCheck] = useState(checklist[0].cat);
+  const selectedCheck = checklist.find(c => c.cat === activeCheck) || checklist[0];
 
   return <div style={{paddingTop:56}}>
     <Wrap bg={C.black05}>
@@ -547,7 +578,17 @@ function IdeasTab({next}){
 
     <Wrap bg={C.black05}>
       <Reveal><H size={30}>Characteristics of a Good Research Topic</H><P>Use this Box 2.1 checklist to evaluate your potential topic.</P></Reveal>
-      {checklist.map((c,ci)=><Reveal key={ci} delay={ci*0.08}><div style={{marginBottom:20}}><div style={{fontSize:14,fontWeight:700,color:C.red,marginBottom:8}}>{c.cat}</div>{c.qs.map((q,qi)=><div key={qi} style={{display:'flex',gap:8,alignItems:'flex-start',marginBottom:5}}><span style={{color:C.green,fontSize:16,flexShrink:0,marginTop:1}}>✓</span><span style={{fontSize:14,color:C.black80,lineHeight:1.6}}>{q}</span></div>)}</div></Reveal>)}
+      <Reveal delay={0.08}><Card style={{borderLeft:`4px solid ${C.red}`}}>
+        <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:8}}>Topic quality check</div>
+        <P mb={10}>Click one lens at a time. A good topic needs all three: academic fit, practical feasibility, and enough personal interest to sustain the project.</P>
+        <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>
+          {checklist.map(c=><button key={c.cat} onClick={()=>setActiveCheck(c.cat)} style={{padding:'9px 13px',border:`1px solid ${activeCheck===c.cat?C.red:C.black20}`,background:activeCheck===c.cat?C.redSubtle:C.white,color:activeCheck===c.cat?C.red:C.black80,borderRadius:6,fontFamily:"'Source Sans 3',sans-serif",fontSize:13,fontWeight:800,cursor:'pointer'}}>{c.cat}</button>)}
+        </div>
+        <div style={{background:C.black05,borderRadius:8,padding:'14px 16px'}}>
+          <div style={{fontSize:17,fontWeight:900,color:C.black,marginBottom:10}}>{selectedCheck.cat}</div>
+          {selectedCheck.qs.map((q,qi)=><div key={qi} style={{display:'flex',gap:8,alignItems:'flex-start',marginBottom:qi<selectedCheck.qs.length-1?7:0}}><span style={{color:C.green,fontSize:12,fontWeight:900,flexShrink:0,marginTop:4}}>OK</span><span style={{fontSize:14,color:C.black80,lineHeight:1.6}}>{q}</span></div>)}
+        </div>
+      </Card></Reveal>
       <NextBtn onClick={()=>{completeTab('s1:ideas');next()}}/>
     </Wrap>
   </div>;
@@ -829,13 +870,25 @@ function LitReviewTab({next}){
 function HypothesesTab({next}){
   const { completeTab } = useGame();
   const [activeLogic, setActiveLogic] = useState('literature');
+  const [activeConsider, setActiveConsider] = useState('relation');
   const logicChain = [
     {id:'literature',label:'Literature',question:'What have others found?',explain:'Start by identifying what prior studies already show. This keeps your hypothesis grounded in evidence rather than personal opinion.',example:'Example: Prior studies find that stronger governance is associated with lower earnings management.'},
     {id:'theory',label:'Theory',question:'Why should X affect Y?',explain:'Theory explains the mechanism. It tells the reader why the relationship should exist, not just that two variables might be related.',example:'Example: Agency theory suggests independent boards monitor managers and reduce opportunistic reporting.'},
     {id:'hypothesis',label:'Hypothesis',question:'What direction do you predict?',explain:'The hypothesis turns the literature and theory into a testable prediction. It should name X, name Y, and usually state a direction.',example:'Example: Firms with more independent boards exhibit lower earnings management, ceteris paribus.'},
     {id:'test',label:'Test',question:'What data/model can test it?',explain:'The test translates the hypothesis into variables, data, controls, and a model. This is where the research design begins.',example:'Example: Regress discretionary accruals on board independence, controlling for firm size, leverage, profitability, industry, and year.'},
   ];
+  const considerItems = [
+    {id:'relation',label:'X and Y',question:'What relationship are you predicting?',explain:'A hypothesis must connect a cause or explanatory factor (X) to an outcome (Y). If students cannot name both, the statement is still a topic, not a hypothesis.',example:'Higher ESG disclosure quality is associated with higher firm value.'},
+    {id:'wording',label:'Clear wording',question:'Can a reader interpret it only one way?',explain:'Avoid vague verbs such as "affects" without saying the expected direction. Clear wording makes it easier to design the test later.',example:'Use "higher X is associated with lower Y" rather than "X impacts Y."'},
+    {id:'testability',label:'Testability',question:'What evidence could support or reject it?',explain:'A testable hypothesis points naturally to data, variables, and a model. If no measurable proxy exists, the hypothesis needs more work.',example:'Board independence can be measured as independent directors divided by total directors.'},
+    {id:'data',label:'Dataset',question:'What kind of data structure fits?',explain:'Cross-sectional, time-series, and panel data answer different kinds of questions. Most capstone projects use firm-year panel data because they observe firms across years.',example:'Singapore-listed firm-years from 2018 to 2025.'},
+    {id:'unit',label:'Unit',question:'What is one row of the dataset?',explain:'The unit of observation keeps the model precise. A row might be a firm-year, person, transaction, country-year, or audit engagement.',example:'One row = one firm in one financial year.'},
+    {id:'variables',label:'Variable type',question:'Are your variables continuous, dummy, index, or categorical?',explain:'Variable type affects how the model is written and interpreted. Students should know whether a one-unit change, group difference, or index score is being tested.',example:'ROA is continuous; Big 4 auditor is a dummy variable.'},
+    {id:'roles',label:'Variable roles',question:'Which variables are main X, Y, and controls?',explain:'The main X tests the hypothesis. Controls are included because prior literature suggests they also affect Y.',example:'Y = ROA, main X = ESG score, controls = size, leverage, industry, year.'},
+    {id:'method',label:'Method',question:'Does the method match the outcome?',explain:'A linear model is common for continuous outcomes. Binary outcomes often need logit or probit. The hypothesis should not imply a method that does not suit the data.',example:'Use OLS for ROA; use logit if Y is financial distress coded 0 or 1.'},
+  ];
   const selectedLogic = logicChain.find(x => x.id === activeLogic) || logicChain[0];
+  const selectedConsider = considerItems.find(x => x.id === activeConsider) || considerItems[0];
   return <div style={{paddingTop:56}}>
     <Wrap bg={C.black05}>
       <Reveal><Label>Hypotheses Development</Label><H>How to Formulate Hypotheses</H></Reveal>
@@ -862,9 +915,18 @@ function HypothesesTab({next}){
 
     <Wrap>
       <Reveal><H size={30}>When Formulating the Hypothesis, Consider:</H></Reveal>
-      <Reveal delay={0.1}><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:28}}>
-        {['Express a relation between X and Y variables','Wording should be clear and unambiguous','Imply possibilities for testing (from research design)','Type of dataset: cross-sectional, time-series, or panel','Unit of observation: firm, individual, country, etc.','Nature of variables: Continuous (e.g. ROA), Dummy (e.g. gender), Index, etc.','Distinguish: independent vs dependent vs control variables','Nature of research methodology: Linear or non-linear'].map((c,i)=><div key={i} style={{display:'flex',gap:6,alignItems:'flex-start'}}><Dot/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>{c}</span></div>)}
-      </div></Reveal>
+      <Reveal delay={0.1}><Card style={{marginBottom:28,borderLeft:`4px solid ${C.red}`}}>
+        <P mb={10}>These checks help you move from a nice idea to a statement that can actually be tested.</P>
+        <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>
+          {considerItems.map(item=><button key={item.id} onClick={()=>setActiveConsider(item.id)} style={{padding:'9px 12px',border:`1px solid ${activeConsider===item.id?C.red:C.black20}`,background:activeConsider===item.id?C.redSubtle:C.white,color:activeConsider===item.id?C.red:C.black80,borderRadius:6,fontFamily:"'Source Sans 3',sans-serif",fontSize:13,fontWeight:800,cursor:'pointer'}}>{item.label}</button>)}
+        </div>
+        <div style={{padding:14,borderRadius:8,background:C.redSubtle,borderLeft:`4px solid ${C.red}`}}>
+          <div style={{fontSize:18,fontWeight:900,color:C.black,marginBottom:4}}>{selectedConsider.label}</div>
+          <div style={{fontSize:14,fontWeight:800,color:C.red,marginBottom:8}}>{selectedConsider.question}</div>
+          <div style={{fontSize:14,color:C.black80,lineHeight:1.6,marginBottom:10}}>{selectedConsider.explain}</div>
+          <div style={{fontSize:13,color:C.black80,lineHeight:1.55,background:C.white,border:`1px solid ${C.black10}`,borderRadius:6,padding:'10px 12px'}}><strong>Example:</strong> {selectedConsider.example}</div>
+        </div>
+      </Card></Reveal>
 
       <Reveal delay={0.2}><Card style={{marginBottom:20}}>
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:12}}>Stating the Hypothesis</div>
@@ -1042,17 +1104,28 @@ function HypothesisBuilder() {
 // ═══════════════════════════════════════════════════════════════
 function DesignTab({next}){
   const { completeTab } = useGame();
+  const [activeModelPart, setActiveModelPart] = useState('y');
+  const modelParts = [
+    {id:'y',label:'Outcome Y',question:'What are you trying to explain?',explain:'Y is the result or behaviour your study wants to understand. It must be measurable from your data, not just an abstract idea.',example:'ROA for performance, stock return for market reaction, audit fee for audit pricing.'},
+    {id:'x',label:'Main X',question:'What is the key explanatory variable?',explain:'Main X is the variable that tests your hypothesis. The coefficient on this variable is where the hypothesis lives in the regression table.',example:'ESG score, board gender diversity, audit quality, or disclosure quality.'},
+    {id:'controls',label:'Controls',question:'What else affects Y?',explain:'Controls reduce obvious alternative explanations. They should come from prior literature, not from a random list of available columns.',example:'Firm size, leverage, profitability, industry fixed effects, and year fixed effects.'},
+    {id:'sign',label:'Expected sign',question:'Should the coefficient on X be positive or negative?',explain:'The expected sign connects your hypothesis to the regression result. Before seeing the data, state whether theory predicts a positive or negative coefficient.',example:'If H1 predicts ESG improves performance, the expected sign on ESG is positive.'},
+  ];
+  const selectedModelPart = modelParts.find(p => p.id === activeModelPart) || modelParts[0];
   return <div style={{paddingTop:56}}>
     <Wrap>
       <Reveal><Label>Research Design</Label><H>Building Your Regression Model</H><P>The research design translates your hypotheses into testable models. Every variable must be precisely defined.</P></Reveal>
       <Reveal delay={0.05}><Card style={{marginBottom:22,borderLeft:`4px solid ${C.green}`}}>
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.green,marginBottom:8}}>Translate the hypothesis into a model</div>
         <P mb={10}>Students should be able to point to each part of the hypothesis and say where it appears in the regression.</P>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:10}}>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Outcome Y</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What are you trying to explain? Example: ROA, stock return, risk, audit fee.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Main X</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What is the key explanatory variable? Example: ESG score, board diversity, audit quality.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Controls</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What else affects Y and must be held constant?</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.greenBg}}><strong>Expected sign</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Should the coefficient on X be positive or negative?</span></div>
+        <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>
+          {modelParts.map(p=><button key={p.id} onClick={()=>setActiveModelPart(p.id)} style={{padding:'9px 13px',border:`1px solid ${activeModelPart===p.id?C.green:C.black20}`,background:activeModelPart===p.id?C.greenBg:C.white,color:activeModelPart===p.id?C.green:C.black80,borderRadius:6,fontFamily:"'Source Sans 3',sans-serif",fontSize:13,fontWeight:800,cursor:'pointer'}}>{p.label}</button>)}
+        </div>
+        <div style={{padding:14,borderRadius:8,background:C.greenBg,borderLeft:`4px solid ${C.green}`}}>
+          <div style={{fontSize:18,fontWeight:900,color:C.black,marginBottom:4}}>{selectedModelPart.label}</div>
+          <div style={{fontSize:14,fontWeight:800,color:C.green,marginBottom:8}}>{selectedModelPart.question}</div>
+          <div style={{fontSize:14,color:C.black80,lineHeight:1.6,marginBottom:10}}>{selectedModelPart.explain}</div>
+          <div style={{fontSize:13,color:C.black80,lineHeight:1.55,background:C.white,border:`1px solid ${C.black10}`,borderRadius:6,padding:'10px 12px'}}><strong>Example:</strong> {selectedModelPart.example}</div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.1}><div style={{display:'flex',flexDirection:'column',gap:10,marginBottom:32}}>
@@ -1081,16 +1154,27 @@ function DesignTab({next}){
 // ═══════════════════════════════════════════════════════════════
 function ResultsTab({next}){
   const { completeTab } = useGame();
+  const [activeResultPurpose, setActiveResultPurpose] = useState('direction');
+  const resultPurposes = [
+    {id:'direction',label:'Direction',question:'Does the coefficient point the right way?',explain:'Start with the sign. If the hypothesis predicts a positive relationship, students should first check whether the coefficient is positive. Then they can discuss whether the evidence supports the prediction.',example:'If H1 predicts ESG improves ROA, a positive ESG coefficient is directionally consistent.'},
+    {id:'strength',label:'Strength',question:'Is the result meaningful?',explain:'Statistical significance tells us whether the estimate is unlikely to be noise. Economic meaning asks whether the size of the effect matters in practice.',example:'A small coefficient can be statistically significant but too tiny to matter for managers.'},
+    {id:'credibility',label:'Credibility',question:'Could another explanation be driving the result?',explain:'Robustness checks ask whether the conclusion survives reasonable changes to measurement, sample, controls, or model choices.',example:'Try an alternative performance measure, add industry and year fixed effects, or test a subsample.'},
+  ];
+  const selectedResultPurpose = resultPurposes.find(p => p.id === activeResultPurpose) || resultPurposes[0];
   return <div style={{paddingTop:56}}>
     <Wrap bg={C.black05}>
       <Reveal><Label>Results & Conclusion</Label><H>Interpreting and Wrapping Up</H></Reveal>
       <Reveal delay={0.05}><Card style={{marginBottom:22,borderLeft:`4px solid ${C.blue}`}}>
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.blue,marginBottom:8}}>What results are supposed to do</div>
         <P mb={10}>The results section is not a place to paste tables. It should tell readers whether the evidence supports the hypotheses, how large the effect is, and whether the finding survives reasonable alternative tests.</P>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))',gap:10}}>
-          <div style={{padding:12,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`}}><strong>Direction</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Is the coefficient positive or negative, and does that match the hypothesis?</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`}}><strong>Strength</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Is the result statistically and economically meaningful?</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.blueBg}}><strong>Credibility</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Do robustness checks reduce obvious alternative explanations?</span></div>
+        <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>
+          {resultPurposes.map(p=><button key={p.id} onClick={()=>setActiveResultPurpose(p.id)} style={{padding:'9px 13px',border:`1px solid ${activeResultPurpose===p.id?C.blue:C.black20}`,background:activeResultPurpose===p.id?C.blueBg:C.white,color:activeResultPurpose===p.id?C.blue:C.black80,borderRadius:6,fontFamily:"'Source Sans 3',sans-serif",fontSize:13,fontWeight:800,cursor:'pointer'}}>{p.label}</button>)}
+        </div>
+        <div style={{padding:14,borderRadius:8,background:C.blueBg,borderLeft:`4px solid ${C.blue}`}}>
+          <div style={{fontSize:18,fontWeight:900,color:C.black,marginBottom:4}}>{selectedResultPurpose.label}</div>
+          <div style={{fontSize:14,fontWeight:800,color:C.blue,marginBottom:8}}>{selectedResultPurpose.question}</div>
+          <div style={{fontSize:14,color:C.black80,lineHeight:1.6,marginBottom:10}}>{selectedResultPurpose.explain}</div>
+          <div style={{fontSize:13,color:C.black80,lineHeight:1.55,background:C.white,border:`1px solid ${C.black10}`,borderRadius:6,padding:'10px 12px'}}><strong>Example:</strong> {selectedResultPurpose.example}</div>
         </div>
       </Card></Reveal>
       <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
