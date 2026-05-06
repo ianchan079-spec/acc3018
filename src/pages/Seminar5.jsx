@@ -18,6 +18,13 @@ const TABS = [
 ];
 
 const text = { fontSize: 13, color: C.black80, lineHeight: 1.6 };
+const panelTile = (accent = C.black20) => ({
+  padding: 12,
+  borderRadius: 8,
+  background: C.white,
+  border: `1px solid ${C.black10}`,
+  borderLeft: `3px solid ${accent}`,
+});
 
 function Code({ children }) {
   return <pre style={{ margin: '10px 0', padding: '14px 16px', borderRadius: 8, background: C.black, color: C.white, overflowX: 'auto', fontFamily: "'JetBrains Mono',monospace", fontSize: 12.5, lineHeight: 1.65 }}>{children}</pre>;
@@ -139,9 +146,9 @@ function StataBasicsTab({ next }) {
         <div style={{ fontSize: 12, fontWeight: 800, color: C.red, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>First: what is Stata doing?</div>
         <P mb={8}>Stata is a command-based statistics program. Students can click around the menus, but the real power is that every data step can be written as a command and rerun later.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 10 }}>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Data live in memory</strong><br /><span style={text}>When you open a dataset, Stata works on the copy currently loaded into memory.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Commands change or inspect that data</strong><br /><span style={text}>Some commands describe the data; others create variables, clean values or estimate models.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.redSubtle }}><strong>Do-files make work reproducible</strong><br /><span style={text}>A do-file is a script that records the whole analysis so someone else can rerun it.</span></div>
+          <div style={panelTile(C.black20)}><strong>Data live in memory</strong><br /><span style={text}>When you open a dataset, Stata works on the copy currently loaded into memory.</span></div>
+          <div style={panelTile(C.black20)}><strong>Commands change or inspect that data</strong><br /><span style={text}>Some commands describe the data; others create variables, clean values or estimate models.</span></div>
+          <div style={panelTile(C.red)}><strong>Do-files make work reproducible</strong><br /><span style={text}>A do-file is a script that records the whole analysis so someone else can rerun it.</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.08}><Card style={{ marginBottom: 14 }}>
@@ -153,10 +160,10 @@ summarize read math if gender == 2, detail
 tabulate race ses, row
 areg Profit1 Profit Lev Size Cash, a(FE2)`}</Code>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 10 }}>
-          <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong>Command</strong><br /><span style={text}>What Stata should do, such as summarize, tabulate, replace or areg.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong>Variables</strong><br /><span style={text}>The columns Stata should use, such as read, math, Profit or Size.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong>if condition</strong><br /><span style={text}>Limits the command to certain rows, such as female students or COVID years.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong>Options</strong><br /><span style={text}>Come after a comma and change what Stata reports or absorbs.</span></div>
+          <div style={panelTile(C.blue)}><strong>Command</strong><br /><span style={text}>What Stata should do, such as summarize, tabulate, replace or areg.</span></div>
+          <div style={panelTile(C.blue)}><strong>Variables</strong><br /><span style={text}>The columns Stata should use, such as read, math, Profit or Size.</span></div>
+          <div style={panelTile(C.blue)}><strong>if condition</strong><br /><span style={text}>Limits the command to certain rows, such as female students or COVID years.</span></div>
+          <div style={panelTile(C.blue)}><strong>Options</strong><br /><span style={text}>Come after a comma and change what Stata reports or absorbs.</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.12}><Card style={{ marginBottom: 14 }}>
@@ -181,12 +188,12 @@ areg Profit1 Profit Lev Size Cash, a(FE2)`}</Code>
         <div style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>The command map students will reuse</div>
         <P mb={8}>Students do not need to memorise every Stata command. They need a map of the small set they will use repeatedly.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10 }}>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Open and inspect</strong><br /><span style={text}><code>use</code>, <code>import excel</code>, <code>describe</code>, <code>browse</code>, <code>codebook</code></span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Summarise</strong><br /><span style={text}><code>summarize</code>, <code>summarize, detail</code>, <code>tabulate</code>, <code>correlate</code></span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Create and clean</strong><br /><span style={text}><code>gen</code>, <code>replace</code>, <code>egen</code>, <code>sort</code>, <code>bysort</code>, <code>merge</code></span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Prepare panels</strong><br /><span style={text}><code>xtset firm year</code>, then use panel commands such as <code>xtreg</code>.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.redSubtle }}><strong>Run models</strong><br /><span style={text}><code>regress</code> for OLS, <code>areg</code> for absorbed fixed effects, <code>xtreg, fe</code> for panel fixed effects.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.amberBg }}><strong>Export tables</strong><br /><span style={text}><code>eststo</code>, <code>esttab</code>, <code>outreg2</code>, <code>asdoc</code>, and newer Stata <code>etable</code>/<code>collect</code> workflows.</span></div>
+          <div style={panelTile(C.black20)}><strong>Open and inspect</strong><br /><span style={text}><code>use</code>, <code>import excel</code>, <code>describe</code>, <code>browse</code>, <code>codebook</code></span></div>
+          <div style={panelTile(C.black20)}><strong>Summarise</strong><br /><span style={text}><code>summarize</code>, <code>summarize, detail</code>, <code>tabulate</code>, <code>correlate</code></span></div>
+          <div style={panelTile(C.black20)}><strong>Create and clean</strong><br /><span style={text}><code>gen</code>, <code>replace</code>, <code>egen</code>, <code>sort</code>, <code>bysort</code>, <code>merge</code></span></div>
+          <div style={panelTile(C.black20)}><strong>Prepare panels</strong><br /><span style={text}><code>xtset firm year</code>, then use panel commands such as <code>xtreg</code>.</span></div>
+          <div style={panelTile(C.red)}><strong>Run models</strong><br /><span style={text}><code>regress</code> for OLS, <code>areg</code> for absorbed fixed effects, <code>xtreg, fe</code> for panel fixed effects.</span></div>
+          <div style={panelTile(C.amber)}><strong>Export tables</strong><br /><span style={text}><code>eststo</code>, <code>esttab</code>, <code>outreg2</code>, <code>asdoc</code>, and newer Stata <code>etable</code>/<code>collect</code> workflows.</span></div>
         </div>
         <Callout accent={C.amber} bg={C.amberBg}><strong>Useful add-ons:</strong> commands such as <code>winsor2</code>, <code>esttab</code> and <code>outreg2</code> are often user-written. Students may need to install them once with <code>ssc install</code>.</Callout>
       </Card></Reveal>
@@ -202,9 +209,9 @@ xtreg Profit1 Profit Lev Size Cash, fe
 * Firm fixed effects with clustered standard errors
 xtreg Profit1 Profit Lev Size Cash, fe vce(cluster firm_id)`}</Code>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 10 }}>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong><code>xtset</code></strong><br /><span style={text}>Tells Stata the panel ID and time variable. Example: firm and year.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong><code>fe</code></strong><br /><span style={text}>Uses within-firm changes over time and removes time-invariant firm differences.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong><code>vce(cluster firm_id)</code></strong><br /><span style={text}>Allows errors to be correlated within the same firm over time.</span></div>
+          <div style={panelTile(C.black20)}><strong><code>xtset</code></strong><br /><span style={text}>Tells Stata the panel ID and time variable. Example: firm and year.</span></div>
+          <div style={panelTile(C.black20)}><strong><code>fe</code></strong><br /><span style={text}>Uses within-firm changes over time and removes time-invariant firm differences.</span></div>
+          <div style={panelTile(C.blue)}><strong><code>vce(cluster firm_id)</code></strong><br /><span style={text}>Allows errors to be correlated within the same firm over time.</span></div>
         </div>
         <Callout accent={C.blue} bg={C.blueBg}><strong>Plain-English version:</strong> <code>xtreg, fe</code> compares a firm to itself over time, rather than mainly comparing different firms to each other.</Callout>
       </Card></Reveal>
@@ -214,7 +221,7 @@ xtreg Profit1 Profit Lev Size Cash, fe vce(cluster firm_id)`}</Code>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
           {Object.entries(panels).map(([k, p]) => <button key={k} onClick={() => setActive(k)} style={{ padding: '8px 12px', border: `1px solid ${active === k ? C.red : C.black20}`, background: active === k ? C.redSubtle : C.white, color: active === k ? C.red : C.black80, borderRadius: 6, fontFamily: "'Source Sans 3',sans-serif", fontWeight: 800, cursor: 'pointer' }}>{p.title}</button>)}
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 14, alignItems: 'stretch', padding: 14, background: C.redSubtle, borderLeft: `4px solid ${C.red}`, borderRadius: '0 8px 8px 0' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 14, alignItems: 'stretch', padding: 14, background: C.white, border: `1px solid ${C.black10}`, borderLeft: `4px solid ${C.red}`, borderRadius: '0 8px 8px 0' }}>
           <div>
             <div style={{ fontSize: 18, fontWeight: 900, color: C.black, marginBottom: 4 }}>{panels[active].title}</div>
             <div style={text}>{panels[active].desc}</div>
@@ -406,10 +413,10 @@ function ModelsTab({ next }) {
         <div style={{ fontSize: 12, fontWeight: 800, color: C.blue, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Which regression command should I use?</div>
         <P mb={8}>Stata has several regression commands because research designs differ. Students should choose the command that matches the model, not the one they saw most recently.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10 }}>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong><code>regress</code></strong><br /><span style={text}>Standard OLS. Add <code>, vce(robust)</code> or <code>, vce(cluster firmid)</code> for robust or clustered standard errors.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong><code>areg</code></strong><br /><span style={text}>Linear regression with one absorbed fixed effect, such as industry or year.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong><code>xtreg, fe</code></strong><br /><span style={text}>Panel fixed-effects regression after declaring the panel with <code>xtset firmid year</code>.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong><code>ivregress 2sls</code></strong><br /><span style={text}>Instrumental-variable regression when X is endogenous and a valid instrument is available.</span></div>
+          <div style={panelTile(C.black20)}><strong><code>regress</code></strong><br /><span style={text}>Standard OLS. Add <code>, vce(robust)</code> or <code>, vce(cluster firmid)</code> for robust or clustered standard errors.</span></div>
+          <div style={panelTile(C.black20)}><strong><code>areg</code></strong><br /><span style={text}>Linear regression with one absorbed fixed effect, such as industry or year.</span></div>
+          <div style={panelTile(C.black20)}><strong><code>xtreg, fe</code></strong><br /><span style={text}>Panel fixed-effects regression after declaring the panel with <code>xtset firmid year</code>.</span></div>
+          <div style={panelTile(C.blue)}><strong><code>ivregress 2sls</code></strong><br /><span style={text}>Instrumental-variable regression when X is endogenous and a valid instrument is available.</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.043}><Card style={{ marginBottom: 14 }}>
@@ -442,9 +449,9 @@ xtreg Profit1 Profit Lev Size Cash i.year, fe vce(cluster firm_id)`}</Code>
         <div style={{ fontSize: 12, fontWeight: 800, color: C.red, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>A closer look at <code>xtreg, fe</code></div>
         <P mb={8}>Use <code>xtreg, fe</code> when the dataset follows the same firms, people, countries or other units over time, and you want to control for stable differences across those units.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10, marginBottom: 12 }}>
-          <div style={{ padding: 12, borderRadius: 8, background: C.redSubtle }}><strong>What it controls for</strong><br /><span style={text}>All time-invariant firm traits: business model, founding culture, long-run industry positioning, location, and other stable features.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>What it estimates from</strong><br /><span style={text}>Within-firm changes. If Profit changes inside the same firm over time, does Profit1 change too?</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>What it cannot estimate</strong><br /><span style={text}>A variable that never changes within firm will be absorbed by firm fixed effects.</span></div>
+          <div style={panelTile(C.red)}><strong>What it controls for</strong><br /><span style={text}>All time-invariant firm traits: business model, founding culture, long-run industry positioning, location, and other stable features.</span></div>
+          <div style={panelTile(C.black20)}><strong>What it estimates from</strong><br /><span style={text}>Within-firm changes. If Profit changes inside the same firm over time, does Profit1 change too?</span></div>
+          <div style={panelTile(C.black20)}><strong>What it cannot estimate</strong><br /><span style={text}>A variable that never changes within firm will be absorbed by firm fixed effects.</span></div>
         </div>
         <Code>{`xtset cusip fyear
 
@@ -484,7 +491,7 @@ esttab m1 m2 m3 using maintable.rtf, replace b(3) t ar2 star(* 0.10 ** 0.05 *** 
       </Card></Reveal>
       <Reveal delay={0.1}><Card>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>{Object.keys(models).map(k => <button key={k} onClick={() => setModel(k)} style={{ padding: '8px 12px', border: `1px solid ${model === k ? C.red : C.black20}`, background: model === k ? C.redSubtle : C.white, color: model === k ? C.red : C.black80, borderRadius: 6, fontFamily: "'Source Sans 3',sans-serif", fontWeight: 800, cursor: 'pointer' }}>{k}</button>)}</div>
-        <div style={{ padding: 14, background: C.redSubtle, borderLeft: `4px solid ${C.red}`, borderRadius: '0 8px 8px 0' }}>
+        <div style={{ padding: 14, background: C.white, border: `1px solid ${C.black10}`, borderLeft: `4px solid ${C.red}`, borderRadius: '0 8px 8px 0' }}>
           <div style={{ fontSize: 18, fontWeight: 900, color: C.black, marginBottom: 4 }}>{models[model][1]}</div>
           <div style={text}>{models[model][2]}</div>
         </div>
@@ -561,6 +568,15 @@ function ActivityTab() {
       <Reveal><Label>Seminar activity</Label><H color={C.white}>From Dataset to Results Package</H><P color="rgba(255,255,255,0.55)">This activity follows the final slide: summary statistics, correlation matrix, regression models, subsample analysis and an event study.</P></Reveal>
     </DarkWrap>
     <Wrap bg={C.black05}>
+      <Reveal><Card style={{ marginBottom: 14, borderLeft: `4px solid ${C.amber}` }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Before the checklist: what the results package proves</div>
+        <P mb={8}>The goal is not to produce many Stata outputs. The goal is to create a results package that lets a reader follow the evidence from data description to main model to robustness checks.</P>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 10 }}>
+          <div style={panelTile(C.black20)}><strong>Describe</strong><br /><span style={text}>Summary statistics and correlations show what the data look like before modelling.</span></div>
+          <div style={panelTile(C.red)}><strong>Estimate</strong><br /><span style={text}>Regression tables test the main prediction using progressively richer specifications.</span></div>
+          <div style={panelTile(C.amber)}><strong>Stress-test</strong><br /><span style={text}>Subsamples and event interactions ask whether the result is stable or context-specific.</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal><Card>
         <P color={C.black} mb={12}><strong>Output checklist</strong></P>
         {tasks.map((t, i) => <label key={t} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', padding: '10px 0', borderTop: i ? `1px solid ${C.black10}` : 'none', cursor: 'pointer' }}>

@@ -21,6 +21,8 @@ export const C = {
   goldBg: '#FDF5E0',
   blue: '#1A5FA0',
   blueBg: '#E6F0FB',
+  purple: '#6F3FA7',
+  purpleBg: '#F2EAF8',
 };
 
 export const BADGES = {

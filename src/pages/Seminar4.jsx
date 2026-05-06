@@ -17,6 +17,13 @@ const TABS = [
 ];
 
 const small = { fontSize: 13, color: C.black80, lineHeight: 1.6 };
+const panelTile = (accent = C.black20) => ({
+  padding: 12,
+  borderRadius: 8,
+  background: C.white,
+  border: `1px solid ${C.black10}`,
+  borderLeft: `3px solid ${accent}`,
+});
 
 function Pill({ children, color = C.red }) {
   return <span style={{ display: 'inline-block', padding: '4px 9px', borderRadius: 999, border: `1px solid ${color}`, color, fontSize: 11, fontWeight: 800, letterSpacing: '0.04em', textTransform: 'uppercase' }}>{children}</span>;
@@ -95,10 +102,10 @@ function DatabasesTab({ next }) {
         <div style={{ fontSize: 12, fontWeight: 800, color: C.blue, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>How to choose the right database</div>
         <P mb={8}>Students should not start by asking "Where can I download something?" They should start by translating the research question into the kind of data they need.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: 10 }}>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>What is the unit?</strong><br /><span style={small}>Country-year, firm-year, security-month, article, property transaction?</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>What is the variable?</strong><br /><span style={small}>Price, return, accounting item, ESG score, GDP, property value?</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>What is the frequency?</strong><br /><span style={small}>Daily, monthly, quarterly, annual, or event-level?</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong>What is the coverage?</strong><br /><span style={small}>Which countries, firms, exchanges, years and active/inactive observations?</span></div>
+          <div style={panelTile(C.black20)}><strong>What is the unit?</strong><br /><span style={small}>Country-year, firm-year, security-month, article, property transaction?</span></div>
+          <div style={panelTile(C.black20)}><strong>What is the variable?</strong><br /><span style={small}>Price, return, accounting item, ESG score, GDP, property value?</span></div>
+          <div style={panelTile(C.black20)}><strong>What is the frequency?</strong><br /><span style={small}>Daily, monthly, quarterly, annual, or event-level?</span></div>
+          <div style={panelTile(C.blue)}><strong>What is the coverage?</strong><br /><span style={small}>Which countries, firms, exchanges, years and active/inactive observations?</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.1}><Callout><strong>Plain-English warning:</strong> databases are not neutral spreadsheets. Each one has a coverage rule, update schedule, identifier system and survivorship issue. Good research begins by understanding those choices.</Callout></Reveal>
@@ -115,7 +122,7 @@ function DatabasesTab({ next }) {
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
           {steps.map((s, i) => <button key={s[0]} onClick={() => setStep(i)} style={{ padding: '8px 12px', border: `1px solid ${step === i ? C.blue : C.black20}`, background: step === i ? C.blueBg : C.white, color: step === i ? C.blue : C.black80, borderRadius: 6, fontFamily: "'Source Sans 3',sans-serif", fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>{i + 1}. {s[0]}</button>)}
         </div>
-        {step === null ? <div style={small}>Select a WRDS step above. The point is not to memorise screenshots; it is to understand the logic of a reproducible data query.</div> : <div style={{ padding: 14, background: C.blueBg, borderLeft: `4px solid ${C.blue}`, borderRadius: '0 8px 8px 0' }}>
+        {step === null ? <div style={small}>Select a WRDS step above. The point is not to memorise screenshots; it is to understand the logic of a reproducible data query.</div> : <div style={{ padding: 14, background: C.white, border: `1px solid ${C.black10}`, borderLeft: `4px solid ${C.blue}`, borderRadius: '0 8px 8px 0' }}>
           <div style={{ fontSize: 16, fontWeight: 900, color: C.black, marginBottom: 5 }}>{steps[step][0]}</div>
           <div style={small}>{steps[step][1]}</div>
         </div>}
@@ -158,9 +165,9 @@ function IdentifiersTab({ next }) {
         <div style={{ fontSize: 12, fontWeight: 800, color: C.red, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Start with the unit of observation</div>
         <P mb={8}>The same company can have multiple securities, different tickers over time, and different records across databases. That is why the first question is always: what does one row represent?</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 10 }}>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Security-month</strong><br /><span style={small}>Use a security-level key such as PERMNO, then align by month.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Firm-year</strong><br /><span style={small}>Use a firm-level key such as GVKEY or a vetted CRSP-Compustat link, then align by fiscal year.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.redSubtle }}><strong>Danger zone</strong><br /><span style={small}>Company names and tickers are readable, but they are not stable research keys.</span></div>
+          <div style={panelTile(C.black20)}><strong>Security-month</strong><br /><span style={small}>Use a security-level key such as PERMNO, then align by month.</span></div>
+          <div style={panelTile(C.black20)}><strong>Firm-year</strong><br /><span style={small}>Use a firm-level key such as GVKEY or a vetted CRSP-Compustat link, then align by fiscal year.</span></div>
+          <div style={panelTile(C.red)}><strong>Danger zone</strong><br /><span style={small}>Company names and tickers are readable, but they are not stable research keys.</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.11}><Card style={{ marginTop: 14 }}>
@@ -212,19 +219,19 @@ function StataWorkflowTab({ next }) {
         <P mb={8}>For the capstone-style analysis, students are usually trying to build a clean firm-year panel: one row for one firm in one year, with market variables, accounting variables and future outcome variables sitting in the same row.</P>
         <Formula>firm + year + market data + accounting data + constructed variables = analysis panel</Formula>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 10 }}>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>One row means one observation</strong><br /><span style={small}>If the study is firm-year, Apple in 2022 should be one row, not five accidental rows.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>One column means one variable</strong><br /><span style={small}>Columns might be returns, spread, turnover, assets, leverage, future return or industry.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.greenBg }}><strong>The do-file explains the journey</strong><br /><span style={small}>A reader should be able to rerun the do-file and recreate the dataset from raw files.</span></div>
+          <div style={panelTile(C.black20)}><strong>One row means one observation</strong><br /><span style={small}>If the study is firm-year, Apple in 2022 should be one row, not five accidental rows.</span></div>
+          <div style={panelTile(C.black20)}><strong>One column means one variable</strong><br /><span style={small}>Columns might be returns, spread, turnover, assets, leverage, future return or industry.</span></div>
+          <div style={panelTile(C.green)}><strong>The do-file explains the journey</strong><br /><span style={small}>A reader should be able to rerun the do-file and recreate the dataset from raw files.</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.08}><Card style={{ marginBottom: 14 }}>
         <div style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>What can go wrong?</div>
         <P mb={8}>Most beginner mistakes happen before the regression. The commands below are useful because they reveal specific risks.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10 }}>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Wrong row level</strong><br /><span style={small}><code>isid</code> and <code>duplicates report</code> check whether firm-year really identifies one row.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Hidden missing values</strong><br /><span style={small}><code>codebook</code> and <code>summarize</code> show missingness, ranges and strange values.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Unjustified exclusions</strong><br /><span style={small}><code>tabulate</code>, <code>keep if</code> and <code>drop if</code> should be tied to a research reason.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.amberBg }}><strong>Bad merges</strong><br /><span style={small}><code>merge</code> creates <code>_merge</code>; <code>tab _merge</code> tells students what matched and what did not.</span></div>
+          <div style={panelTile(C.black20)}><strong>Wrong row level</strong><br /><span style={small}><code>isid</code> and <code>duplicates report</code> check whether firm-year really identifies one row.</span></div>
+          <div style={panelTile(C.black20)}><strong>Hidden missing values</strong><br /><span style={small}><code>codebook</code> and <code>summarize</code> show missingness, ranges and strange values.</span></div>
+          <div style={panelTile(C.black20)}><strong>Unjustified exclusions</strong><br /><span style={small}><code>tabulate</code>, <code>keep if</code> and <code>drop if</code> should be tied to a research reason.</span></div>
+          <div style={panelTile(C.amber)}><strong>Bad merges</strong><br /><span style={small}><code>merge</code> creates <code>_merge</code>; <code>tab _merge</code> tells students what matched and what did not.</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.12}><div style={{ display: 'grid', gap: 12 }}>
@@ -319,9 +326,9 @@ function SentimentTab({ next }) {
         <div style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>What students must understand first</div>
         <P mb={8}>Sentiment analysis is a measurement method. It turns words into a number, but that number is only meaningful if students can explain the measurement choices.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 10 }}>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>The text sample matters</strong><br /><span style={small}>One article, all articles, headlines only, or full text can produce different scores.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>The dictionary/model matters</strong><br /><span style={small}>A finance-specific dictionary may classify words differently from a general dictionary.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.amberBg }}><strong>The interpretation matters</strong><br /><span style={small}>A score measures language tone, not whether the claim is correct or economically important.</span></div>
+          <div style={panelTile(C.black20)}><strong>The text sample matters</strong><br /><span style={small}>One article, all articles, headlines only, or full text can produce different scores.</span></div>
+          <div style={panelTile(C.black20)}><strong>The dictionary/model matters</strong><br /><span style={small}>A finance-specific dictionary may classify words differently from a general dictionary.</span></div>
+          <div style={panelTile(C.amber)}><strong>The interpretation matters</strong><br /><span style={small}>A score measures language tone, not whether the claim is correct or economically important.</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.1}><Callout accent={C.amber} bg={C.amberBg}><strong>Plain-English warning:</strong> sentiment is not the same as truth, tone is not the same as impact, and a dictionary score is only as credible as the text cleaning behind it.</Callout></Reveal>
@@ -382,9 +389,9 @@ function IvCasesTab({ next }) {
         <div style={{ fontSize: 12, fontWeight: 800, color: C.red, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>How to read an applied methods case</div>
         <P mb={8}>Each case combines two questions: a data question and an identification question. Students should separate them before reading code or coefficients.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 10 }}>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Data question</strong><br /><span style={small}>What are Y, X, controls, identifiers, time period and sample?</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Endogeneity question</strong><br /><span style={small}>Why might ordinary regression be biased or misleading?</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.redSubtle }}><strong>Design question</strong><br /><span style={small}>What variation is being used to make the estimate more credible?</span></div>
+          <div style={panelTile(C.black20)}><strong>Data question</strong><br /><span style={small}>What are Y, X, controls, identifiers, time period and sample?</span></div>
+          <div style={panelTile(C.black20)}><strong>Endogeneity question</strong><br /><span style={small}>Why might ordinary regression be biased or misleading?</span></div>
+          <div style={panelTile(C.red)}><strong>Design question</strong><br /><span style={small}>What variation is being used to make the estimate more credible?</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.05}><div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
@@ -396,9 +403,9 @@ function IvCasesTab({ next }) {
         <P mb={10}>{c.story}</P>
         <Callout accent={C.amber} bg={C.amberBg}><strong>{c.plain}</strong></Callout>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: 10, marginBottom: 12 }}>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Outcome</strong><br /><span style={small}>The variable the study wants to explain.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Main X</strong><br /><span style={small}>The variable whose effect the researcher cares about.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.redSubtle }}><strong>Threat</strong><br /><span style={small}>The reason ordinary regression might not be enough.</span></div>
+          <div style={panelTile(C.black20)}><strong>Outcome</strong><br /><span style={small}>The variable the study wants to explain.</span></div>
+          <div style={panelTile(C.black20)}><strong>Main X</strong><br /><span style={small}>The variable whose effect the researcher cares about.</span></div>
+          <div style={panelTile(C.red)}><strong>Threat</strong><br /><span style={small}>The reason ordinary regression might not be enough.</span></div>
         </div>
         <div style={{ display: 'grid', gap: 8, marginBottom: 12 }}>{c.steps.map((s, i) => <Num key={s} n={i + 1}>{s}</Num>)}</div>
         <Callout accent={C.green} bg={C.greenBg}><strong>Takeaway:</strong> {c.takeaway}</Callout>
@@ -409,9 +416,9 @@ function IvCasesTab({ next }) {
         <div style={{ fontSize: 12, fontWeight: 800, color: C.blue, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Before the quiz: what students are choosing</div>
         <P mb={8}>The applied cases are not asking students to memorise famous datasets. They are asking students to recognise the same research structure in different examples.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 10 }}>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Outcome</strong><br /><span style={small}>What is the study trying to explain?</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Treatment or X</strong><br /><span style={small}>What main explanatory variable might be endogenous?</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.blueBg }}><strong>Instrument or design</strong><br /><span style={small}>What outside source of variation makes the estimate more credible?</span></div>
+          <div style={panelTile(C.black20)}><strong>Outcome</strong><br /><span style={small}>What is the study trying to explain?</span></div>
+          <div style={panelTile(C.black20)}><strong>Treatment or X</strong><br /><span style={small}>What main explanatory variable might be endogenous?</span></div>
+          <div style={panelTile(C.blue)}><strong>Instrument or design</strong><br /><span style={small}>What outside source of variation makes the estimate more credible?</span></div>
         </div>
       </Card></Reveal>
       <Reveal><Label color={C.blue}>Check</Label><H size={26}>Applied IV Quiz</H></Reveal>
@@ -445,9 +452,9 @@ function ActivityTab() {
         <div style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Before the checklist: what this activity is for</div>
         <P mb={8}>This is not just a technical data task. Students are creating the bridge between a research question and a regression table. Every item below protects one part of that bridge.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 10 }}>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Download</strong><br /><span style={small}>Defines the sample and raw variables students can study.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.black05 }}><strong>Aggregate and merge</strong><br /><span style={small}>Turns separate sources into one firm-year analysis panel.</span></div>
-          <div style={{ padding: 12, borderRadius: 8, background: C.amberBg }}><strong>Validate</strong><br /><span style={small}>Checks whether the final dataset is credible enough for Seminar 5 regressions.</span></div>
+          <div style={panelTile(C.black20)}><strong>Download</strong><br /><span style={small}>Defines the sample and raw variables students can study.</span></div>
+          <div style={panelTile(C.black20)}><strong>Aggregate and merge</strong><br /><span style={small}>Turns separate sources into one firm-year analysis panel.</span></div>
+          <div style={panelTile(C.amber)}><strong>Validate</strong><br /><span style={small}>Checks whether the final dataset is credible enough for Seminar 5 regressions.</span></div>
         </div>
       </Card></Reveal>
       <Reveal><Card>

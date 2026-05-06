@@ -124,7 +124,7 @@ function StatsTab({next}){
         <input value={vals} onChange={e=>{setVals(e.target.value);setActivePreset(3)}} style={{width:'100%',padding:'10px 14px',border:`1px solid ${C.black20}`,borderRadius:6,fontSize:14,fontFamily:"'JetBrains Mono',monospace",color:C.black,marginBottom:12,outline:'none'}}/>
         {parsed.length>0&&<div style={{position:'relative',height:48,background:C.black05,borderRadius:6,marginBottom:14,overflow:'hidden'}}><div style={{position:'absolute',left:`${((mean-dotMin)/dotRange)*100}%`,top:0,bottom:0,width:2,background:C.red,zIndex:2}}/><div style={{position:'absolute',left:`${((mean-dotMin)/dotRange)*100}%`,top:2,transform:'translateX(-50%)',fontSize:9,fontWeight:700,color:C.red,zIndex:3}}>x̄={mean.toFixed(1)}</div><div style={{position:'absolute',left:`${Math.max(0,((mean-sd-dotMin)/dotRange)*100)}%`,width:`${Math.min(100,((2*sd)/dotRange)*100)}%`,top:16,height:18,background:'rgba(228,0,43,0.08)',borderRadius:4,border:'1px dashed rgba(228,0,43,0.2)'}}/>{parsed.map((v,i)=> <div key={i} style={{position:'absolute',left:`${((v-dotMin)/dotRange)*100}%`,top:22,transform:'translateX(-50%)',width:10,height:10,borderRadius:'50%',background:C.red,opacity:0.6,border:'2px solid #fff',zIndex:1}}/>)}</div>}
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:10,marginBottom:10}}><div style={{background:C.black05,borderRadius:6,padding:'10px',textAlign:'center'}}><div style={{fontSize:10,color:C.black60,marginBottom:2}}>N</div><div style={{fontSize:22,fontWeight:900,color:C.black}}>{parsed.length}</div></div><div style={{background:C.redSubtle,borderRadius:6,padding:'10px',textAlign:'center'}}><div style={{fontSize:10,color:C.red,marginBottom:2}}>Mean</div><div style={{fontSize:22,fontWeight:900,color:C.red}}>{mean.toFixed(2)}</div></div><div style={{background:C.black05,borderRadius:6,padding:'10px',textAlign:'center'}}><div style={{fontSize:10,color:C.black60,marginBottom:2}}>SD</div><div style={{fontSize:22,fontWeight:900,color:C.black}}>{sd.toFixed(2)}</div></div></div>
-        {activePreset<3&&presets[activePreset].insight&&<div style={{padding:'10px 14px',background:C.amberBg,borderRadius:6,fontSize:13,color:C.amber,lineHeight:1.6,borderLeft:`3px solid ${C.amber}`}}><strong>Insight:</strong> {presets[activePreset].insight}</div>}
+        {activePreset<3&&presets[activePreset].insight&&<div style={{padding:'10px 14px',background:C.white,border:`1px solid ${C.black10}`,borderRadius:6,fontSize:13,color:C.black80,lineHeight:1.6,borderLeft:`3px solid ${C.amber}`}}><strong style={{color:C.amber}}>Insight:</strong> {presets[activePreset].insight}</div>}
       </Card></Reveal>
     </Wrap>
     <Wrap bg={C.black05}>
@@ -145,6 +145,19 @@ function StatsTab({next}){
 // ═══════════════════════════════════════════════════════════════
 function CorrelationTab({next}){
   const{completeTab}=useGame();
+  const[activeTrap,setActiveTrap]=useState('reverse');
+  const causationTraps=[
+    {id:'reverse',label:'Reverse causality',question:'Could Y be causing X instead?',explain:'Sometimes the direction runs backward. A relationship between ESG and performance does not automatically mean ESG improves performance; stronger firms may simply have more resources to invest in ESG.',example:'Does ESG improve ROA, or do profitable firms spend more on ESG programmes?'},
+    {id:'omitted',label:'Omitted variable',question:'Could a hidden third factor drive both?',explain:'A missing variable can create a relationship that looks meaningful. If larger firms have both higher ESG scores and higher performance, firm size may be the hidden driver.',example:'Firm size may explain both ESG disclosure quality and analyst coverage.'},
+    {id:'spurious',label:'Spurious correlation',question:'Are the variables only moving together by coincidence or context?',explain:'Two variables can move together without a meaningful causal link. The correlation may be real, but the explanation is wrong.',example:'Ice cream sales and drowning deaths both rise in summer; hot weather is the common context.'},
+  ];
+  const selectedTrap=causationTraps.find(t=>t.id===activeTrap)||causationTraps[0];
+  const spuriousExamples=[
+    {pair:'Ice cream sales and drowning deaths',bad:'Ice cream causes drowning.',hidden:'Hot weather increases both ice cream purchases and swimming.'},
+    {pair:'Umbrella sales and traffic accidents',bad:'Umbrellas cause accidents.',hidden:'Rain increases umbrella use and makes roads more dangerous.'},
+    {pair:'Sunscreen sales and shark sightings',bad:'Sunscreen attracts sharks.',hidden:'Sunny holiday periods bring more people to beaches.'},
+    {pair:'Coffee sales and exam stress',bad:'Coffee causes exams to be stressful.',hidden:'Assessment weeks increase both stress and caffeine consumption.'},
+  ];
   const corrQs=[
     {id:'c1',q:'r = 0.95 between Sales and Production Costs. This means:',opts:['Sales cause production costs to rise','As sales increase, production costs tend to increase strongly','There is no relationship','Production costs are exactly 95% of sales'],c:1,ex:'r=0.95 is a very strong positive correlation — but correlation does NOT mean causation. There could be an omitted variable (firm size) driving both.'},
     {id:'c2',q:'r = −0.17 between CFO and Accruals. This suggests:',opts:['A strong negative relationship','A weak negative relationship — slightly opposite movement','No relationship at all','Perfect negative correlation'],c:1,ex:'r=−0.17 is weak and negative — only a slight tendency to move oppositely. This is expected: accruals and cash flows are partial substitutes.'},
@@ -167,11 +180,26 @@ function CorrelationTab({next}){
     <Wrap bg={C.redSubtle} py={40}>
       <Reveal><Label>Critical Concept</Label><H size={28}>Correlation ≠ Causation</H></Reveal>
       <Reveal delay={0.05}><P mb={16}>A high correlation only tells you two variables <strong>move together</strong>. It does NOT tell you that one <strong>causes</strong> the other. Three reasons why:</P>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:12,marginBottom:20}}>
-          <Card><div style={{fontSize:12,fontWeight:700,color:C.red,marginBottom:6}}>Reverse Causality</div><div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Maybe Y causes X, not the other way around. Does ESG improve performance, or do well-performing firms invest more in ESG?</div></Card>
-          <Card><div style={{fontSize:12,fontWeight:700,color:C.red,marginBottom:6}}>Omitted Variable</div><div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>A hidden third variable drives both X and Y. Firm size might drive both ESG scores and performance.</div></Card>
-          <Card><div style={{fontSize:12,fontWeight:700,color:C.amber,marginBottom:6}}>Spurious Correlation</div><div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Two variables correlate by coincidence or through a confounding factor. Ice cream sales and drowning deaths both rise in summer — but ice cream doesn't cause drowning.</div></Card>
+        <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>
+          {causationTraps.map(t=><button key={t.id} onClick={()=>setActiveTrap(t.id)} style={{padding:'9px 13px',border:`1px solid ${activeTrap===t.id?C.red:C.black20}`,background:activeTrap===t.id?C.redSubtle:C.white,color:activeTrap===t.id?C.red:C.black80,borderRadius:6,fontFamily:"'Source Sans 3',sans-serif",fontSize:13,fontWeight:800,cursor:'pointer'}}>{t.label}</button>)}
         </div>
+        <div style={{background:C.white,border:`1px solid ${C.black10}`,borderLeft:`4px solid ${C.red}`,borderRadius:8,padding:'14px 16px',marginBottom:20}}>
+          <div style={{fontSize:18,fontWeight:900,color:C.black,marginBottom:4}}>{selectedTrap.label}</div>
+          <div style={{fontSize:14,fontWeight:800,color:C.red,marginBottom:8}}>{selectedTrap.question}</div>
+          <div style={{fontSize:14,color:C.black80,lineHeight:1.6,marginBottom:10}}>{selectedTrap.explain}</div>
+          <div style={{fontSize:13,color:C.black80,lineHeight:1.55,background:C.black05,border:`1px solid ${C.black10}`,borderRadius:6,padding:'10px 12px'}}><strong>Example:</strong> {selectedTrap.example}</div>
+        </div>
+        <Card style={{borderLeft:`4px solid ${C.amber}`}}>
+          <div style={{fontSize:12,fontWeight:800,letterSpacing:'0.06em',textTransform:'uppercase',color:C.amber,marginBottom:8}}>Fun but false conclusions</div>
+          <P mb={10}>Spurious correlations are useful because they make the mistake obvious. The pattern may be real, but the story is wrong.</P>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(230px,1fr))',gap:10}}>
+            {spuriousExamples.map(ex=><div key={ex.pair} style={{background:C.white,border:`1px solid ${C.black10}`,borderLeft:`3px solid ${C.amber}`,borderRadius:8,padding:12}}>
+              <div style={{fontSize:13,fontWeight:900,color:C.black,marginBottom:4}}>{ex.pair}</div>
+              <div style={{fontSize:12.5,color:C.red,lineHeight:1.5,marginBottom:6}}><strong>Bad causal story:</strong> {ex.bad}</div>
+              <div style={{fontSize:12.5,color:C.black80,lineHeight:1.55}}><strong>Likely hidden driver:</strong> {ex.hidden}</div>
+            </div>)}
+          </div>
+        </Card>
       </Reveal>
     </Wrap>
 
@@ -223,8 +251,8 @@ function HypothesisTab({next}){
       <Reveal delay={0.05}><Card style={{marginBottom:16}}>
         <div style={{fontSize:14,color:C.black80,lineHeight:1.7,marginBottom:14}}>If we get a p-value of 0.03, it means: <strong>"There is only a 3% chance of seeing a result this extreme if H₀ were true."</strong> Since 3% is small, we conclude the result is unlikely to be noise — we reject H₀.</div>
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
-          <div style={{background:C.greenBg,padding:'12px 14px',borderRadius:6,borderLeft:`3px solid ${C.green}`}}><div style={{fontSize:11,fontWeight:700,color:C.green,marginBottom:4}}>Small p-value (e.g. 0.01)</div><div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Strong evidence <strong>against</strong> H₀. Your result is unlikely to be noise. Reject H₀.</div></div>
-          <div style={{background:C.amberBg,padding:'12px 14px',borderRadius:6,borderLeft:`3px solid ${C.amber}`}}><div style={{fontSize:11,fontWeight:700,color:C.amber,marginBottom:4}}>Large p-value (e.g. 0.45)</div><div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Weak evidence against H₀. Your result could easily be noise. Do not reject H₀.</div></div>
+          <div style={{background:C.white,border:`1px solid ${C.black10}`,padding:'12px 14px',borderRadius:6,borderLeft:`3px solid ${C.green}`}}><div style={{fontSize:11,fontWeight:700,color:C.green,marginBottom:4}}>Small p-value (e.g. 0.01)</div><div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Strong evidence <strong>against</strong> H₀. Your result is unlikely to be noise. Reject H₀.</div></div>
+          <div style={{background:C.white,border:`1px solid ${C.black10}`,padding:'12px 14px',borderRadius:6,borderLeft:`3px solid ${C.amber}`}}><div style={{fontSize:11,fontWeight:700,color:C.amber,marginBottom:4}}>Large p-value (e.g. 0.45)</div><div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Weak evidence against H₀. Your result could easily be noise. Do not reject H₀.</div></div>
         </div>
       </Card></Reveal>
     </Wrap>
@@ -358,7 +386,7 @@ function RegressionTab({next}){
             <button onClick={()=>loadPreset('typical')} style={{background:C.black05,color:C.black60,border:`1px solid ${C.black20}`,borderRadius:4,padding:'5px 12px',fontSize:11,fontWeight:600,cursor:'pointer',fontFamily:"'Source Sans 3',sans-serif"}}>Reset</button>
           </div>
         </div>
-                <div style={{background:C.blueBg,border:'1px solid rgba(26,95,160,0.15)',borderRadius:6,padding:'7px 12px',marginBottom:8,fontSize:12,color:C.blue,lineHeight:1.5}}><strong>Drag any red dot</strong> to move it - the OLS line, equation, and R-squared recalculate instantly. Use the outlier and winsorise buttons to see why researchers disclose data-cleaning choices before interpreting results.</div>
+                <div style={{background:C.white,border:`1px solid ${C.black10}`,borderLeft:`3px solid ${C.blue}`,borderRadius:6,padding:'7px 12px',marginBottom:8,fontSize:12,color:C.black80,lineHeight:1.5}}><strong style={{color:C.blue}}>Drag any red dot</strong> to move it - the OLS line, equation, and R-squared recalculate instantly. Use the outlier and winsorise buttons to see why researchers disclose data-cleaning choices before interpreting results.</div>
         <svg ref={svgRef} viewBox={`0 0 ${W} ${HH}`} style={{width:'100%',display:'block',background:C.black05,borderRadius:8,cursor:dragging!==null?'grabbing':'default',touchAction:'none',userSelect:'none'}} onPointerMove={onMove} onPointerUp={onUp} onPointerLeave={onUp}>
           {[1,2,3,4,5,6,7].map(x=> <line key={'gx'+x} x1={tx(x)} y1={ty(yMin)} x2={tx(x)} y2={ty(yMax)} stroke={C.black10} strokeWidth="0.4"/>)}
           {[1,2,3,4,5,6,7,8].map(y=> <line key={'gy'+y} x1={tx(xMin)} y1={ty(y)} x2={tx(xMax)} y2={ty(y)} stroke={C.black10} strokeWidth="0.4"/>)}
@@ -394,19 +422,19 @@ function RegressionTab({next}){
         <div style={{fontSize:12,fontWeight:700,color:C.red,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:10}}>Beyond p-values</div>
         <P mb={12}>A regression table is not only asking "is the coefficient statistically significant?" It is also asking: is the effect big enough to care about, and can we trust the p-value?</P>
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:12}}>
-          <div style={{background:C.black05,borderRadius:8,padding:'14px 16px',borderTop:`3px solid ${C.green}`}}>
+          <div style={{background:C.white,border:`1px solid ${C.black10}`,borderRadius:8,padding:'14px 16px',borderTop:`3px solid ${C.green}`}}>
             <div style={{fontSize:13,fontWeight:800,color:C.black,marginBottom:5}}>Economic significance</div>
             <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>This asks: "So what?" A coefficient may be statistically significant, but still too small to matter. <strong>Example:</strong> if ESG score increases ROA by only 0.001 percentage points, managers may not care even if the p-value is below 0.05.</div>
           </div>
-          <div style={{background:C.black05,borderRadius:8,padding:'14px 16px',borderTop:`3px solid ${C.amber}`}}>
+          <div style={{background:C.white,border:`1px solid ${C.black10}`,borderRadius:8,padding:'14px 16px',borderTop:`3px solid ${C.amber}`}}>
             <div style={{fontSize:13,fontWeight:800,color:C.black,marginBottom:5}}>Heteroskedasticity</div>
             <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>This means the "mistakes" made by the model are not equally sized for everyone. <strong>Example:</strong> profit values for huge firms vary much more than profit values for small firms. That can make the usual p-values too confident.</div>
           </div>
-          <div style={{background:C.black05,borderRadius:8,padding:'14px 16px',borderTop:`3px solid ${C.blue}`}}>
+          <div style={{background:C.white,border:`1px solid ${C.black10}`,borderRadius:8,padding:'14px 16px',borderTop:`3px solid ${C.blue}`}}>
             <div style={{fontSize:13,fontWeight:800,color:C.black,marginBottom:5}}>Robust standard errors</div>
             <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>These are a safer way to calculate uncertainty when heteroskedasticity may exist. <strong>Example:</strong> the coefficient on ESG stays 0.20, but the standard error may become larger, so the result may no longer be significant.</div>
           </div>
-          <div style={{background:C.black05,borderRadius:8,padding:'14px 16px',borderTop:`3px solid ${C.red}`}}>
+          <div style={{background:C.white,border:`1px solid ${C.black10}`,borderRadius:8,padding:'14px 16px',borderTop:`3px solid ${C.red}`}}>
             <div style={{fontSize:13,fontWeight:800,color:C.black,marginBottom:5}}>Clustered standard errors</div>
             <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>Use these when rows in the data are related to each other. <strong>Example:</strong> if Apple appears every year from 2012 to 2024, those Apple rows are not fully independent. Clustering by firm allows for that connection.</div>
           </div>
@@ -657,8 +685,9 @@ function ActivityTab(){
   return <div style={{paddingTop:56}}>
     <Wrap>
       <Reveal><Label>Seminar Activity</Label><H>Apply What You've Learned</H><P>Continue with the paper you identified in Seminar 1. Focus on the quantitative results tables.</P></Reveal>
-      <Reveal delay={0.05}><Card style={{marginBottom:20,background:C.redSubtle,borderColor:C.red}}>
+      <Reveal delay={0.05}><Card style={{marginBottom:20,borderColor:C.red,borderLeft:`4px solid ${C.red}`}}>
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:8}}>Your tasks</div>
+        <P mb={12}>Work through the paper in the same order a researcher reads evidence: understand the sample, inspect relationships, read the main coefficient, then ask whether the result survives alternative checks.</P>
         <Num n={1}>Check for tables on <strong>summary statistics, correlation matrix, and regression</strong>. Identify the <strong style={{background:'#FFEF00',padding:'1px 4px',borderRadius:2}}>NEW variable(s)</strong>.</Num>
         <Num n={2}>In <strong>summary statistics</strong>, discuss Y and the NEW variable(s). What are their means and SDs?</Num>
         <Num n={3}>In the <strong>correlation matrix</strong>, check for multicollinearity (r {'>'} |0.7|) among independent variables.</Num>

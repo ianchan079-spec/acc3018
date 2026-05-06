@@ -10,6 +10,14 @@ import {
 
 const TABS=[{id:'s3:overview',label:'Overview'},{id:'s3:endogeneity',label:'Endogeneity'},{id:'s3:omitted',label:'Omitted Variables'},{id:'s3:simultaneous',label:'Simultaneous Eqs'},{id:'s3:selection',label:'Selection Bias'},{id:'s3:measurement',label:'Measurement Error'},{id:'s3:iv',label:'IV & 2SLS'},{id:'s3:apply',label:'Apply: Build IV'},{id:'s3:activity',label:'Activity'}];
 
+const conceptTile = (accent = C.black20) => ({
+  padding: 12,
+  borderRadius: 8,
+  background: C.white,
+  border: `1px solid ${C.black10}`,
+  borderLeft: `3px solid ${accent}`,
+});
+
 
 // ═══════════════════════════════════════════════════════════════
 // TAB 1: OVERVIEW
@@ -36,7 +44,7 @@ function OverviewTab({next}){
         <div style={{fontSize:11,fontWeight:700,letterSpacing:'0.08em',textTransform:'uppercase',color:C.gold,marginBottom:6}}>⬢ Gamification active</div>
         <div style={{fontSize:14,color:C.black80,lineHeight:1.65}}>Your progress is <strong>shared with Seminars 1 & 2</strong> — XP, badges, and leaderboard position carry across all three seminars.</div>
       </Card></Reveal>
-      <Reveal delay={0.2}><Card style={{background:C.redSubtle,borderColor:C.red,marginTop:14}}>
+      <Reveal delay={0.2}><Card style={{borderColor:C.red,borderLeft:`4px solid ${C.red}`,marginTop:14}}>
         <div style={{fontSize:11,fontWeight:700,letterSpacing:'0.08em',textTransform:'uppercase',color:C.red,marginBottom:6}}>The big question</div>
         <div style={{fontSize:15,color:C.black,lineHeight:1.6,fontWeight:600}}>"My regression coefficient is significant — does that mean X causes Y?"</div>
         <div style={{fontSize:13,color:C.black80,lineHeight:1.6,marginTop:6}}>By the end of this seminar, you'll know exactly when the answer is "no", and what to do about it.</div>
@@ -177,7 +185,7 @@ function EndogeneityTab({next}){
           <div style={{background:C.redSubtle,borderRadius:6,padding:'10px',textAlign:'center'}}><div style={{fontSize:10,color:C.red,marginBottom:2}}>OLS β̂₁</div><div style={{fontSize:20,fontWeight:900,color:C.red}}>{bHat.toFixed(3)}</div></div>
           <div style={{background:Math.abs(bias)<0.1?C.greenBg:C.amberBg,borderRadius:6,padding:'10px',textAlign:'center'}}><div style={{fontSize:10,color:Math.abs(bias)<0.1?C.green:C.amber,marginBottom:2}}>Bias</div><div style={{fontSize:20,fontWeight:900,color:Math.abs(bias)<0.1?C.green:C.amber}}>{bias>=0?'+':''}{bias.toFixed(3)}</div></div>
         </div>
-        <div style={{padding:'10px 14px',background:Math.abs(corr)<0.05?C.greenBg:C.amberBg,borderRadius:6,fontSize:13,color:Math.abs(corr)<0.05?C.green:C.amber,lineHeight:1.6,borderLeft:`3px solid ${Math.abs(corr)<0.05?C.green:C.amber}`,marginTop:10}}><strong>Insight:</strong> {Math.abs(corr)<0.05?'When x and ε are uncorrelated, OLS recovers the true slope. This is the world we want to live in.':corr>0?'Positive correlation between x and ε pushes OLS upward — it overestimates the effect.':'Negative correlation between x and ε pulls OLS downward — it can even flip the sign, like in the slide example.'}</div>
+        <div style={{padding:'10px 14px',background:C.white,border:`1px solid ${C.black10}`,borderRadius:6,fontSize:13,color:C.black80,lineHeight:1.6,borderLeft:`3px solid ${Math.abs(corr)<0.05?C.green:C.amber}`,marginTop:10}}><strong style={{color:Math.abs(corr)<0.05?C.green:C.amber}}>Insight:</strong> {Math.abs(corr)<0.05?'When x and ε are uncorrelated, OLS recovers the true slope. This is the world we want to live in.':corr>0?'Positive correlation between x and ε pushes OLS upward — it overestimates the effect.':'Negative correlation between x and ε pulls OLS downward — it can even flip the sign, like in the slide example.'}</div>
       </Card></Reveal>
     </Wrap>
 
@@ -218,9 +226,9 @@ function OmittedTab({next}){
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:8}}>Start with the intuition</div>
         <P mb={8}>An omitted variable is an important explanation you left out of the regression. It becomes a serious problem only when that missing explanation is connected to both sides of your research question.</P>
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:10}}>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>1. It affects y</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The missing factor helps explain the outcome.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>2. It is related to x</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The missing factor is more common when your main variable is high or low.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.redSubtle}}><strong>3. OLS gets confused</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The coefficient mixes the effect of x with the effect of the missing factor.</span></div>
+          <div style={conceptTile(C.black20)}><strong>1. It affects y</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The missing factor helps explain the outcome.</span></div>
+          <div style={conceptTile(C.black20)}><strong>2. It is related to x</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The missing factor is more common when your main variable is high or low.</span></div>
+          <div style={conceptTile(C.red)}><strong>3. OLS gets confused</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The coefficient mixes the effect of x with the effect of the missing factor.</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.05}><Card style={{marginBottom:18}}>
@@ -270,7 +278,7 @@ function OmittedTab({next}){
           <div style={{padding:'12px 10px',border:`1px solid ${C.border}`,borderRadius:8,background:'#fff',textAlign:'center',fontWeight:800,color:C.black}}>Wages</div>
         </div>
         <P mb={8}>The regression includes education, but it does not directly observe hidden skill. The omitted variable problem appears because hidden skill also has its own route to wages.</P>
-        <div style={{padding:12,borderRadius:8,background:C.redSubtle,color:C.black80,fontSize:14,lineHeight:1.55}}><strong>Plain English:</strong> the model may credit education for wage differences that partly come from the kinds of people who receive more education.</div>
+        <div style={{...conceptTile(C.red),color:C.black80,fontSize:14,lineHeight:1.55}}><strong>Plain English:</strong> the model may credit education for wage differences that partly come from the kinds of people who receive more education.</div>
       </Card></Reveal>
       <Reveal delay={0.15}><Card style={{marginBottom:14}}>
         <div style={{fontSize:12,fontWeight:700,color:C.red,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>The math version, translated</div>
@@ -329,7 +337,7 @@ function OmittedTab({next}){
       <Reveal><Label color={C.blue}>Try it yourself</Label><H size={26} color={C.blue}>Predict the Direction of Bias</H><P color={C.blue} mb={14}>Read the scenario, decide the signs of α₁ and β₂, then predict whether OLS over- or underestimates the true effect.</P></Reveal>
       <Reveal delay={0.05}><Card>
         <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:14}}>{scenarios.map((s,i)=> <button key={i} onClick={()=>{setScenario(i);reset();}} style={{padding:'7px 14px',border:`1px solid ${scenario===i?C.red:C.black20}`,borderRadius:5,background:scenario===i?C.redSubtle:C.white,color:scenario===i?C.red:C.black80,fontFamily:"'Source Sans 3',sans-serif",fontSize:12,fontWeight:600,cursor:'pointer'}}>Case {i+1}</button>)}</div>
-        <div style={{background:C.black05,padding:'14px 16px',borderRadius:6,marginBottom:14,borderLeft:`3px solid ${C.red}`}}>
+        <div style={{background:C.white,border:`1px solid ${C.black10}`,padding:'14px 16px',borderRadius:6,marginBottom:14,borderLeft:`3px solid ${C.red}`}}>
           <div style={{fontSize:13,fontWeight:700,color:C.black,marginBottom:6}}>{sc.title}</div>
           <div style={{fontSize:13,color:C.black80,lineHeight:1.6}}>{sc.desc}</div>
         </div>
@@ -344,7 +352,7 @@ function OmittedTab({next}){
           })}
         </div>
         {!revealed&&guess&&<button onClick={()=>setRevealed(true)} style={{background:C.red,color:'#fff',border:'none',borderRadius:6,padding:'10px 22px',fontSize:14,fontWeight:700,cursor:'pointer',fontFamily:"'Source Sans 3',sans-serif"}}>Check answer</button>}
-        {revealed&&<div style={{padding:'12px 16px',background:guess===sc.correct?C.greenBg:C.amberBg,borderRadius:6,fontSize:13,color:C.black80,lineHeight:1.65,borderLeft:`3px solid ${guess===sc.correct?C.green:C.amber}`}}>
+        {revealed&&<div style={{padding:'12px 16px',background:C.white,border:`1px solid ${C.black10}`,borderRadius:6,fontSize:13,color:C.black80,lineHeight:1.65,borderLeft:`3px solid ${guess===sc.correct?C.green:C.amber}`}}>
           <strong style={{color:guess===sc.correct?C.green:C.amber}}>{guess===sc.correct?'✓ Correct.':'× Not quite.'}</strong> α₁ is <strong>{sc.a1}</strong>, β₂ is <strong>{sc.a2}</strong>, so α₁·β₂ is {sc.correct==='over'?'positive':'negative'}. {sc.expl}
         </div>}
       </Card></Reveal>
@@ -375,9 +383,9 @@ function SimultaneousTab({next}){
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.amber,marginBottom:8}}>Real-world translation: two-way causation</div>
         <P mb={8}>Simultaneity happens when cause and effect run in both directions at the same time. Your regression asks, "Does x affect y?" but the real world is also saying, "y affects x too."</P>
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:10}}>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Direction 1</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>x changes y, which is the effect you want.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Direction 2</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>y also changes x, creating a feedback loop.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.amberBg}}><strong>The problem</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>OLS cannot separate the two directions by itself.</span></div>
+          <div style={conceptTile(C.black20)}><strong>Direction 1</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>x changes y, which is the effect you want.</span></div>
+          <div style={conceptTile(C.black20)}><strong>Direction 2</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>y also changes x, creating a feedback loop.</span></div>
+          <div style={conceptTile(C.amber)}><strong>The problem</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>OLS cannot separate the two directions by itself.</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.05}><Card style={{marginBottom:18}}>
@@ -394,9 +402,9 @@ function SimultaneousTab({next}){
         <div style={{fontSize:12,fontWeight:700,color:C.amber,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>Read the example as a feedback loop</div>
         <P mb={8}>Do not start by memorising the equations. Start by asking whether each variable can plausibly push the other one around.</P>
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))',gap:10}}>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Prosperity may reduce conflict</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>People have more to lose, governments have more resources, and institutions may be stronger.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Conflict may reduce prosperity</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>War damages infrastructure, disrupts work, and scares off investment.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.amberBg}}><strong>So the coefficient is tangled</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>A simple regression gives a relationship, but not a clean one-way causal effect.</span></div>
+          <div style={conceptTile(C.black20)}><strong>Prosperity may reduce conflict</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>People have more to lose, governments have more resources, and institutions may be stronger.</span></div>
+          <div style={conceptTile(C.black20)}><strong>Conflict may reduce prosperity</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>War damages infrastructure, disrupts work, and scares off investment.</span></div>
+          <div style={conceptTile(C.amber)}><strong>So the coefficient is tangled</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>A simple regression gives a relationship, but not a clean one-way causal effect.</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.05}><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14,marginBottom:14}}>
@@ -455,9 +463,9 @@ function SelectionTab({next}){
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.blue,marginBottom:8}}>Think about who enters the comparison</div>
         <P mb={8}>Selection bias is about unfair comparison groups. The treated and untreated groups may differ before the treatment even happens.</P>
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:10}}>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Good comparison</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The groups were similar before treatment.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Biased comparison</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>People chose, qualified, or were selected into treatment for reasons linked to the outcome.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.blueBg}}><strong>Research habit</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Always ask: would these groups have differed even without the treatment?</span></div>
+          <div style={conceptTile(C.black20)}><strong>Good comparison</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The groups were similar before treatment.</span></div>
+          <div style={conceptTile(C.black20)}><strong>Biased comparison</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>People chose, qualified, or were selected into treatment for reasons linked to the outcome.</span></div>
+          <div style={conceptTile(C.blue)}><strong>Research habit</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Always ask: would these groups have differed even without the treatment?</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.05}><Card style={{marginBottom:18}}>
@@ -475,9 +483,9 @@ function SelectionTab({next}){
         <div style={{fontSize:12,fontWeight:700,color:C.blue,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>Why this is not just a military-service question</div>
         <P mb={8}>The question is not only whether service changes wages. It is also whether the people who enter service are already different from the people who do not.</P>
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))',gap:10}}>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>If enlistment were random</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The service and non-service groups would be comparable on average.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>If enlistment is voluntary</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>People with different job prospects may be more likely to enlist.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.blueBg}}><strong>What OLS may capture</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Not just the effect of service, but also pre-existing differences between the groups.</span></div>
+          <div style={conceptTile(C.black20)}><strong>If enlistment were random</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The service and non-service groups would be comparable on average.</span></div>
+          <div style={conceptTile(C.black20)}><strong>If enlistment is voluntary</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>People with different job prospects may be more likely to enlist.</span></div>
+          <div style={conceptTile(C.blue)}><strong>What OLS may capture</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Not just the effect of service, but also pre-existing differences between the groups.</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.05}><Card style={{marginBottom:14}}>
@@ -529,9 +537,9 @@ function MeasurementTab({next}){
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.purple,marginBottom:8}}>Think about how the variable was recorded</div>
         <P mb={8}>Measurement error means the number in your dataset is not the true concept you care about. Sometimes it is just noisy. Sometimes the error follows a pattern.</P>
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:10}}>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>True variable</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What you wish you could observe perfectly.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Recorded variable</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What actually appears in the dataset.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.purpleBg}}><strong>The problem</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>If the error is systematic, the coefficient can be pulled in the wrong direction.</span></div>
+          <div style={conceptTile(C.black20)}><strong>True variable</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What you wish you could observe perfectly.</span></div>
+          <div style={conceptTile(C.black20)}><strong>Recorded variable</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What actually appears in the dataset.</span></div>
+          <div style={conceptTile(C.purple)}><strong>The problem</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>If the error is systematic, the coefficient can be pulled in the wrong direction.</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.05}><Card style={{marginBottom:18}}>
@@ -551,9 +559,9 @@ function MeasurementTab({next}){
         <div style={{fontSize:12,fontWeight:700,color:C.purple,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>Read the example through measurement quality</div>
         <P mb={8}>The causal question is whether wealth improves health. But before estimating that relationship, we need to ask whether wealth is measured in a trustworthy way.</P>
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))',gap:10}}>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Random mistakes</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Some people guess too high, others too low. This usually weakens the estimated relationship.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Patterned mistakes</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Rich respondents may systematically understate wealth for privacy.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.purpleBg}}><strong>Research habit</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Ask how the variable was collected before trusting the coefficient.</span></div>
+          <div style={conceptTile(C.black20)}><strong>Random mistakes</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Some people guess too high, others too low. This usually weakens the estimated relationship.</span></div>
+          <div style={conceptTile(C.black20)}><strong>Patterned mistakes</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Rich respondents may systematically understate wealth for privacy.</span></div>
+          <div style={conceptTile(C.purple)}><strong>Research habit</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Ask how the variable was collected before trusting the coefficient.</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.05}><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14,marginBottom:14}}>
@@ -636,7 +644,7 @@ function SourceDiagnosis({next}){
     })}
     <div style={{display:'flex',gap:10,marginTop:8}}>
       {!submitted?<Btn onClick={submit} disabled={!allAnswered}>Submit ({Object.keys(answers).length}/{DIAG_SCENARIOS.length})</Btn>:<>
-        <div style={{flex:1,padding:'12px 16px',background:correctCount===DIAG_SCENARIOS.length?C.greenBg:C.amberBg,borderRadius:6,fontSize:14,color:correctCount===DIAG_SCENARIOS.length?C.green:C.amber,fontWeight:700,borderLeft:`3px solid ${correctCount===DIAG_SCENARIOS.length?C.green:C.amber}`}}>{correctCount}/{DIAG_SCENARIOS.length} correct {correctCount===DIAG_SCENARIOS.length?'· badge unlocked!':''}</div>
+        <div style={{flex:1,padding:'12px 16px',background:C.white,border:`1px solid ${C.black10}`,borderRadius:6,fontSize:14,color:correctCount===DIAG_SCENARIOS.length?C.green:C.amber,fontWeight:700,borderLeft:`3px solid ${correctCount===DIAG_SCENARIOS.length?C.green:C.amber}`}}>{correctCount}/{DIAG_SCENARIOS.length} correct {correctCount===DIAG_SCENARIOS.length?'· badge unlocked!':''}</div>
         <Btn onClick={reset} style={{background:C.black}}>Retry</Btn>
       </>}
     </div>
@@ -709,9 +717,9 @@ function IvTab({next}){
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.green,marginBottom:8}}>IV in one sentence</div>
         <P mb={8}>An instrument is a source of movement in x that is as good as random. Instead of using all variation in x, IV uses only the part of x pushed around by that clean outside source.</P>
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:10}}>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>OLS asks</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>When x is higher, is y higher?</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>IV asks</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>When x is higher because z pushed it higher, is y higher?</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.greenBg}}><strong>Why that helps</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The z-driven part of x is less contaminated by omitted variables, selection, simultaneity, or measurement error.</span></div>
+          <div style={conceptTile(C.black20)}><strong>OLS asks</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>When x is higher, is y higher?</span></div>
+          <div style={conceptTile(C.black20)}><strong>IV asks</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>When x is higher because z pushed it higher, is y higher?</span></div>
+          <div style={conceptTile(C.green)}><strong>Why that helps</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The z-driven part of x is less contaminated by omitted variables, selection, simultaneity, or measurement error.</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.05}><Card style={{marginBottom:18,background:C.black,borderColor:C.black}}>
@@ -726,9 +734,9 @@ function IvTab({next}){
         <div style={{fontSize:12,fontWeight:700,color:C.amber,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>What makes an event useful for IV?</div>
         <P mb={8}>A natural experiment is useful when it changes the explanatory variable for reasons that are not chosen by the people or firms being studied.</P>
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))',gap:10}}>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Good shock</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Weather, lotteries, law changes, distance, or timing that affects x from outside the usual decision process.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Bad shock</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>A variable chosen by people for the same reasons that affect y.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.amberBg}}><strong>Research habit</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Ask: did this source of variation happen to people, or did people choose it?</span></div>
+          <div style={conceptTile(C.black20)}><strong>Good shock</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Weather, lotteries, law changes, distance, or timing that affects x from outside the usual decision process.</span></div>
+          <div style={conceptTile(C.black20)}><strong>Bad shock</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>A variable chosen by people for the same reasons that affect y.</span></div>
+          <div style={conceptTile(C.amber)}><strong>Research habit</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Ask: did this source of variation happen to people, or did people choose it?</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.05}><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14,marginBottom:14}}>
@@ -749,8 +757,8 @@ function IvTab({next}){
         <div style={{fontSize:12,fontWeight:700,color:C.green,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>The two checks in plain English</div>
         <P mb={8}>A good instrument must pass two different tests. One is about whether it is useful. The other is about whether it is trustworthy.</P>
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:10}}>
-          <div style={{padding:12,borderRadius:8,background:C.greenBg}}><strong>Relevance: does z move x?</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>If the instrument barely changes the endogenous variable, it cannot teach us much.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.redSubtle}}><strong>Exogeneity: is z otherwise clean?</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The instrument should not affect y directly, or through another hidden channel.</span></div>
+          <div style={conceptTile(C.green)}><strong>Relevance: does z move x?</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>If the instrument barely changes the endogenous variable, it cannot teach us much.</span></div>
+          <div style={conceptTile(C.red)}><strong>Exogeneity: is z otherwise clean?</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>The instrument should not affect y directly, or through another hidden channel.</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.05}><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14,marginBottom:18}}>
@@ -777,9 +785,9 @@ function IvTab({next}){
         <div style={{fontSize:12,fontWeight:700,color:C.red,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>The two stages, translated</div>
         <P mb={8}>2SLS sounds technical, but the logic is simple: first clean x, then use the cleaned version of x to explain y.</P>
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:10}}>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Stage 1: isolate the clean part of x</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Predict x using the instrument z. This gives x-hat: the part of x explained by z.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Stage 2: estimate the effect on y</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Regress y on x-hat. Now the coefficient uses only the instrument-driven variation.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.redSubtle}}><strong>Key warning</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>If z is not valid, x-hat is not clean. 2SLS cannot rescue a bad instrument.</span></div>
+          <div style={conceptTile(C.black20)}><strong>Stage 1: isolate the clean part of x</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Predict x using the instrument z. This gives x-hat: the part of x explained by z.</span></div>
+          <div style={conceptTile(C.black20)}><strong>Stage 2: estimate the effect on y</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Regress y on x-hat. Now the coefficient uses only the instrument-driven variation.</span></div>
+          <div style={conceptTile(C.red)}><strong>Key warning</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>If z is not valid, x-hat is not clean. 2SLS cannot rescue a bad instrument.</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.05}>
@@ -811,7 +819,7 @@ function IvTab({next}){
       <Reveal delay={0.03}><Card style={{marginBottom:14}}>
         <div style={{fontSize:12,fontWeight:700,color:C.green,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>How to read this table</div>
         <P mb={8}>Each row has the same structure: the regressor is the variable we care about, the endogeneity column explains why OLS is not enough, and the instrument column shows the outside source of movement used to clean up the regressor.</P>
-        <div style={{fontSize:14,color:C.black80,lineHeight:1.6,padding:12,borderRadius:8,background:C.greenBg}}><strong>Reading habit:</strong> For every instrument, ask both questions: does it move x, and could it affect y through any other route?</div>
+        <div style={{fontSize:14,color:C.black80,lineHeight:1.6,...conceptTile(C.green)}}><strong>Reading habit:</strong> For every instrument, ask both questions: does it move x, and could it affect y through any other route?</div>
       </Card></Reveal>
       <Reveal delay={0.05}><div style={{overflowX:'auto',marginBottom:14}}><table style={{width:'100%',borderCollapse:'collapse',fontSize:13,background:C.white,borderRadius:8,overflow:'hidden'}}>
         <thead><tr style={{background:C.black}}>{['Response (y)','Regressor (x)','Endogeneity','Instrument (z)'].map((h,i)=> <th key={i} style={{padding:'10px 14px',color:C.white,fontWeight:700,textAlign:'left',fontSize:12,letterSpacing:'0.04em'}}>{h}</th>)}</tr></thead>
@@ -825,7 +833,7 @@ function IvTab({next}){
                 const active=activeInstrument&&activeInstrument.name===inst.name&&activeInstrument.x===r.x&&activeInstrument.y===r.y;
                 return <div key={inst.name} style={{display:'flex',flexDirection:'column',gap:6,alignItems:'flex-start',maxWidth:330}}>
                   <button onClick={()=>setActiveInstrument(active?null:{...inst,y:r.y,x:r.x,endo:r.endo})} style={{border:`1px solid ${active?C.green:C.black20}`,background:active?C.greenBg:C.white,color:C.green,borderRadius:5,padding:'6px 9px',fontFamily:"'Source Sans 3',sans-serif",fontSize:12,fontWeight:700,cursor:'pointer',lineHeight:1.2}}>{inst.name}</button>
-                  {active&&<div style={{width:310,maxWidth:'100%',background:C.greenBg,border:`1px solid ${C.green}`,borderRadius:8,padding:12,boxShadow:'0 8px 20px rgba(0,0,0,0.10)'}}>
+                  {active&&<div style={{width:310,maxWidth:'100%',background:C.white,border:`1px solid ${C.green}`,borderLeft:`3px solid ${C.green}`,borderRadius:8,padding:12,boxShadow:'0 8px 20px rgba(0,0,0,0.10)'}}>
                     <div style={{display:'flex',justifyContent:'space-between',gap:10,alignItems:'flex-start',marginBottom:8}}>
                       <div>
                         <div style={{fontSize:10,fontWeight:800,color:C.green,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:3}}>Instrument explainer</div>
@@ -853,8 +861,8 @@ function IvTab({next}){
         <div style={{fontSize:12,fontWeight:700,color:C.amber,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>Why shifters solve the price problem</div>
         <P mb={8}>Price is endogenous because demand and supply both help determine it. A shifter is useful because it moves one side of the market while leaving the other side mostly alone.</P>
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:10}}>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>To estimate demand</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Use something that shifts supply, such as input costs, because it changes price without directly changing consumers' desire to buy.</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>To estimate supply</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Use something that shifts demand, such as population or income, because it changes price without directly changing firms' production costs.</span></div>
+          <div style={conceptTile(C.black20)}><strong>To estimate demand</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Use something that shifts supply, such as input costs, because it changes price without directly changing consumers' desire to buy.</span></div>
+          <div style={conceptTile(C.black20)}><strong>To estimate supply</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Use something that shifts demand, such as population or income, because it changes price without directly changing firms' production costs.</span></div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.05}><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
@@ -891,7 +899,7 @@ function IvTab({next}){
               <button onClick={()=>pick(c.id,'valid')} style={{flex:1,padding:'10px',border:`1.5px solid ${p==='valid'?C.green:C.black20}`,borderRadius:5,background:p==='valid'?C.greenBg:C.white,color:p==='valid'?C.green:C.black80,fontFamily:"'Source Sans 3',sans-serif",fontSize:13,fontWeight:600,cursor:'pointer'}}>✓ Valid</button>
               <button onClick={()=>pick(c.id,'invalid')} style={{flex:1,padding:'10px',border:`1.5px solid ${p==='invalid'?C.red:C.black20}`,borderRadius:5,background:p==='invalid'?'#FDECEA':C.white,color:p==='invalid'?C.red:C.black80,fontFamily:"'Source Sans 3',sans-serif",fontSize:13,fontWeight:600,cursor:'pointer'}}>× Invalid</button>
               {p&&<button onClick={()=>check(c.id)} style={{padding:'10px 18px',background:C.blue,color:'#fff',border:'none',borderRadius:5,fontSize:13,fontWeight:700,cursor:'pointer',fontFamily:"'Source Sans 3',sans-serif"}}>Lock</button>}
-            </div>:<div style={{padding:'12px 16px',background:p===c.verdict?C.greenBg:C.amberBg,borderRadius:6,fontSize:13,color:C.black80,lineHeight:1.65,borderLeft:`3px solid ${p===c.verdict?C.green:C.amber}`}}>
+            </div>:<div style={{padding:'12px 16px',background:C.white,border:`1px solid ${C.black10}`,borderRadius:6,fontSize:13,color:C.black80,lineHeight:1.65,borderLeft:`3px solid ${p===c.verdict?C.green:C.amber}`}}>
               <div style={{display:'flex',gap:14,marginBottom:8,flexWrap:'wrap'}}>
                 <div style={{fontSize:11,fontWeight:700,color:c.rel?C.green:C.red,letterSpacing:'0.04em',textTransform:'uppercase'}}>{c.rel?'✓':'×'} Relevant</div>
                 <div style={{fontSize:11,fontWeight:700,color:c.exo?C.green:C.red,letterSpacing:'0.04em',textTransform:'uppercase'}}>{c.exo?'✓':'×'} Exogenous</div>

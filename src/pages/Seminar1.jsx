@@ -384,11 +384,11 @@ function ProcessTab({next}){
         <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>
           {PROCESS_LENSES.map(l=><button key={l.id} onClick={()=>setActiveLens(l.id)} style={{padding:'9px 13px',border:`1px solid ${activeLens===l.id?C.blue:C.black20}`,background:activeLens===l.id?C.blueBg:C.white,color:activeLens===l.id?C.blue:C.black80,borderRadius:6,fontFamily:"'Source Sans 3',sans-serif",fontSize:13,fontWeight:800,cursor:'pointer',textAlign:'left'}}>{l.label}</button>)}
         </div>
-        <div style={{padding:14,borderRadius:8,background:C.blueBg,borderLeft:`4px solid ${C.blue}`}}>
+        <div style={{padding:14,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`,borderLeft:`4px solid ${C.blue}`}}>
           <div style={{fontSize:18,fontWeight:900,color:C.black,marginBottom:4}}>{selectedLens.label}</div>
           <div style={{fontSize:14,fontWeight:800,color:C.blue,marginBottom:8}}>{selectedLens.question}</div>
           <div style={{fontSize:14,color:C.black80,lineHeight:1.6,marginBottom:10}}>{selectedLens.explain}</div>
-          <div style={{fontSize:13,color:C.black80,lineHeight:1.55,background:C.white,border:`1px solid ${C.black10}`,borderRadius:6,padding:'10px 12px'}}><strong>Check yourself:</strong> {selectedLens.prompt}</div>
+          <div style={{fontSize:13,color:C.black80,lineHeight:1.55,background:C.black05,border:`1px solid ${C.black10}`,borderRadius:6,padding:'10px 12px'}}><strong>Check yourself:</strong> {selectedLens.prompt}</div>
         </div>
       </Card></Reveal>
 
@@ -584,7 +584,7 @@ function IdeasTab({next}){
         <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>
           {checklist.map(c=><button key={c.cat} onClick={()=>setActiveCheck(c.cat)} style={{padding:'9px 13px',border:`1px solid ${activeCheck===c.cat?C.red:C.black20}`,background:activeCheck===c.cat?C.redSubtle:C.white,color:activeCheck===c.cat?C.red:C.black80,borderRadius:6,fontFamily:"'Source Sans 3',sans-serif",fontSize:13,fontWeight:800,cursor:'pointer'}}>{c.cat}</button>)}
         </div>
-        <div style={{background:C.black05,borderRadius:8,padding:'14px 16px'}}>
+        <div style={{background:C.white,border:`1px solid ${C.black10}`,borderLeft:`4px solid ${C.red}`,borderRadius:8,padding:'14px 16px'}}>
           <div style={{fontSize:17,fontWeight:900,color:C.black,marginBottom:10}}>{selectedCheck.cat}</div>
           {selectedCheck.qs.map((q,qi)=><div key={qi} style={{display:'flex',gap:8,alignItems:'flex-start',marginBottom:qi<selectedCheck.qs.length-1?7:0}}><span style={{color:C.green,fontSize:12,fontWeight:900,flexShrink:0,marginTop:4}}>OK</span><span style={{fontSize:14,color:C.black80,lineHeight:1.6}}>{q}</span></div>)}
         </div>
@@ -898,11 +898,11 @@ function HypothesesTab({next}){
         <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>
           {logicChain.map(item=><button key={item.id} onClick={()=>setActiveLogic(item.id)} style={{padding:'9px 13px',border:`1px solid ${activeLogic===item.id?C.blue:C.black20}`,background:activeLogic===item.id?C.blueBg:C.white,color:activeLogic===item.id?C.blue:C.black80,borderRadius:6,fontFamily:"'Source Sans 3',sans-serif",fontSize:13,fontWeight:800,cursor:'pointer',textAlign:'left'}}>{item.label}</button>)}
         </div>
-        <div style={{padding:14,borderRadius:8,background:C.blueBg,borderLeft:`4px solid ${C.blue}`}}>
+        <div style={{padding:14,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`,borderLeft:`4px solid ${C.blue}`}}>
           <div style={{fontSize:18,fontWeight:900,color:C.black,marginBottom:4}}>{selectedLogic.label}</div>
           <div style={{fontSize:14,fontWeight:800,color:C.blue,marginBottom:8}}>{selectedLogic.question}</div>
           <div style={{fontSize:14,color:C.black80,lineHeight:1.6,marginBottom:10}}>{selectedLogic.explain}</div>
-          <div style={{fontSize:13,color:C.black80,lineHeight:1.55,background:C.white,border:`1px solid ${C.black10}`,borderRadius:6,padding:'10px 12px'}}><strong>Example:</strong> {selectedLogic.example}</div>
+          <div style={{fontSize:13,color:C.black80,lineHeight:1.55,background:C.black05,border:`1px solid ${C.black10}`,borderRadius:6,padding:'10px 12px'}}><strong>Example:</strong> {selectedLogic.example}</div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.1}><div style={{display:'flex',flexDirection:'column',gap:12,marginBottom:32}}>
@@ -920,11 +920,11 @@ function HypothesesTab({next}){
         <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>
           {considerItems.map(item=><button key={item.id} onClick={()=>setActiveConsider(item.id)} style={{padding:'9px 12px',border:`1px solid ${activeConsider===item.id?C.red:C.black20}`,background:activeConsider===item.id?C.redSubtle:C.white,color:activeConsider===item.id?C.red:C.black80,borderRadius:6,fontFamily:"'Source Sans 3',sans-serif",fontSize:13,fontWeight:800,cursor:'pointer'}}>{item.label}</button>)}
         </div>
-        <div style={{padding:14,borderRadius:8,background:C.redSubtle,borderLeft:`4px solid ${C.red}`}}>
+        <div style={{padding:14,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`,borderLeft:`4px solid ${C.red}`}}>
           <div style={{fontSize:18,fontWeight:900,color:C.black,marginBottom:4}}>{selectedConsider.label}</div>
           <div style={{fontSize:14,fontWeight:800,color:C.red,marginBottom:8}}>{selectedConsider.question}</div>
           <div style={{fontSize:14,color:C.black80,lineHeight:1.6,marginBottom:10}}>{selectedConsider.explain}</div>
-          <div style={{fontSize:13,color:C.black80,lineHeight:1.55,background:C.white,border:`1px solid ${C.black10}`,borderRadius:6,padding:'10px 12px'}}><strong>Example:</strong> {selectedConsider.example}</div>
+          <div style={{fontSize:13,color:C.black80,lineHeight:1.55,background:C.black05,border:`1px solid ${C.black10}`,borderRadius:6,padding:'10px 12px'}}><strong>Example:</strong> {selectedConsider.example}</div>
         </div>
       </Card></Reveal>
 
@@ -1121,11 +1121,11 @@ function DesignTab({next}){
         <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>
           {modelParts.map(p=><button key={p.id} onClick={()=>setActiveModelPart(p.id)} style={{padding:'9px 13px',border:`1px solid ${activeModelPart===p.id?C.green:C.black20}`,background:activeModelPart===p.id?C.greenBg:C.white,color:activeModelPart===p.id?C.green:C.black80,borderRadius:6,fontFamily:"'Source Sans 3',sans-serif",fontSize:13,fontWeight:800,cursor:'pointer'}}>{p.label}</button>)}
         </div>
-        <div style={{padding:14,borderRadius:8,background:C.greenBg,borderLeft:`4px solid ${C.green}`}}>
+        <div style={{padding:14,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`,borderLeft:`4px solid ${C.green}`}}>
           <div style={{fontSize:18,fontWeight:900,color:C.black,marginBottom:4}}>{selectedModelPart.label}</div>
           <div style={{fontSize:14,fontWeight:800,color:C.green,marginBottom:8}}>{selectedModelPart.question}</div>
           <div style={{fontSize:14,color:C.black80,lineHeight:1.6,marginBottom:10}}>{selectedModelPart.explain}</div>
-          <div style={{fontSize:13,color:C.black80,lineHeight:1.55,background:C.white,border:`1px solid ${C.black10}`,borderRadius:6,padding:'10px 12px'}}><strong>Example:</strong> {selectedModelPart.example}</div>
+          <div style={{fontSize:13,color:C.black80,lineHeight:1.55,background:C.black05,border:`1px solid ${C.black10}`,borderRadius:6,padding:'10px 12px'}}><strong>Example:</strong> {selectedModelPart.example}</div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.1}><div style={{display:'flex',flexDirection:'column',gap:10,marginBottom:32}}>
@@ -1170,11 +1170,11 @@ function ResultsTab({next}){
         <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>
           {resultPurposes.map(p=><button key={p.id} onClick={()=>setActiveResultPurpose(p.id)} style={{padding:'9px 13px',border:`1px solid ${activeResultPurpose===p.id?C.blue:C.black20}`,background:activeResultPurpose===p.id?C.blueBg:C.white,color:activeResultPurpose===p.id?C.blue:C.black80,borderRadius:6,fontFamily:"'Source Sans 3',sans-serif",fontSize:13,fontWeight:800,cursor:'pointer'}}>{p.label}</button>)}
         </div>
-        <div style={{padding:14,borderRadius:8,background:C.blueBg,borderLeft:`4px solid ${C.blue}`}}>
+        <div style={{padding:14,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`,borderLeft:`4px solid ${C.blue}`}}>
           <div style={{fontSize:18,fontWeight:900,color:C.black,marginBottom:4}}>{selectedResultPurpose.label}</div>
           <div style={{fontSize:14,fontWeight:800,color:C.blue,marginBottom:8}}>{selectedResultPurpose.question}</div>
           <div style={{fontSize:14,color:C.black80,lineHeight:1.6,marginBottom:10}}>{selectedResultPurpose.explain}</div>
-          <div style={{fontSize:13,color:C.black80,lineHeight:1.55,background:C.white,border:`1px solid ${C.black10}`,borderRadius:6,padding:'10px 12px'}}><strong>Example:</strong> {selectedResultPurpose.example}</div>
+          <div style={{fontSize:13,color:C.black80,lineHeight:1.55,background:C.black05,border:`1px solid ${C.black10}`,borderRadius:6,padding:'10px 12px'}}><strong>Example:</strong> {selectedResultPurpose.example}</div>
         </div>
       </Card></Reveal>
       <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
