@@ -828,17 +828,28 @@ function LitReviewTab({next}){
 // ═══════════════════════════════════════════════════════════════
 function HypothesesTab({next}){
   const { completeTab } = useGame();
+  const [activeLogic, setActiveLogic] = useState('literature');
+  const logicChain = [
+    {id:'literature',label:'Literature',question:'What have others found?',explain:'Start by identifying what prior studies already show. This keeps your hypothesis grounded in evidence rather than personal opinion.',example:'Example: Prior studies find that stronger governance is associated with lower earnings management.'},
+    {id:'theory',label:'Theory',question:'Why should X affect Y?',explain:'Theory explains the mechanism. It tells the reader why the relationship should exist, not just that two variables might be related.',example:'Example: Agency theory suggests independent boards monitor managers and reduce opportunistic reporting.'},
+    {id:'hypothesis',label:'Hypothesis',question:'What direction do you predict?',explain:'The hypothesis turns the literature and theory into a testable prediction. It should name X, name Y, and usually state a direction.',example:'Example: Firms with more independent boards exhibit lower earnings management, ceteris paribus.'},
+    {id:'test',label:'Test',question:'What data/model can test it?',explain:'The test translates the hypothesis into variables, data, controls, and a model. This is where the research design begins.',example:'Example: Regress discretionary accruals on board independence, controlling for firm size, leverage, profitability, industry, and year.'},
+  ];
+  const selectedLogic = logicChain.find(x => x.id === activeLogic) || logicChain[0];
   return <div style={{paddingTop:56}}>
     <Wrap bg={C.black05}>
       <Reveal><Label>Hypotheses Development</Label><H>How to Formulate Hypotheses</H></Reveal>
       <Reveal delay={0.05}><Card style={{marginBottom:22,borderLeft:`4px solid ${C.blue}`}}>
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.blue,marginBottom:8}}>The logic chain</div>
         <P mb={10}>A hypothesis is not a guess. It is a prediction that comes from theory and prior evidence, written in a way that can be tested with data.</P>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:10}}>
-          <div style={{padding:12,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`}}><strong>Literature</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What have others found?</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`}}><strong>Theory</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Why should X affect Y?</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`}}><strong>Hypothesis</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What direction do you predict?</span></div>
-          <div style={{padding:12,borderRadius:8,background:C.blueBg}}><strong>Test</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What data/model can test it?</span></div>
+        <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>
+          {logicChain.map(item=><button key={item.id} onClick={()=>setActiveLogic(item.id)} style={{padding:'9px 13px',border:`1px solid ${activeLogic===item.id?C.blue:C.black20}`,background:activeLogic===item.id?C.blueBg:C.white,color:activeLogic===item.id?C.blue:C.black80,borderRadius:6,fontFamily:"'Source Sans 3',sans-serif",fontSize:13,fontWeight:800,cursor:'pointer',textAlign:'left'}}>{item.label}</button>)}
+        </div>
+        <div style={{padding:14,borderRadius:8,background:C.blueBg,borderLeft:`4px solid ${C.blue}`}}>
+          <div style={{fontSize:18,fontWeight:900,color:C.black,marginBottom:4}}>{selectedLogic.label}</div>
+          <div style={{fontSize:14,fontWeight:800,color:C.blue,marginBottom:8}}>{selectedLogic.question}</div>
+          <div style={{fontSize:14,color:C.black80,lineHeight:1.6,marginBottom:10}}>{selectedLogic.explain}</div>
+          <div style={{fontSize:13,color:C.black80,lineHeight:1.55,background:C.white,border:`1px solid ${C.black10}`,borderRadius:6,padding:'10px 12px'}}><strong>Example:</strong> {selectedLogic.example}</div>
         </div>
       </Card></Reveal>
       <Reveal delay={0.1}><div style={{display:'flex',flexDirection:'column',gap:12,marginBottom:32}}>
