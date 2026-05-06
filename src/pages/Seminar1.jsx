@@ -61,7 +61,7 @@ export default function Seminar1() {
       <footer style={{ background: C.black, padding: '36px 0', borderTop: `4px solid ${C.red}` }}>
         <div style={{ maxWidth: 840, margin: '0 auto', padding: '0 36px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <a href="/" style={{ fontSize: 15, fontWeight: 900, color: C.red, textDecoration: 'none' }}>SIT</a>
-          <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)' }}>ACC3018 · Seminar 1 · AY2024/25 T3</span>
+          <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)' }}>ACC3018 · Seminar 1 · AY2025/26 T3</span>
         </div>
       </footer>
       <ProgressWidget tabs={TABS} />
@@ -72,14 +72,14 @@ export default function Seminar1() {
 function OverviewTab({next}){
   const { completeTab, awardBadge } = useGame();
   const phases=[
-    {term:'AY2024/25 T3',weight:'15%',color:C.black05,border:C.black20,dark:false,
+    {term:'AY2025/26 T3',weight:'15%',color:C.black05,border:C.black20,dark:false,
       items:['Research Methods (6 Seminars)','S1: Essentials of Applied Research','S2–S3: Research Methods','S4–S5: Data Application'],
       self:['IRB (Institutional Review Board)','SIT Library Search','How to write a Literature Review','How to write a Research Proposal','How to write a Final Report'],
       assess:['In-class Activity & Attendance (5%) — Individual S1–S5','S6: Mini Group Assignment (10%)']},
-    {term:'AY2025/26 T1',weight:'35%',color:C.black,border:C.black,dark:true,
+    {term:'AY2026/27 T1',weight:'35%',color:C.black,border:C.black,dark:true,
       items:['Conduct Capstone Project','Submit and Present Research Proposal','Consultation with Academic Supervisor & CPC team','During BTC workshops'],
       assess:['Research Proposal (35%):','→ Introduction','→ Literature Review & Hypotheses Development','→ Research Design']},
-    {term:'AY2025/26 T2',weight:'50%',color:C.red,border:C.red,dark:true,
+    {term:'AY2026/27 T2',weight:'50%',color:C.red,border:C.red,dark:true,
       items:['Conduct and Complete Capstone Project','Submit Research Final Report','Consultation with Academic Supervisor & CPC team during BTC workshops'],
       assess:['Research Final Report (50%):','→ Introduction','→ Lit Review & Hypotheses Development','→ Research Design','→ Results (incl. Robustness checks)','→ Conclusion']},
   ];
@@ -156,6 +156,15 @@ function ResearchTab({next}){
 
     <Wrap bg={C.black05}>
       <Reveal><H size={32}>Basic vs Applied Research</H></Reveal>
+      <Reveal delay={0.04}><Card style={{marginBottom:18,borderLeft:`4px solid ${C.blue}`}}>
+        <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.blue,marginBottom:8}}>Start with the purpose</div>
+        <P mb={10}>Students often think basic and applied research are separated by topic. A better way to separate them is by purpose: is the study mainly trying to understand a phenomenon, or mainly trying to solve a practical problem?</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`}}><strong>Basic research</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Builds fundamental knowledge. It asks questions such as: What is happening? Why does it happen? How should we understand the mechanism?</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.redSubtle,border:`1px solid ${C.red}`}}><strong>Applied research</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Uses knowledge to address a real problem. It asks questions such as: Does this work? For whom? Under what conditions? What should decision-makers do?</span></div>
+        </div>
+        <Callout accent={C.amber} bg={C.amberBg}><strong>For ACC3018:</strong> your capstone is applied research. It still needs theory and literature, but the final contribution should help readers understand a practical accounting, finance, analytics, governance, or business problem.</Callout>
+      </Card></Reveal>
       <Reveal delay={0.1}><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16,marginBottom:28}}>
         <Card><div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.black60,marginBottom:10}}>Basic Research — Examples</div>{basicExamples.map((e,i)=><Li key={i}>{e}</Li>)}</Card>
         <Card style={{background:C.red,borderColor:C.red}}><div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:'rgba(255,255,255,0.5)',marginBottom:10}}>Applied Research — Your Capstone</div>
@@ -344,7 +353,17 @@ function ProcessTab({next}){
         <P>Based on Saunders, Lewis & Thornhill (2018). Click any step to see details. Notice how the process is <strong>iterative</strong> — you continuously reflect, revise, and loop back as your understanding deepens.</P>
       </Reveal>
 
-      <Reveal delay={0.1}>
+      <Reveal delay={0.05}><Card style={{marginBottom:22,borderLeft:`4px solid ${C.blue}`}}>
+        <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.blue,marginBottom:8}}>How to read this process</div>
+        <P mb={10}>Do not treat the research process as a checklist you complete once. Treat it as a set of questions you keep returning to as your project becomes clearer.</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Early stage</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What is interesting, feasible, and worth studying?</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Middle stage</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What does prior literature say, and what exact gap can I fill?</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.blueBg}}><strong>Design stage</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What data, variables, model, and tests would convince a reader?</span></div>
+        </div>
+      </Card></Reveal>
+
+      <Reveal delay={0.12}>
         <div style={{ position: 'relative', maxWidth: 700, margin: '0 auto 32px' }}>
 
           {/* ── "Forward Planning" left-side label ── */}
@@ -510,6 +529,15 @@ function IdeasTab({next}){
     <Wrap>
       <Reveal><Label>Brainstorming</Label><H size={30}>Topic Areas for ACC3018</H><P>Six broad accounting and finance domains. Expand each to explore potential research directions.</P></Reveal>
       <Reveal delay={0.1}><Accordion items={areas.map(a=>({title:a.title,content:<ul style={{listStyle:'none',margin:0,padding:0,display:'flex',flexDirection:'column',gap:6}}>{a.items.map((item,i)=><li key={i}><Li>{item}</Li></li>)}</ul>}))}/></Reveal>
+      <Reveal delay={0.15}><Card style={{marginTop:22,borderLeft:`4px solid ${C.amber}`}}>
+        <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.amber,marginBottom:8}}>From topic area to research question</div>
+        <P mb={10}>A topic area is only the starting point. A research question needs a setting, a relationship, and something measurable.</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Too broad</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>ESG and firm performance.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Getting closer</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Does ESG disclosure affect firm value?</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.amberBg}}><strong>Researchable</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Does ESG disclosure quality affect Tobin's Q among Singapore-listed firms after controlling for size, leverage, and profitability?</span></div>
+        </div>
+      </Card></Reveal>
     </Wrap>
 
     {/* ─── SCENARIO: The PhD Journey ─── */}
@@ -695,6 +723,19 @@ function LitReviewTab({next}){
   const sourceTypes=['Refereed (peer-reviewed) academic journal','Non-refereed academic journal','Professional journal','Trade journals/magazines','Books and e-books','Newspapers','Conference proceedings','Reports','Theses'];
   const journals=['Journal of Accounting & Economics (JAE)','Journal of Accounting Research (JAR)','The Accounting Review (TAR)','Journal of Finance (JF)','Journal of Financial Economics (JFE)','Review of Financial Studies (RFS)','Contemporary Accounting Research (CAR)','Accounting Horizons (AH)'];
   const eqTable=[{attr:'Accrual Quality',measure:'Mapping current accrual towards past, present and future cash flow',refs:'Dechow & Dichev (2002); Largay III (2002); Francis et al. (2003a, 2003b, 2004); Chambers (2003)'},{attr:'Persistence',measure:'Regression coefficient of current earnings towards future earnings (Model AR1)',refs:'Francis et al. (2003b, 2004); Sloan (1996)'},{attr:'Predictability',measure:'Standard deviation of model AR1 error',refs:'Lougee & Marquardt (2002); Francis et al. (2003a); Brown & Sivakumar (2001)'},{attr:'Smoothness',measure:'Ratio of earnings variability towards cash flow variability',refs:'Francis et al. (2003b, 2004)'}];
+  const litProcess=[
+    {n:'01',t:'Start broad',d:'Use course concepts, keywords, and a few review papers to understand the area before choosing a narrow question.',tool:'Search terms, review articles, citation counts'},
+    {n:'02',t:'Search deliberately',d:'Combine keywords instead of typing one vague phrase. Try synonyms, related constructs, and accounting or finance terms.',tool:'Example: "ESG disclosure" AND "cost of capital"'},
+    {n:'03',t:'Screen for relevance',d:'Read titles, abstracts, research questions, samples, and methods. Keep papers that directly help your topic, theory, variables, or design.',tool:'Title, abstract, journal, sample, method'},
+    {n:'04',t:'Read actively',d:'Extract the research question, theory, data, variables, method, findings, limitations, and suggested future work.',tool:'Paper summary notes'},
+    {n:'05',t:'Organise by theme',d:'Group papers by ideas, not by author order. Useful themes include theory, setting, variable, method, findings, and limitations.',tool:'Concept matrix'},
+    {n:'06',t:'Synthesize into a gap',d:'Explain what we know, what remains uncertain, and how your study responds. This becomes your motivation and hypotheses.',tool:'Known -> uncertain -> your study'},
+  ];
+  const searchExamples=[
+    {bad:'AI in accounting',good:'generative AI AND audit judgment AND experiment',why:'The second search has a construct, setting, and likely method.'},
+    {bad:'ESG and companies',good:'ESG disclosure AND firm value AND Singapore listed firms',why:'The second search connects X, Y, and context.'},
+    {bad:'earnings management',good:'real earnings management AND CFO manipulation AND Roychowdhury 2006',why:'The second search targets a specific literature stream.'},
+  ];
 
   const onContinue = () => { completeTab('s1:litreview'); awardBadge('lit-scholar'); next(); };
 
@@ -702,6 +743,43 @@ function LitReviewTab({next}){
     <Wrap>
       <Reveal><Label>Literature Review</Label><H>Why Do We Need a Literature Review?</H></Reveal>
       <Reveal delay={0.1}><div style={{marginBottom:32}}>{whyItems.map((item,i)=><Num key={i} n={i+1}>{item}</Num>)}</div></Reveal>
+      <Reveal delay={0.15}><Callout accent={C.red} bg={C.redSubtle}><strong>Plain-English version:</strong> a literature review teaches you the conversation before you join it. Your job is not to list papers; your job is to show what researchers already know, what they still disagree about, and where your project fits.</Callout></Reveal>
+    </Wrap>
+
+    <Wrap bg={C.black05}>
+      <Reveal><H size={30}>The Literature Review Process</H><P>Undergraduate students usually struggle because they jump from "find papers" straight to "write paragraphs." Use this sequence instead.</P></Reveal>
+      <Reveal delay={0.05}><div style={{display:'grid',gap:12}}>
+        {litProcess.map((s,i)=><Card key={s.n} style={{borderLeft:`4px solid ${i<2?C.blue:i<4?C.amber:C.red}`}}>
+          <div style={{display:'grid',gridTemplateColumns:'52px 1fr',gap:12,alignItems:'start'}}>
+            <div style={{width:38,height:38,borderRadius:6,background:i<2?C.blueBg:i<4?C.amberBg:C.redSubtle,color:i<2?C.blue:i<4?C.amber:C.red,display:'grid',placeItems:'center',fontSize:13,fontWeight:900}}>{s.n}</div>
+            <div>
+              <div style={{fontSize:16,fontWeight:800,color:C.black,marginBottom:4}}>{s.t}</div>
+              <div style={{fontSize:14,color:C.black80,lineHeight:1.6,marginBottom:8}}>{s.d}</div>
+              <div style={{fontSize:13,color:C.black80,background:C.black05,borderRadius:6,padding:'8px 10px'}}><strong>Tool or output:</strong> {s.tool}</div>
+            </div>
+          </div>
+        </Card>)}
+      </div></Reveal>
+    </Wrap>
+
+    <Wrap>
+      <Reveal><H size={30}>Search Like a Researcher</H><P>A good search query is specific enough to find an academic conversation, but not so narrow that it finds nothing.</P></Reveal>
+      <Reveal delay={0.05}><div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:12,marginBottom:18}}>
+        {searchExamples.map((s,i)=><Card key={i}>
+          <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:8}}>Search example {i+1}</div>
+          <div style={{fontSize:13,color:C.black60,marginBottom:4}}>Too broad</div>
+          <div style={{fontSize:14,fontWeight:700,color:C.black,marginBottom:10}}>{s.bad}</div>
+          <div style={{fontSize:13,color:C.black60,marginBottom:4}}>Better</div>
+          <div style={{fontSize:14,fontWeight:800,color:C.red,marginBottom:8}}>{s.good}</div>
+          <div style={{fontSize:13,color:C.black80,lineHeight:1.55}}>{s.why}</div>
+        </Card>)}
+      </div></Reveal>
+      <Reveal delay={0.1}><Card style={{borderLeft:`4px solid ${C.blue}`}}>
+        <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.blue,marginBottom:8}}>What to record for each useful paper</div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:10}}>
+          {['Citation and journal','Research question','Theory or mechanism','Sample and setting','Variables and measures','Method','Main findings','Limitation or future research'].map((item,i)=><Li key={i} color={C.blue}>{item}</Li>)}
+        </div>
+      </Card></Reveal>
     </Wrap>
 
     <Wrap bg={C.black05}>
@@ -753,6 +831,16 @@ function HypothesesTab({next}){
   return <div style={{paddingTop:56}}>
     <Wrap bg={C.black05}>
       <Reveal><Label>Hypotheses Development</Label><H>How to Formulate Hypotheses</H></Reveal>
+      <Reveal delay={0.05}><Card style={{marginBottom:22,borderLeft:`4px solid ${C.blue}`}}>
+        <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.blue,marginBottom:8}}>The logic chain</div>
+        <P mb={10}>A hypothesis is not a guess. It is a prediction that comes from theory and prior evidence, written in a way that can be tested with data.</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`}}><strong>Literature</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What have others found?</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`}}><strong>Theory</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Why should X affect Y?</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`}}><strong>Hypothesis</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What direction do you predict?</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.blueBg}}><strong>Test</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What data/model can test it?</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.1}><div style={{display:'flex',flexDirection:'column',gap:12,marginBottom:32}}>
         {[{s:'01',t:'Make a Prediction',d:'Based on previous observations or research. Provide theoretical argument, reasoning, etc. For example: "ESG improves firm performance. Why? Because stakeholder theory suggests that firms attending to broader stakeholder needs build reputational capital..."'},
           {s:'02',t:'Define Variables',d:'Define objective independent variable (X, e.g. ESG score) and dependent variable (Y, e.g. Performance measured by ROA). Be specific about how each is measured.'},
@@ -946,6 +1034,16 @@ function DesignTab({next}){
   return <div style={{paddingTop:56}}>
     <Wrap>
       <Reveal><Label>Research Design</Label><H>Building Your Regression Model</H><P>The research design translates your hypotheses into testable models. Every variable must be precisely defined.</P></Reveal>
+      <Reveal delay={0.05}><Card style={{marginBottom:22,borderLeft:`4px solid ${C.green}`}}>
+        <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.green,marginBottom:8}}>Translate the hypothesis into a model</div>
+        <P mb={10}>Students should be able to point to each part of the hypothesis and say where it appears in the regression.</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Outcome Y</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What are you trying to explain? Example: ROA, stock return, risk, audit fee.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Main X</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What is the key explanatory variable? Example: ESG score, board diversity, audit quality.</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Controls</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What else affects Y and must be held constant?</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.greenBg}}><strong>Expected sign</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Should the coefficient on X be positive or negative?</span></div>
+        </div>
+      </Card></Reveal>
       <Reveal delay={0.1}><div style={{display:'flex',flexDirection:'column',gap:10,marginBottom:32}}>
         {[{t:'Develop Regression Models',d:'Build regression models to test each hypothesis. The model specification should directly map to your Hₐ.'},
           {t:'Explain Key & Control Variables',d:'State variable name, type (continuous/dummy/index), definition, and data source. Include ALL variable definitions in the Appendix.'},
@@ -975,6 +1073,15 @@ function ResultsTab({next}){
   return <div style={{paddingTop:56}}>
     <Wrap bg={C.black05}>
       <Reveal><Label>Results & Conclusion</Label><H>Interpreting and Wrapping Up</H></Reveal>
+      <Reveal delay={0.05}><Card style={{marginBottom:22,borderLeft:`4px solid ${C.blue}`}}>
+        <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.blue,marginBottom:8}}>What results are supposed to do</div>
+        <P mb={10}>The results section is not a place to paste tables. It should tell readers whether the evidence supports the hypotheses, how large the effect is, and whether the finding survives reasonable alternative tests.</P>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))',gap:10}}>
+          <div style={{padding:12,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`}}><strong>Direction</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Is the coefficient positive or negative, and does that match the hypothesis?</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.white,border:`1px solid ${C.black10}`}}><strong>Strength</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Is the result statistically and economically meaningful?</span></div>
+          <div style={{padding:12,borderRadius:8,background:C.blueBg}}><strong>Credibility</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Do robustness checks reduce obvious alternative explanations?</span></div>
+        </div>
+      </Card></Reveal>
       <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
         <Reveal><Card style={{height:'100%'}}><div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:12}}>Results Section</div>
           <Num n={1}>Summary statistics and/or Data Analytics (Descriptives, Correlation Matrix)</Num>
@@ -1029,8 +1136,18 @@ function ThesisTab({next}){
       <Reveal><Label color="rgba(255,255,255,0.3)">Thesis Structure</Label><H color={C.white}>Your Research Report</H><P color="rgba(255,255,255,0.4)">Click any section for detailed writing guidance.</P></Reveal>
 
       <Reveal delay={0.1}><div style={{background:C.red,borderRadius:8,padding:'18px 22px',marginBottom:24}}>
-        <div style={{fontSize:11,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:'rgba(255,255,255,0.5)',marginBottom:6}}>Research Proposal (Submit AY2025/26 T1 — 35%)</div>
+        <div style={{fontSize:11,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:'rgba(255,255,255,0.5)',marginBottom:6}}>Research Proposal (Submit AY2026/27 T1 — 35%)</div>
         <div style={{fontSize:15,color:'rgba(255,255,255,0.9)',lineHeight:1.6}}>A research proposal maps out what is to be done <strong><em>without</em></strong> the actual data collection, findings, discussion and conclusion. It includes: <strong>Introduction</strong>, <strong>Literature Review & Hypothesis Development</strong>, and <strong>Research Design</strong>.</div>
+      </div></Reveal>
+
+      <Reveal delay={0.12}><div style={{background:'rgba(255,255,255,0.05)',borderRadius:8,padding:'18px 22px',border:'1px solid rgba(255,255,255,0.08)',marginBottom:24}}>
+        <div style={{fontSize:12,fontWeight:700,color:C.red,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:8}}>How the chapters connect</div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:10}}>
+          <div style={{fontSize:13,color:'rgba(255,255,255,0.72)',lineHeight:1.55}}><strong style={{color:C.white}}>Introduction:</strong> What is the problem and why does it matter?</div>
+          <div style={{fontSize:13,color:'rgba(255,255,255,0.72)',lineHeight:1.55}}><strong style={{color:C.white}}>Literature:</strong> What do we know, and what is the gap?</div>
+          <div style={{fontSize:13,color:'rgba(255,255,255,0.72)',lineHeight:1.55}}><strong style={{color:C.white}}>Design:</strong> How will you test the idea?</div>
+          <div style={{fontSize:13,color:'rgba(255,255,255,0.72)',lineHeight:1.55}}><strong style={{color:C.white}}>Results:</strong> What did the evidence show?</div>
+        </div>
       </div></Reveal>
 
       <div style={{display:'flex',flexWrap:'wrap',gap:0,marginBottom:24}}>{secs.map((s,i)=><button key={i} onClick={()=>setActive(active===i?null:i)} style={{padding:'8px 14px',border:'none',borderRadius:4,margin:'0 5px 5px 0',background:active===i?C.red:'rgba(255,255,255,0.07)',color:active===i?C.white:'rgba(255,255,255,0.5)',fontFamily:"'Source Sans 3',sans-serif",fontSize:13,fontWeight:600,cursor:'pointer'}}>{s.name}{s.note&&<span style={{marginLeft:4,fontSize:10,opacity:0.5}}>({s.note})</span>}</button>)}</div>
@@ -1076,6 +1193,15 @@ function ActIntro({onStart}){
   return <div>
     <Reveal><Label>In-Class Activities — Individual Work</Label><H>Roychowdhury (2006) Walkthrough</H>
       <P>Find a paper <strong>different</strong> from the example "Earnings Management Through Real Activities Manipulation" (Roychowdhury 2006, JAE) from the top journals. Type the journal name in OneSearch, find the latest issue, and select one paper (choose a different paper from your team/friends) to download.</P></Reveal>
+    <Reveal delay={0.05}><Card style={{marginBottom:20,borderLeft:`4px solid ${C.blue}`}}>
+      <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.blue,marginBottom:8}}>What this walkthrough is teaching</div>
+      <P mb={10}>The point is not to memorise Roychowdhury (2006). The point is to learn how to reverse-engineer any empirical paper into the pieces you need for your own proposal.</P>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:10}}>
+        <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Literature</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What papers does it build on?</span></div>
+        <div style={{padding:12,borderRadius:8,background:C.black05}}><strong>Hypotheses</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>What predictions does it make, and why?</span></div>
+        <div style={{padding:12,borderRadius:8,background:C.blueBg}}><strong>Design</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>How does it measure the concepts and test the predictions?</span></div>
+      </div>
+    </Card></Reveal>
     <Reveal delay={0.1}><Card style={{marginBottom:20}}>
       <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:10}}>Your Task for Each Activity</div>
       <Li><strong>Cite the paper</strong> and copy the abstract. Identify its keywords.</Li>

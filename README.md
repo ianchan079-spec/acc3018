@@ -2,6 +2,8 @@
 
 Interactive seminar platform for SIT ACC3018. Built with React, Vite, Firebase Auth, and Firestore.
 
+Deployment trigger: 2026-05-06.
+
 ## Quick Start
 
 ### 1. Prerequisites
