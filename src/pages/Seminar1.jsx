@@ -75,7 +75,7 @@ function OverviewTab({next}){
     {term:'AY2025/26 T3',weight:'15%',color:C.black05,border:C.black20,dark:false,
       items:['Research Methods (6 Seminars)','S1: Essentials of Applied Research','S2–S3: Research Methods','S4–S5: Data Application'],
       self:['IRB (Institutional Review Board)','SIT Library Search','How to write a Literature Review','How to write a Research Proposal','How to write a Final Report'],
-      assess:['In-class Activity & Attendance (5%) — Individual S1–S5','S6: Mini Group Assignment (10%)']},
+      assess:['Staged seminar activities (S1-S5)','Group paper pool, results presentation, dataset download, and Stata output']},
     {term:'AY2026/27 T1',weight:'35%',color:C.black,border:C.black,dark:true,
       items:['Conduct Capstone Project','Submit and Present Research Proposal','Consultation with Academic Supervisor & CPC team','During BTC workshops'],
       assess:['Research Proposal (35%):','→ Introduction','→ Literature Review & Hypotheses Development','→ Research Design']},
@@ -1287,14 +1287,14 @@ function ActivityTab(){
 function ActIntro({onStart}){
   return <div>
     <Reveal><Label>In-Class Activities — Individual Work</Label><H>Roychowdhury (2006) Walkthrough</H>
-      <P>Find a paper <strong>different</strong> from the example "Earnings Management Through Real Activities Manipulation" (Roychowdhury 2006, JAE) from the top journals. Type the journal name in OneSearch, find the latest issue, and select one paper (choose a different paper from your team/friends) to download.</P></Reveal>
+      <P>Form your group first. Then each student should find a paper <strong>different</strong> from the example "Earnings Management Through Real Activities Manipulation" (Roychowdhury 2006, JAE) from the top journals. Within the same group, each student should choose a different paper.</P></Reveal>
     <Reveal delay={0.03}><Card style={{marginBottom:20,borderLeft:`4px solid ${C.red}`}}>
-      <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:8}}>Submission Requirement</div>
-      <P mb={8}>This is an <strong>individual activity</strong>. Each student should submit a short one-page write-up to the LMS after completing the walkthrough.</P>
+      <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:8}}>Group Submission Requirement</div>
+      <P mb={8}>This activity has <strong>individual work inside a group submission</strong>. Each student completes the walkthrough for a different paper. The group then collates all responses and submits one package to the LMS.</P>
       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:10}}>
-        <div style={{padding:12,borderRadius:8,background:C.black05,border:`1px solid ${C.black10}`}}><strong>Length</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>About one page.</span></div>
-        <div style={{padding:12,borderRadius:8,background:C.black05,border:`1px solid ${C.black10}`}}><strong>Submit to</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>LMS assignment folder.</span></div>
-        <div style={{padding:12,borderRadius:8,background:C.black05,border:`1px solid ${C.black10}`}}><strong>Focus</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Summarise what you found from your selected paper.</span></div>
+        <div style={{padding:12,borderRadius:8,background:C.black05,border:`1px solid ${C.black10}`}}><strong>Individual response</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>About one page per student.</span></div>
+        <div style={{padding:12,borderRadius:8,background:C.black05,border:`1px solid ${C.black10}`}}><strong>Group package</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Collate all responses into one submission.</span></div>
+        <div style={{padding:12,borderRadius:8,background:C.black05,border:`1px solid ${C.black10}`}}><strong>Attachments</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Attach PDF copies of every paper used.</span></div>
       </div>
     </Card></Reveal>
     <Reveal delay={0.05}><Card style={{marginBottom:20,borderLeft:`4px solid ${C.blue}`}}>
@@ -1308,7 +1308,8 @@ function ActIntro({onStart}){
     </Card></Reveal>
     <Reveal delay={0.1}><Card style={{marginBottom:20}}>
       <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:10}}>Your Task for Each Activity</div>
-      <Li><strong>Prepare your LMS submission:</strong> one page, individual work, based on the paper you selected.</Li>
+      <Li><strong>Prepare your individual response:</strong> about one page, based on the paper you selected.</Li>
+      <Li><strong>Submit as a group:</strong> collate all group members' responses and attach PDF copies of all selected papers.</Li>
       <Li><strong>Cite the paper</strong> and copy the abstract. Identify its keywords.</Li>
       <Li><strong>Activity 1 — Literature Review:</strong> Identify your areas of literature. Identify the paragraph where the gap is identified.</Li>
       <Li><strong>Activity 2 — Hypotheses:</strong> Motivation of the hypotheses. Identify the hypotheses.</Li>

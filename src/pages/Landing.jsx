@@ -9,7 +9,7 @@ const SEMINARS = [
   { n: 3, title: 'Quantitative Research Methods II', desc: 'Endogeneity, omitted variables, simultaneous equations, selection bias, measurement error, and IV/2SLS identification.', ready: true },
   { n: 4, title: 'Data Application I', desc: 'WRDS, CRSP, Compustat, ESG data, Stata cleaning and merging workflows, sentiment analysis, and applied IV cases.', ready: true },
   { n: 5, title: 'Data Application II', desc: 'Stata basics, summary statistics, correlation matrices, fixed-effect regressions, subsamples, robustness checks, and event studies.', ready: true },
-  { n: 6, title: 'Mini Group Assignment', desc: 'Reserve a recent top-journal article, replicate one important analysis, and extend it with one meaningful new variable.', ready: true },
+  { n: 6, title: 'Assessment Roadmap', desc: 'See how the smaller group activities connect across Seminars 1-5: paper pool, results presentation, data download, and Stata output.', ready: true },
 ];
 
 export default function Landing() {
@@ -31,7 +31,7 @@ export default function Landing() {
               Research Methods<br />Seminars
             </h1>
             <p style={{ fontSize: 18, color: 'rgba(255,255,255,0.45)', maxWidth: 520, lineHeight: 1.65, marginBottom: 32 }}>
-              Six interactive seminars covering everything from research fundamentals to your final capstone presentation. Earn XP, unlock badges, and track your progress.
+              Six interactive seminars covering everything from research fundamentals to staged group activities. Earn XP, unlock badges, and track your progress.
             </p>
           </Reveal>
 
@@ -80,7 +80,7 @@ export default function Landing() {
             <div>
               <div style={{ fontSize: 16, fontWeight: 700, color: C.white, marginBottom: 6 }}>AY2024/25 T3 | Research Methods</div>
               <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)', lineHeight: 1.65 }}>
-                These seminars form the research methods component of your capstone module. Complete the activities, earn XP, and use the final assignment workflow to reserve your group article.
+                These seminars form the research methods component of your capstone module. Complete the staged activities, earn XP, and build your group portfolio step by step.
               </div>
             </div>
           </div>
@@ -139,4 +139,3 @@ function SeminarCard({ seminar: s }) {
     </div>
   );
 }
-

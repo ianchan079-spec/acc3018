@@ -552,29 +552,29 @@ function ActivityTab() {
   const [checked, setChecked] = useState({});
   const [done, setDone] = useState(false);
   const tasks = [
-    'Save your prepared data as a .dta file.',
+    'Open the dataset downloaded or partially downloaded in Seminar 4.',
+    'Save a working .dta file and keep the original raw file unchanged.',
+    'Identify the dependent variable, key independent variable and controls from the paper.',
+    'Create or approximate the variables needed for the main results table.',
     'Produce summary statistics for the main variables.',
     'Produce a correlation matrix for the main variables.',
-    'Run at least three regression models.',
-    'Run the same three models for at least one subsample split.',
-    'Identify one event such as COVID or the GFC.',
-    'Create the event dummy and interaction term.',
-    'Export the main, subsample and event-study tables.',
+    'Run the closest feasible Stata model for the paper main result.',
+    'Export the attempted main results table and document what could not be reproduced.',
   ];
   const count = Object.values(checked).filter(Boolean).length;
   const finish = () => { setDone(true); completeTab('s5:activity', 25); awardXpOnce('activity:s5:stata-output-plan', count * 8 + (count === tasks.length ? 30 : 0), `${count}/${tasks.length} Seminar 5 activity`, { allowImprovement: true }); if (count === tasks.length) awardBadge('s5-completionist'); };
   return <div style={{ paddingTop: 56 }}>
     <DarkWrap>
-      <Reveal><Label>Seminar activity</Label><H color={C.white}>From Dataset to Results Package</H><P color="rgba(255,255,255,0.55)">This activity follows the final slide: summary statistics, correlation matrix, regression models, subsample analysis and an event study.</P></Reveal>
+      <Reveal><Label>Seminar activity</Label><H color={C.white}>Attempt the Paper's Main Results in Stata</H><P color="rgba(255,255,255,0.55)">Use the dataset your group explored in Seminar 4. The goal is to attempt the paper's main results or the closest feasible version, then document what worked and what could not be reproduced.</P></Reveal>
     </DarkWrap>
     <Wrap bg={C.black05}>
       <Reveal><Card style={{ marginBottom: 14, borderLeft: `4px solid ${C.amber}` }}>
         <div style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Before the checklist: what the results package proves</div>
-        <P mb={8}>The goal is not to produce many Stata outputs. The goal is to create a results package that lets a reader follow the evidence from data description to main model to robustness checks.</P>
+        <P mb={8}>The goal is not a perfect replication. The goal is to connect a paper's data description to actual Stata work: inspect the data, construct variables, run a model and explain the gap between the paper and your attempt.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 10 }}>
-          <div style={panelTile(C.black20)}><strong>Describe</strong><br /><span style={text}>Summary statistics and correlations show what the data look like before modelling.</span></div>
-          <div style={panelTile(C.red)}><strong>Estimate</strong><br /><span style={text}>Regression tables test the main prediction using progressively richer specifications.</span></div>
-          <div style={panelTile(C.amber)}><strong>Stress-test</strong><br /><span style={text}>Subsamples and event interactions ask whether the result is stable or context-specific.</span></div>
+          <div style={panelTile(C.black20)}><strong>Prepare</strong><br /><span style={text}>Open the data, inspect variables and preserve a do-file trail.</span></div>
+          <div style={panelTile(C.red)}><strong>Approximate</strong><br /><span style={text}>Construct the closest feasible variables and model from the paper.</span></div>
+          <div style={panelTile(C.amber)}><strong>Explain</strong><br /><span style={text}>Report what matches the paper, what differs and why.</span></div>
         </div>
       </Card></Reveal>
       <Reveal><Card>
@@ -587,7 +587,7 @@ function ActivityTab() {
           <Btn onClick={finish}>Submit checklist</Btn>
           <div style={{ fontSize: 14, color: C.black60 }}>{count}/{tasks.length} complete</div>
         </div>
-        {done && <Callout accent={count === tasks.length ? C.green : C.amber} bg={count === tasks.length ? C.greenBg : C.amberBg}><strong>{count === tasks.length ? 'Seminar 5 complete.' : 'Progress saved.'}</strong> Students should now have the core outputs needed for an empirical results section.</Callout>}
+        {done && <Callout accent={count === tasks.length ? C.green : C.amber} bg={count === tasks.length ? C.greenBg : C.amberBg}><strong>{count === tasks.length ? 'Seminar 5 complete.' : 'Progress saved.'}</strong> Students should now have a Stata attempt at the paper's main results, plus notes on what could and could not be reproduced.</Callout>}
       </Card></Reveal>
     </Wrap>
     <footer style={{ background: C.black, padding: '28px 0', borderTop: `4px solid ${C.red}` }}>

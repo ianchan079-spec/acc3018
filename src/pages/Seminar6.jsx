@@ -1,82 +1,17 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { C } from '../shared/theme';
 import { useGame } from '../shared/GameProvider';
 import {
-  GlobalStyles, Reveal, Label, H, P, Wrap, DarkWrap, Callout, Card, Btn,
-  Li, NextBtn, NextBtnDark, TopNav, ProgressWidget,
+  GlobalStyles, Reveal, Label, H, P, Wrap, DarkWrap, Callout, Card,
+  Li, Num, NextBtn, NextBtnDark, TopNav, ProgressWidget,
 } from '../shared/components';
-import {
-  loadArticleClaims, makeArticleClaimKey, submitArticleClaim,
-} from '../shared/storage';
 
 const TABS = [
-  { id: 's6:overview', label: 'Assignment Brief' },
-  { id: 's6:paper', label: 'Choose Paper' },
-  { id: 's6:claim', label: 'Reserve Article' },
-  { id: 's6:brief', label: 'Report Brief' },
-];
-
-const JOURNALS = [
-  { code: 'TAR', name: 'The Accounting Review' },
-  { code: 'JAE', name: 'Journal of Accounting and Economics' },
-  { code: 'JAR', name: 'Journal of Accounting Research' },
-  { code: 'CAR', name: 'Contemporary Accounting Research' },
-  { code: 'AOS', name: 'Accounting, Organizations and Society' },
-  { code: 'AH', name: 'Accounting Horizons' },
-  { code: 'AJPT', name: 'Auditing: A Journal of Practice & Theory' },
-  { code: 'JF', name: 'Journal of Finance' },
-  { code: 'JFE', name: 'Journal of Financial Economics' },
-  { code: 'RFS', name: 'Review of Financial Studies' },
-  { code: 'JFQA', name: 'Journal of Financial and Quantitative Analysis' },
-  { code: 'RF', name: 'Review of Finance' },
-];
-
-const emptyForm = {
-  lmsGroup: '',
-  contactName: '',
-  articleTitle: '',
-  journal: '',
-  year: '',
-  doi: '',
-  url: '',
-  replicateTarget: '',
-  newVariable: '',
-  newVariableReason: '',
-};
-
-const DELIVERABLES = [
-  'LMS group article reservation',
-  'Article selection proposal',
-  'Final written report',
-  'Data and code appendix',
-  'Presentation slides',
-  'Individual contribution statement',
-];
-
-const RUBRIC = [
-  ['10%', 'Paper selection and feasibility'],
-  ['15%', 'Introduction and motivation'],
-  ['20%', 'Literature review and theory'],
-  ['20%', 'Research design'],
-  ['20%', 'Results and replication quality'],
-  ['10%', 'Discussion, reflection and limitations'],
-  ['5%', 'Presentation and professionalism'],
-];
-
-const REPORT_SECTIONS = [
-  ['Introduction', 'What is the paper about, why does it matter, and what is your extension?'],
-  ['Literature Review', 'Organise prior research by themes. Do not only summarise one paper at a time.'],
-  ['Research Design', 'Explain sample, data, variables, model, controls and expected signs.'],
-  ['Results', 'Show descriptive statistics, correlations, replication results and extended results.'],
-  ['Discussion', 'Compare with the original paper and explain what your added variable contributes.'],
-  ['Appendix', 'Include data and code notes so the work can be checked.'],
-];
-
-const FORMAT_GUIDE = [
-  ['Text', 'Use a readable 12-point font with 1.5 or double spacing. Keep headings clear and consistent.'],
-  ['Citations', 'Use a consistent author-year citation style. The reference list should match the in-text citations.'],
-  ['Tables', 'Number tables clearly, place titles above tables, and explain variable definitions below the table or in an appendix.'],
-  ['Regression output', 'Report coefficients with t-statistics or standard errors in parentheses. Explain significance stars below the table.'],
+  { id: 's6:overview', label: 'Roadmap' },
+  { id: 's6:s1', label: 'Seminar 1' },
+  { id: 's6:s23', label: 'Seminars 2-3' },
+  { id: 's6:s45', label: 'Seminars 4-5' },
+  { id: 's6:submit', label: 'Submission' },
 ];
 
 const text = { fontSize: 13.5, color: C.black80, lineHeight: 1.6 };
@@ -87,33 +22,15 @@ const panel = (accent = C.red) => ({
   borderRadius: 8,
   padding: 16,
 });
-const inputStyle = {
-  width: '100%',
-  border: `1.5px solid ${C.black20}`,
-  borderRadius: 6,
-  padding: '10px 12px',
-  fontSize: 14,
-  fontFamily: "'Source Sans 3',sans-serif",
-  color: C.black,
-  background: C.white,
-};
 
-function Field({ label, hint, children }) {
-  return <label style={{ display: 'block' }}>
-    <div style={{ fontSize: 12, fontWeight: 900, color: C.black, marginBottom: 5 }}>{label}</div>
-    {children}
-    {hint && <div style={{ fontSize: 12, color: C.black60, lineHeight: 1.45, marginTop: 4 }}>{hint}</div>}
-  </label>;
-}
-
-function statusStyle(status) {
-  if (status === 'approved') return { color: C.green, bg: C.greenBg, label: 'Approved' };
-  if (status === 'rejected') return { color: C.red, bg: C.redSubtle, label: 'Rejected' };
-  return { color: C.amber, bg: C.amberBg, label: 'Reserved' };
-}
-
-function cleanText(value = '') {
-  return value.trim().toLowerCase().replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
+function StepGrid({ items }) {
+  return <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 12 }}>
+    {items.map((item, i) => <div key={item.title} style={panel(item.color || [C.red, C.blue, C.green, C.amber, C.purple][i % 5])}>
+      <div style={{ fontSize: 12, fontWeight: 900, color: item.color || [C.red, C.blue, C.green, C.amber, C.purple][i % 5], marginBottom: 5 }}>{item.k}</div>
+      <div style={{ fontSize: 16, fontWeight: 900, color: C.black, marginBottom: 5 }}>{item.title}</div>
+      <div style={text}>{item.desc}</div>
+    </div>)}
+  </div>;
 }
 
 export default function Seminar6() {
@@ -123,10 +40,11 @@ export default function Seminar6() {
     <GlobalStyles />
     <TopNav tabs={TABS} activeTab={activeTab} setActiveTab={jump} />
     <ProgressWidget tabs={TABS} />
-    {activeTab === 's6:overview' && <OverviewTab next={() => jump('s6:paper')} />}
-    {activeTab === 's6:paper' && <PaperTab next={() => jump('s6:claim')} />}
-    {activeTab === 's6:claim' && <ClaimTab next={() => jump('s6:brief')} />}
-    {activeTab === 's6:brief' && <BriefTab />}
+    {activeTab === 's6:overview' && <OverviewTab next={() => jump('s6:s1')} />}
+    {activeTab === 's6:s1' && <Seminar1Plan next={() => jump('s6:s23')} />}
+    {activeTab === 's6:s23' && <Seminar23Plan next={() => jump('s6:s45')} />}
+    {activeTab === 's6:s45' && <Seminar45Plan next={() => jump('s6:submit')} />}
+    {activeTab === 's6:submit' && <SubmissionPlan />}
   </div>;
 }
 
@@ -138,336 +56,98 @@ function OverviewTab({ next }) {
       <div style={{ position: 'absolute', top: 56, left: 0, right: 0, height: 4, background: C.red }} />
       <div style={{ maxWidth: 840, margin: '0 auto', padding: '44px 36px', width: '100%', position: 'relative' }}>
         <Reveal>
-          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: C.red, marginBottom: 14 }}>ACC3018 | Seminar 6</div>
-          <h1 style={{ fontSize: 'clamp(32px,5.5vw,60px)', fontWeight: 900, lineHeight: 1.06, letterSpacing: '-0.025em', color: C.white, marginBottom: 14 }}>Mini Group Assignment</h1>
-          <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.48)', maxWidth: 640, lineHeight: 1.6 }}>Replication Plus Extension: choose a recent top-journal article, replicate one important analysis, then extend it with one meaningful new variable.</p>
+          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: C.red, marginBottom: 14 }}>ACC3018 | Assessment Roadmap</div>
+          <h1 style={{ fontSize: 'clamp(32px,5.5vw,60px)', fontWeight: 900, lineHeight: 1.06, letterSpacing: '-0.025em', color: C.white, marginBottom: 14 }}>Seminar Activities<br />Across the Course</h1>
+          <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.48)', maxWidth: 650, lineHeight: 1.6 }}>There is no longer one large paper-replication assignment. The work is now broken into smaller group activities that build from paper reading, to results interpretation, to data access, to Stata output.</p>
         </Reveal>
       </div>
     </div>
     <Wrap bg={C.black05} py={72}>
-      <Reveal><Label>Assignment Brief</Label><H size={30}>Learning from a published empirical paper</H><P>This assignment asks your group to replicate a recent published empirical article and then extend it by adding one relevant new variable. The aim is not only to copy a paper's results. The aim is to understand how a study moves from motivation, to literature, to research design, to results and discussion.</P></Reveal>
-      <Reveal delay={0.08}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 12 }}>
-          {[
-            ['Group size', '5 to 6 students', 'Form the group in the LMS. The site only records which LMS group reserves which article.'],
-            ['Paper', 'Published 2023 onwards', 'Choose a recent empirical article from the approved journal list unless an exception is approved.'],
-            ['Core task', 'Replicate plus extend', 'Replicate one important analysis, then add one meaningful new variable.'],
-            ['Length', '4,000 to 6,000 words', 'This excludes references, tables, appendices and code.'],
-            ['Presentation', '10 to 12 minutes', 'Focus on the original paper, design, replication, extension and learning.'],
-          ].map((item, i) => {
-            const accent = [C.red, C.blue, C.green, C.amber, C.purple][i];
-            return <div key={item[0]} style={panel(accent)}>
-            <div style={{ fontSize: 12, fontWeight: 900, color: accent, marginBottom: 5 }}>{item[0]}</div>
-            <div style={{ fontSize: 17, fontWeight: 900, color: C.black, marginBottom: 5 }}>{item[1]}</div>
-            <div style={text}>{item[2]}</div>
-          </div>;
-          })}
-        </div>
-      </Reveal>
-    </Wrap>
-    <Wrap py={64}>
-      <Reveal><Label>What You Submit</Label><H size={28}>Required deliverables</H><P>The final package has several parts because the assignment is meant to show both research thinking and empirical execution.</P></Reveal>
-      <Reveal delay={0.06}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(230px,1fr))', gap: 10 }}>
-          {DELIVERABLES.map((item, i) => <div key={item} style={panel([C.red, C.blue, C.green, C.amber, C.purple, C.black20][i])}>
-            <div style={{ fontSize: 12, fontWeight: 900, color: [C.red, C.blue, C.green, C.amber, C.purple, C.black60][i] }}>DELIVERABLE {i + 1}</div>
-            <div style={{ fontSize: 15, fontWeight: 900, color: C.black, marginTop: 4 }}>{item}</div>
-          </div>)}
-        </div>
-      </Reveal>
-      <Reveal delay={0.1}><Callout accent={C.red} bg={C.black05}><strong>Important:</strong> form your group in the LMS first. The reservation form will ask for your LMS group so the article can be tied to the correct team.</Callout></Reveal>
-    </Wrap>
-    <Wrap bg={C.black05}>
-      <Reveal><Label>Assessment</Label><H size={28}>How the assignment is marked</H></Reveal>
-      <Reveal delay={0.06}>
-        <div style={{ display: 'grid', gap: 8 }}>
-          {RUBRIC.map(([pct, item], i) => <div key={item} style={{ ...panel([C.red, C.blue, C.green, C.amber, C.purple, C.black20, C.red][i]), display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16 }}>
-            <div style={{ fontSize: 15, fontWeight: 800, color: C.black }}>{item}</div>
-            <div style={{ fontSize: 18, fontWeight: 900, color: [C.red, C.blue, C.green, C.amber, C.purple, C.black60, C.red][i], whiteSpace: 'nowrap' }}>{pct}</div>
-          </div>)}
-        </div>
-      </Reveal>
-      <NextBtn onClick={() => { completeTab('s6:overview'); next(); }} label="Continue to paper selection" />
+      <Reveal><Label>How It Works</Label><H size={30}>One paper pool, several staged activities</H><P>In Seminar 1, each student contributes one paper to the group. The group then uses that pool of papers for later seminar tasks. This keeps the work manageable and helps students learn the research process step by step.</P></Reveal>
+      <Reveal delay={0.06}><StepGrid items={[
+        { k: 'S1', title: 'Build the paper pool', desc: 'Form groups, each student finds one paper, and the group submits the collated responses with PDFs.' },
+        { k: 'S2-S3', title: 'Present the results section', desc: 'Choose one paper from the group pool and explain the results using quantitative methods and endogeneity concepts.' },
+        { k: 'S4', title: 'Find and download data', desc: 'Choose a dataset named in one paper, preferably from WRDS or CRSP, and attempt the download.' },
+        { k: 'S5', title: 'Attempt Stata results', desc: 'Use the downloaded data to attempt the main results or a simplified version of the paper analysis.' },
+      ]} /></Reveal>
+      <NextBtn onClick={() => { completeTab('s6:overview', 10); next(); }} label="Continue to Seminar 1 plan" />
     </Wrap>
   </div>;
 }
 
-function PaperTab({ next }) {
+function Seminar1Plan({ next }) {
   const { completeTab } = useGame();
-  return <div>
+  return <div style={{ paddingTop: 56 }}>
     <Wrap py={84}>
-      <Reveal><Label>Article Rules</Label><H size={30}>Choose a paper students can actually replicate</H><P>A good article is recent, empirical, published in an approved journal, and clear enough for your group to identify the sample, variables and regression model. Interesting is not enough. It must also be feasible.</P></Reveal>
-      <Reveal delay={0.06}>
-        <div style={panel(C.blue)}>
-          <div style={{ fontSize: 16, fontWeight: 900, color: C.black, marginBottom: 10 }}>Before reserving a paper, check that you can find:</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 8 }}>
-            {['Dependent variable', 'Main independent variable', 'Control variables', 'Sample period', 'Data source', 'Main regression model', 'A table to replicate', 'Possible new variable'].map(item => <Li key={item} color={C.blue}>{item}</Li>)}
-          </div>
-        </div>
-      </Reveal>
-    </Wrap>
-    <Wrap bg={C.black05}>
-      <Reveal><Label>Extension Variable</Label><H size={28}>Add one variable for a reason</H><P>Your new variable should answer this question: what is one factor the original paper did not fully examine, but which may reasonably affect the relationship being studied?</P></Reveal>
-      <Reveal delay={0.06}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(230px,1fr))', gap: 12 }}>
-          {[
-            ['Conceptually relevant', 'The variable should connect to the research question, not just be easy to download.'],
-            ['Measurable', 'Your group must be able to explain how the variable is constructed.'],
-            ['Linked to theory', 'Use prior literature or clear reasoning to explain why it belongs.'],
-            ['Direction stated', 'Say whether you expect a positive, negative or exploratory relationship.'],
-          ].map((item, i) => <div key={item[0]} style={panel([C.red, C.blue, C.green, C.amber][i])}>
-            <div style={{ fontSize: 15, fontWeight: 900, color: C.black, marginBottom: 5 }}>{item[0]}</div>
-            <div style={text}>{item[1]}</div>
-          </div>)}
-        </div>
-      </Reveal>
-      <Reveal delay={0.1}><Callout accent={C.amber} bg={C.white}><strong>Example:</strong> if the original paper studies board independence and earnings quality, a possible extension could add ESG performance, audit committee expertise, institutional ownership, or analyst coverage, depending on the research logic.</Callout></Reveal>
-    </Wrap>
-    <Wrap py={64}>
-      <Reveal><Label>Approved Journals</Label><H size={28}>Use this list unless your instructor approves otherwise</H></Reveal>
-      <Reveal delay={0.06}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 10 }}>
-          {JOURNALS.map(j => <div key={j.code} style={panel(C.red)}>
-            <div style={{ fontSize: 15, fontWeight: 900, color: C.red }}>{j.code}</div>
-            <div style={text}>{j.name}</div>
-          </div>)}
-        </div>
-      </Reveal>
-      <NextBtn onClick={() => { completeTab('s6:paper'); next(); }} label="Continue to article reservation" />
+      <Reveal><Label>Seminar 1 Activity</Label><H size={30}>Group paper pool</H><P>Students form groups in Seminar 1. Within each group, each student individually finds a different top-journal empirical paper and completes the prescribed paper walkthrough.</P></Reveal>
+      <Reveal delay={0.06}><Card style={{ marginBottom: 16, borderLeft: `4px solid ${C.red}` }}>
+        <div style={{ fontSize: 12, fontWeight: 900, color: C.red, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 10 }}>Group submission</div>
+        <Num n={1}>Each student completes an individual response for one different paper.</Num>
+        <Num n={2}>The group collates all individual responses into one group submission.</Num>
+        <Num n={3}>Attach PDF copies of all papers used by group members.</Num>
+        <Num n={4}>Submit the collated package to the LMS as a group.</Num>
+      </Card></Reveal>
+      <Reveal delay={0.1}><Callout accent={C.blue} bg={C.blueBg}><strong>Why this matters:</strong> the group is not choosing one final paper yet. It is building a small library of possible papers that can be reused in Seminars 2-5.</Callout></Reveal>
+      <NextBtn onClick={() => { completeTab('s6:s1', 10); next(); }} label="Continue to Seminars 2-3 plan" />
     </Wrap>
   </div>;
 }
 
-function ClaimTab({ next }) {
-  const { completeTab, identity, showToast } = useGame();
-  const [form, setForm] = useState(emptyForm);
-  const [claims, setClaims] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState(null);
-
-  const update = (key, value) => {
-    setMessage(null);
-    setForm(prev => ({ ...prev, [key]: value }));
-  };
-
-  const claimKey = useMemo(() => makeArticleClaimKey({ title: form.articleTitle, journal: form.journal, year: form.year, doi: form.doi }), [form.articleTitle, form.journal, form.year, form.doi]);
-  const duplicate = claims.find(c => c.claimKey === claimKey);
-  const titleNearMatch = claims.find(c => c.normalizedTitle && cleanText(form.articleTitle) && c.normalizedTitle === cleanText(form.articleTitle));
-
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      setClaims(await loadArticleClaims());
-      setLoading(false);
-    })();
-  }, []);
-
-  const validate = () => {
-    if (!form.lmsGroup.trim()) return 'Enter your LMS group name or number.';
-    if (!form.contactName.trim()) return 'Enter one contact student for the group.';
-    if (!form.articleTitle.trim()) return 'Enter the article title.';
-    if (!form.journal) return 'Choose an approved journal.';
-    const year = Number(form.year);
-    if (!year || year < 2023 || year > 2026) return 'Choose a publication year from 2023 to 2026.';
-    if (!form.doi.trim() && !form.url.trim()) return 'Enter either a DOI or article URL.';
-    if (!form.replicateTarget.trim()) return 'State which table, model or analysis your group plans to replicate.';
-    if (!form.newVariable.trim()) return 'Enter the new variable your group wants to add.';
-    if (!form.newVariableReason.trim()) return 'Explain why the new variable is relevant.';
-    return null;
-  };
-
-  const submit = async e => {
-    e.preventDefault();
-    const err = validate();
-    if (err) {
-      setMessage({ kind: 'error', text: err });
-      return;
-    }
-    if (duplicate) {
-      setMessage({ kind: 'error', text: `This article is already reserved by ${duplicate.groupName || 'another group'}. Please choose a different paper.` });
-      return;
-    }
-    setSaving(true);
-    const result = await submitArticleClaim({
-      lmsGroup: form.lmsGroup.trim(),
-      groupName: form.lmsGroup.trim(),
-      contactName: form.contactName.trim(),
-      studentHash: identity.hashedId || '',
-      articleTitle: form.articleTitle.trim(),
-      journal: form.journal,
-      year: Number(form.year),
-      doi: form.doi.trim(),
-      url: form.url.trim(),
-      replicateTarget: form.replicateTarget.trim(),
-      newVariable: form.newVariable.trim(),
-      newVariableReason: form.newVariableReason.trim(),
-    });
-    setSaving(false);
-    if (result.duplicate) {
-      setMessage({ kind: 'error', text: `This article has already been reserved by ${result.claim.groupName || 'another group'}. Please choose a different paper.` });
-      setClaims(await loadArticleClaims());
-      return;
-    }
-    if (!result.ok) {
-      setMessage({ kind: 'error', text: result.error || 'The reservation could not be saved.' });
-      return;
-    }
-    setMessage({ kind: 'success', text: result.updated ? 'Your reservation was updated.' : 'Your article is reserved pending instructor approval.' });
-    showToast?.('Article reserved', 'xp');
-    completeTab('s6:claim', 35);
-    setClaims(await loadArticleClaims());
-  };
-
-  return <div>
-    <Wrap py={84}>
-      <Reveal><Label>Reservation System</Label><H size={30}>Reserve your article before another group takes it</H><P>The site checks article claims using DOI first. If there is no DOI, it checks a cleaned version of the title, journal and year. If the paper is already reserved, choose a different article before building your project around it.</P></Reveal>
-      <Reveal delay={0.06}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.4fr) minmax(280px,0.8fr)', gap: 18, alignItems: 'start' }}>
-          <Card>
-            <form onSubmit={submit}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 12 }}>
-                <Field label="LMS group" hint="Use the exact group name or number from the LMS."><input value={form.lmsGroup} onChange={e => update('lmsGroup', e.target.value)} style={inputStyle} placeholder="Group 3" /></Field>
-                <Field label="Contact student"><input value={form.contactName} onChange={e => update('contactName', e.target.value)} style={inputStyle} placeholder="Name of one group member" /></Field>
-              </div>
-              <div style={{ marginTop: 12 }}>
-                <Field label="Article title"><input value={form.articleTitle} onChange={e => update('articleTitle', e.target.value)} style={inputStyle} placeholder="Paste the full published article title" /></Field>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.6fr', gap: 12, marginTop: 12 }}>
-                <Field label="Journal">
-                  <select value={form.journal} onChange={e => update('journal', e.target.value)} style={inputStyle}>
-                    <option value="">Choose journal</option>
-                    {JOURNALS.map(j => <option key={j.code} value={`${j.code} - ${j.name}`}>{j.code} - {j.name}</option>)}
-                  </select>
-                </Field>
-                <Field label="Publication year"><input value={form.year} onChange={e => update('year', e.target.value)} style={inputStyle} placeholder="2024" inputMode="numeric" /></Field>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 12, marginTop: 12 }}>
-                <Field label="DOI" hint="Best for duplicate detection."><input value={form.doi} onChange={e => update('doi', e.target.value)} style={inputStyle} placeholder="10.xxxx/xxxxx" /></Field>
-                <Field label="Article URL" hint="Use journal page if DOI is unavailable."><input value={form.url} onChange={e => update('url', e.target.value)} style={inputStyle} placeholder="https://..." /></Field>
-              </div>
-              <div style={{ marginTop: 12 }}>
-                <Field label="What will you replicate?" hint="Example: main regression in Table 4, Model 2."><textarea value={form.replicateTarget} onChange={e => update('replicateTarget', e.target.value)} style={{ ...inputStyle, minHeight: 76, resize: 'vertical' }} /></Field>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 12, marginTop: 12 }}>
-                <Field label="New variable"><input value={form.newVariable} onChange={e => update('newVariable', e.target.value)} style={inputStyle} placeholder="e.g., ESG score, analyst coverage" /></Field>
-                <Field label="Why is it relevant?"><textarea value={form.newVariableReason} onChange={e => update('newVariableReason', e.target.value)} style={{ ...inputStyle, minHeight: 76, resize: 'vertical' }} /></Field>
-              </div>
-
-              {(duplicate || titleNearMatch) && (
-                <div style={{ ...panel(C.amber), marginTop: 14, background: C.amberBg }}>
-                  <strong>{duplicate ? 'Already reserved.' : 'Possible title match.'}</strong> {duplicate ? `This article is held by ${duplicate.groupName || 'another group'}.` : 'Check the existing claims list before submitting.'}
-                </div>
-              )}
-              {message && (
-                <div style={{ ...panel(message.kind === 'success' ? C.green : C.red), marginTop: 14, background: message.kind === 'success' ? C.greenBg : C.redSubtle }}>
-                  {message.text}
-                </div>
-              )}
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16 }}>
-                <Btn disabled={saving}>{saving ? 'Checking...' : 'Reserve article'}</Btn>
-                <button type="button" onClick={async () => { setLoading(true); setClaims(await loadArticleClaims()); setLoading(false); }} style={{ ...inputStyle, width: 'auto', cursor: 'pointer', fontWeight: 800 }}>Refresh claims</button>
-              </div>
-            </form>
-          </Card>
-
-          <div style={panel(C.blue)}>
-            <div style={{ fontSize: 15, fontWeight: 900, color: C.black, marginBottom: 8 }}>How the check works</div>
-            <Li color={C.blue}>DOI match blocks immediately.</Li>
-            <Li color={C.blue}>No DOI means title, journal and year are used.</Li>
-            <Li color={C.blue}>Reserved means held for your group, pending instructor approval.</Li>
-            <Li color={C.blue}>Instructor can still reject an unsuitable paper later.</Li>
-          </div>
-        </div>
-      </Reveal>
-    </Wrap>
-    <Wrap bg={C.black05}>
-      <Reveal><Label>Existing Claims</Label><H size={28}>Papers already reserved</H><P>Use this list to avoid overlaps. If your group sees the same paper here, choose a different article.</P></Reveal>
-      <Reveal delay={0.06}>
-        {loading ? <div style={panel(C.black20)}>Loading article claims...</div> : claims.length === 0 ? <div style={panel(C.black20)}>No article has been reserved yet.</div> : (
-          <div style={{ display: 'grid', gap: 10 }}>
-            {claims.map(claim => {
-              const s = statusStyle(claim.status);
-              return <div key={claim.claimKey} style={panel(s.color)}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'flex-start' }}>
-                  <div>
-                    <div style={{ fontSize: 15, fontWeight: 900, color: C.black, lineHeight: 1.35 }}>{claim.articleTitle}</div>
-                    <div style={{ ...text, marginTop: 4 }}>{claim.journal} | {claim.year} | {claim.groupName}</div>
-                    {claim.newVariable && <div style={{ fontSize: 12.5, color: C.black60, marginTop: 5 }}>Extension: {claim.newVariable}</div>}
-                  </div>
-                  <div style={{ background: s.bg, color: s.color, border: `1px solid ${s.color}`, borderRadius: 99, padding: '4px 10px', fontSize: 11, fontWeight: 900, whiteSpace: 'nowrap' }}>{s.label}</div>
-                </div>
-              </div>;
-            })}
-          </div>
-        )}
-      </Reveal>
-      <NextBtn onClick={next} label="Continue to report brief" />
-    </Wrap>
-  </div>;
-}
-
-function BriefTab() {
+function Seminar23Plan({ next }) {
   const { completeTab } = useGame();
-  return <div>
+  return <div style={{ paddingTop: 56 }}>
     <Wrap py={84}>
-      <Reveal><Label>Final Output</Label><H size={30}>What your group submits</H><P>The final assignment should read like a small empirical paper. It should explain the original study, reproduce one important part of the analysis, and show what your new variable adds.</P></Reveal>
-      <Reveal delay={0.06}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(230px,1fr))', gap: 12 }}>
-          {REPORT_SECTIONS.map((item, i) => <div key={item[0]} style={panel([C.red, C.blue, C.green, C.amber, C.purple, C.black20][i])}>
-            <div style={{ fontSize: 15, fontWeight: 900, color: C.black, marginBottom: 5 }}>{item[0]}</div>
-            <div style={text}>{item[1]}</div>
-          </div>)}
-        </div>
-      </Reveal>
+      <Reveal><Label>Seminars 2-3 Activity</Label><H size={30}>Results-section presentation</H><P>The group chooses one paper from the Seminar 1 paper pool and prepares a short presentation about the results section. The focus is not to replicate the paper, but to explain how the evidence is constructed and interpreted.</P></Reveal>
+      <Reveal delay={0.06}><StepGrid items={[
+        { k: 'S2', title: 'Quantitative method', desc: 'Identify the dependent variable, key independent variable, controls, sample, regression model, fixed effects and main coefficient.' },
+        { k: 'S2', title: 'Results reading', desc: 'Explain summary statistics, correlations, coefficient sign, statistical significance and economic meaning.' },
+        { k: 'S3', title: 'Endogeneity concerns', desc: 'Explain possible omitted variables, reverse causality, selection bias, measurement error, and whether the paper addresses them.' },
+        { k: 'S3', title: 'Identification strategy', desc: 'If the paper uses IV/2SLS, explain the endogenous regressor, instrument, first stage and exclusion restriction. If not, explain what design it uses instead.' },
+      ]} /></Reveal>
+      <Reveal delay={0.1}><Callout accent={C.amber} bg={C.amberBg}><strong>Presentation rule:</strong> students should use the concepts already covered in Seminars 2 and 3. The goal is to show that they can read a results table like researchers.</Callout></Reveal>
+      <NextBtn onClick={() => { completeTab('s6:s23', 10); next(); }} label="Continue to Seminars 4-5 plan" />
     </Wrap>
-    <Wrap bg={C.black05}>
-      <Reveal><Label>Results Standard</Label><H size={28}>Do more than report significance</H><P>When discussing results, explain the direction, size and credibility of the evidence. A coefficient is not useful just because it has stars beside it.</P></Reveal>
-      <Reveal delay={0.06}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 12 }}>
-          {[
-            ['Direction', 'Is the relationship positive, negative, or different from what the paper expected?'],
-            ['Size', 'Is the effect economically meaningful, or only statistically visible?'],
-            ['Credibility', 'Could the result be driven by sample choice, measurement, controls, or model design?'],
-          ].map((item, i) => <div key={item[0]} style={panel([C.red, C.blue, C.green][i])}>
-            <div style={{ fontSize: 15, fontWeight: 900, color: C.black, marginBottom: 5 }}>{item[0]}</div>
-            <div style={text}>{item[1]}</div>
-          </div>)}
-        </div>
-      </Reveal>
+  </div>;
+}
+
+function Seminar45Plan({ next }) {
+  const { completeTab } = useGame();
+  return <div style={{ paddingTop: 56 }}>
+    <Wrap py={84}>
+      <Reveal><Label>Seminars 4-5 Activity</Label><H size={30}>From paper data source to Stata output</H><P>Students move from reading a published paper to handling research data. The aim is an honest attempt, not a perfect replication.</P></Reveal>
+      <Reveal delay={0.06}><StepGrid items={[
+        { k: 'S4', title: 'Identify a dataset', desc: 'Pick a dataset named in one of the group papers, preferably from WRDS or CRSP.' },
+        { k: 'S4', title: 'Attempt the download', desc: 'Find the database, identify the file/table, select relevant variables and document the query choices.' },
+        { k: 'S5', title: 'Use Stata', desc: 'Import or open the dataset, inspect variables, clean the file and construct the closest feasible analysis sample.' },
+        { k: 'S5', title: 'Attempt main results', desc: 'Run the closest feasible Stata models for the paper main results, or explain clearly what cannot be reproduced.' },
+      ]} /></Reveal>
+      <Reveal delay={0.1}><Callout accent={C.red} bg={C.redSubtle}><strong>Important:</strong> failed downloads or imperfect Stata results are still useful if the group documents what they tried, what worked, what failed, and why.</Callout></Reveal>
+      <NextBtn onClick={() => { completeTab('s6:s45', 10); next(); }} label="Continue to submission checklist" />
     </Wrap>
-    <Wrap py={64}>
-      <Reveal><Label>Formatting</Label><H size={28}>Use journal style, with a clear fallback</H><P>Follow the broad formatting conventions of the journal your article came from, especially for citations, references, tables and regression output. If the journal style is unclear or too difficult to apply cleanly, use the default ACC3018 TAR/JAE-inspired format below.</P></Reveal>
-      <Reveal delay={0.06}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(230px,1fr))', gap: 12 }}>
-          {FORMAT_GUIDE.map((item, i) => <div key={item[0]} style={panel([C.red, C.blue, C.green, C.amber][i])}>
-            <div style={{ fontSize: 15, fontWeight: 900, color: C.black, marginBottom: 5 }}>{item[0]}</div>
-            <div style={text}>{item[1]}</div>
-          </div>)}
-        </div>
-      </Reveal>
-      <Reveal delay={0.1}><Callout accent={C.blue} bg={C.black05}><strong>Rule of thumb:</strong> the goal is a professional empirical-paper format, not perfect imitation of every journal submission rule.</Callout></Reveal>
-    </Wrap>
-    <Wrap py={64}>
-      <Reveal><Label>Guardrails</Label><H size={28}>What not to do</H></Reveal>
-      <Reveal delay={0.06}>
-        <div style={panel(C.red)}>
-          <Li>Do not choose a paper that is impossible to replicate with available data.</Li>
-          <Li>Do not add a variable only because it is easy to download.</Li>
-          <Li>Do not treat replication as copying text, tables or code from the original paper.</Li>
-          <Li>Do not claim your results are wrong simply because they differ from the published paper.</Li>
-          <Li>Do not use generative AI to fabricate literature, data, citations or results.</Li>
-        </div>
-      </Reveal>
-    </Wrap>
+  </div>;
+}
+
+function SubmissionPlan() {
+  const { completeTab } = useGame();
+  return <div style={{ paddingTop: 56 }}>
     <DarkWrap>
-      <Reveal><Label color={C.red}>Research Habit</Label><H size={30} color={C.white}>Do not hide difficult replication work</H><P color="rgba(255,255,255,0.55)">If your results differ from the published article, that does not automatically mean your group failed. Explain possible reasons: different sample period, missing data, measurement choices, data cleaning, model specification or access limitations.</P></Reveal>
-      <Reveal delay={0.08}>
-        <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', borderLeft: `4px solid ${C.red}`, borderRadius: 8, padding: 18, color: C.white, lineHeight: 1.65 }}>
-          Strong projects show that students understand the research logic, not just the software commands.
+      <Reveal><Label color={C.red}>Submission Checklist</Label><H color={C.white} size={34}>What The Group Should Keep</H><P color="rgba(255,255,255,0.55)">The course activities now create a portfolio of evidence: paper notes, presentation slides, data-access attempts and Stata outputs.</P></Reveal>
+      <Reveal delay={0.06}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(230px,1fr))', gap: 12 }}>
+          {[
+            ['S1 package', 'All individual paper responses plus PDF copies of the papers.'],
+            ['S2-S3 slides', 'Results-section presentation using quantitative methods and endogeneity concepts.'],
+            ['S4 data notes', 'Dataset selected, database path, variables selected and download evidence.'],
+            ['S5 Stata files', 'Do-file, output tables, screenshots or notes explaining the attempted main results.'],
+          ].map((item, i) => <div key={item[0]} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', borderLeft: `4px solid ${[C.red, C.blue, C.green, C.amber][i]}`, borderRadius: 8, padding: 16 }}>
+            <div style={{ fontSize: 15, fontWeight: 900, color: C.white, marginBottom: 5 }}>{item[0]}</div>
+            <div style={{ fontSize: 13.5, color: 'rgba(255,255,255,0.65)', lineHeight: 1.6 }}>{item[1]}</div>
+          </div>)}
         </div>
       </Reveal>
-      <NextBtnDark onClick={() => completeTab('s6:brief')} label="Mark assignment brief complete" />
+      <Reveal delay={0.1}><Callout accent={C.red} bg="rgba(228,0,43,0.12)"><span style={{ color: C.white }}><strong>Theme:</strong> every seminar turns a published paper into a more concrete research skill: reading, interpreting, accessing data and producing results.</span></Callout></Reveal>
+      <NextBtnDark onClick={() => completeTab('s6:submit', 10)} label="Mark roadmap complete" />
     </DarkWrap>
   </div>;
 }
+

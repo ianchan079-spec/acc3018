@@ -433,28 +433,28 @@ function ActivityTab() {
   const [checked, setChecked] = useState({});
   const [done, setDone] = useState(false);
   const tasks = [
-    'Download 10 companies daily spread, turnover and return data.',
-    'Aggregate annual Spread and Turnover using means, and RET using a documented annual return rule.',
-    'Download annual SIZE, leverage, revenue and SIC data.',
-    'Merge the market and accounting data by firm and year.',
-    'Create future return, RET1, after sorting by firm and year.',
-    'Create a correlation matrix for RET1, RET, Spread, Turnover, SIZE, TLTA, SALETA and SIC.',
-    'Run three regression models and explain why each specification is different.',
+    'Choose one paper from the group paper pool that names a dataset available through WRDS, CRSP, Compustat or another approved source.',
+    'Identify the exact dataset, table or file used in the paper.',
+    'List the variables needed for the paper results or the closest feasible version of those results.',
+    'Open WRDS/CRSP and locate the dataset path.',
+    'Attempt the download for the relevant sample period, firms and variables.',
+    'Save the raw download and record the query choices.',
+    'Write a short note explaining what worked, what failed, and what data limitations remain.',
   ];
   const count = Object.values(checked).filter(Boolean).length;
   const finish = () => { setDone(true); completeTab('s4:activity', 25); awardXpOnce('activity:s4:capstone-data-plan', count * 8 + (count === tasks.length ? 30 : 0), `${count}/${tasks.length} activity checklist`, { allowImprovement: true }); if (count === tasks.length) awardBadge('s4-completionist'); };
   return <div style={{ paddingTop: 56 }}>
     <DarkWrap>
-      <Reveal><Label>Seminar activity</Label><H color={C.white}>Build the Dataset for the Capstone Analysis</H><P color="rgba(255,255,255,0.55)">This activity translates the slide instructions into a structured research workflow. Students should leave with a dataset that can support descriptive statistics, correlations and regressions.</P></Reveal>
+      <Reveal><Label>Seminar activity</Label><H color={C.white}>Find and Download a Paper Dataset</H><P color="rgba(255,255,255,0.55)">Choose a dataset identified in one of your group's papers, preferably from WRDS or CRSP, and attempt to download it. The goal is to learn how a published paper becomes a real data request.</P></Reveal>
     </DarkWrap>
     <Wrap bg={C.black05}>
       <Reveal><Card style={{ marginBottom: 14, borderLeft: `4px solid ${C.amber}` }}>
         <div style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Before the checklist: what this activity is for</div>
-        <P mb={8}>This is not just a technical data task. Students are creating the bridge between a research question and a regression table. Every item below protects one part of that bridge.</P>
+        <P mb={8}>This is not just a technical data task. Students are learning to translate a published paper's data description into a reproducible query. A failed download is still useful if the group can explain why it failed.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 10 }}>
-          <div style={panelTile(C.black20)}><strong>Download</strong><br /><span style={small}>Defines the sample and raw variables students can study.</span></div>
-          <div style={panelTile(C.black20)}><strong>Aggregate and merge</strong><br /><span style={small}>Turns separate sources into one firm-year analysis panel.</span></div>
-          <div style={panelTile(C.amber)}><strong>Validate</strong><br /><span style={small}>Checks whether the final dataset is credible enough for Seminar 5 regressions.</span></div>
+          <div style={panelTile(C.black20)}><strong>Paper to database</strong><br /><span style={small}>Find where the paper says the data came from.</span></div>
+          <div style={panelTile(C.black20)}><strong>Database to query</strong><br /><span style={small}>Translate the paper into dataset, dates, identifiers and variables.</span></div>
+          <div style={panelTile(C.amber)}><strong>Query to evidence</strong><br /><span style={small}>Record whether the download gives enough data for Seminar 5.</span></div>
         </div>
       </Card></Reveal>
       <Reveal><Card>
@@ -467,7 +467,7 @@ function ActivityTab() {
           <Btn onClick={finish}>Submit checklist</Btn>
           <div style={{ fontSize: 14, color: C.black60 }}>{count}/{tasks.length} complete</div>
         </div>
-        {done && <Callout accent={count === tasks.length ? C.green : C.amber} bg={count === tasks.length ? C.greenBg : C.amberBg}><strong>{count === tasks.length ? 'Seminar 4 complete.' : 'Progress saved.'}</strong> The next step is to use this prepared dataset in Seminar 5 for Stata regressions, robustness checks and event-study analysis.</Callout>}
+        {done && <Callout accent={count === tasks.length ? C.green : C.amber} bg={count === tasks.length ? C.greenBg : C.amberBg}><strong>{count === tasks.length ? 'Seminar 4 complete.' : 'Progress saved.'}</strong> The next step is to use this downloaded or partially downloaded dataset in Seminar 5 for a Stata attempt at the paper's main results.</Callout>}
       </Card></Reveal>
     </Wrap>
     <footer style={{ background: C.black, padding: '28px 0', borderTop: `4px solid ${C.red}` }}>

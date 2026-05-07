@@ -13,7 +13,7 @@ import { auth, db } from './firebase';
 import { getIdTokenResult, onAuthStateChanged, signInAnonymously, signInWithEmailAndPassword } from 'firebase/auth';
 import {
   doc, getDoc, setDoc, deleteDoc,
-  collection, getDocs, runTransaction,
+  collection, getDocs,
 } from 'firebase/firestore';
 
 const IDENTITY_KEY = 'acc3018:identity';
@@ -240,92 +240,6 @@ export async function deleteDetail(hashedId) {
 }
 
 // ── Validation ──
-// Article reservation claims (Firestore: articleClaims/{claimKey})
-function normalizeDoi(doi = '') {
-  return doi
-    .trim()
-    .toLowerCase()
-    .replace(/^https?:\/\/(dx\.)?doi\.org\//, '')
-    .replace(/^doi:\s*/, '')
-    .replace(/\s+/g, '');
-}
-
-function normalizeArticleTitle(title = '') {
-  return title
-    .trim()
-    .toLowerCase()
-    .replace(/&/g, ' and ')
-    .replace(/[^a-z0-9]+/g, ' ')
-    .replace(/\b(the|a|an)\b/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-function hashClaimKey(str) {
-  let h = 2166136261;
-  for (let i = 0; i < str.length; i++) {
-    h ^= str.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return (h >>> 0).toString(16).padStart(8, '0');
-}
-
-export function makeArticleClaimKey({ doi, title, journal, year }) {
-  const normalizedDoi = normalizeDoi(doi);
-  if (normalizedDoi) return `doi-${hashClaimKey(normalizedDoi)}`;
-  const normalizedTitle = normalizeArticleTitle(title);
-  const normalizedJournal = normalizeArticleTitle(journal);
-  const normalizedYear = String(year || '').trim();
-  return `title-${hashClaimKey(`${normalizedTitle}|${normalizedJournal}|${normalizedYear}`)}`;
-}
-
-export async function loadArticleClaims() {
-  try {
-    await ensureSignedIn();
-    const snap = await getDocs(collection(db, 'articleClaims'));
-    return snap.docs.map(d => d.data()).sort((a, b) => (b.submittedAt || 0) - (a.submittedAt || 0));
-  } catch (e) {
-    console.warn('loadArticleClaims failed:', e);
-    try {
-      return JSON.parse(localStorage.getItem('acc3018:articleClaims') || '[]');
-    } catch {
-      return [];
-    }
-  }
-}
-
-export async function submitArticleClaim(claim) {
-  const claimKey = makeArticleClaimKey(claim);
-  const normalizedDoi = normalizeDoi(claim.doi);
-  const normalizedTitle = normalizeArticleTitle(claim.title);
-  const now = Date.now();
-  try {
-    const user = await ensureSignedIn();
-    const ref = doc(db, 'articleClaims', claimKey);
-    return await runTransaction(db, async tx => {
-      const existing = await tx.get(ref);
-      if (existing.exists() && existing.data().ownerUid !== user.uid) {
-        return { ok: false, duplicate: true, claim: existing.data() };
-      }
-      const saved = {
-        ...claim,
-        claimKey,
-        normalizedDoi,
-        normalizedTitle,
-        ownerUid: user.uid,
-        status: existing.exists() ? existing.data().status || 'reserved' : 'reserved',
-        submittedAt: existing.exists() ? existing.data().submittedAt || now : now,
-        updatedAt: now,
-      };
-      tx.set(ref, saved, { merge: true });
-      return { ok: true, claim: saved, updated: existing.exists() };
-    });
-  } catch (e) {
-    console.warn('submitArticleClaim failed:', e);
-    return { ok: false, error: e.message || 'Article claim could not be saved.' };
-  }
-}
-
 export function validateStudentId(id) {
   const trimmed = (id || '').trim();
   if (trimmed.length < 6) return 'Student ID must be at least 6 characters';

@@ -684,17 +684,18 @@ function ActivityTab(){
   ];
   return <div style={{paddingTop:56}}>
     <Wrap>
-      <Reveal><Label>Seminar Activity</Label><H>Apply What You've Learned</H><P>Continue with the paper you identified in Seminar 1. Focus on the quantitative results tables.</P></Reveal>
+      <Reveal><Label>Seminar Activity</Label><H>Results Presentation: Quantitative Methods</H><P>As a group, choose <strong>one paper</strong> from your Seminar 1 paper pool. Prepare a short presentation that explains the paper's results section using the concepts from Seminar 2.</P></Reveal>
       <Reveal delay={0.05}><Card style={{marginBottom:20,borderColor:C.red,borderLeft:`4px solid ${C.red}`}}>
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:8}}>Your tasks</div>
         <P mb={12}>Work through the paper in the same order a researcher reads evidence: understand the sample, inspect relationships, read the main coefficient, then ask whether the result survives alternative checks.</P>
-        <Num n={1}>Check for tables on <strong>summary statistics, correlation matrix, and regression</strong>. Identify the <strong style={{background:'#FFEF00',padding:'1px 4px',borderRadius:2}}>NEW variable(s)</strong>.</Num>
-        <Num n={2}>In <strong>summary statistics</strong>, discuss Y and the NEW variable(s). What are their means and SDs?</Num>
-        <Num n={3}>In the <strong>correlation matrix</strong>, check for multicollinearity (r {'>'} |0.7|) among independent variables.</Num>
-        <Num n={4}>In the <strong>first regression table</strong>, is the key coefficient significant? What sign? At what level?</Num>
-        <Num n={5}>In the <strong>robustness checks</strong>, do the results hold under alternative specifications?</Num>
+        <Num n={1}>Name the paper, research question, sample period, data source and unit of observation.</Num>
+        <Num n={2}>Identify the <strong>dependent variable (Y)</strong>, key <strong>independent variable(s) (X)</strong>, controls and fixed effects.</Num>
+        <Num n={3}>Explain the <strong>summary statistics</strong>. What do the mean, standard deviation, minimum and maximum tell readers about the main variables?</Num>
+        <Num n={4}>Explain the <strong>correlation matrix</strong>. Is there any possible multicollinearity concern, such as r {'>'} |0.7|?</Num>
+        <Num n={5}>Read the <strong>main regression table</strong>. What is the sign, size and significance of the key coefficient?</Num>
+        <Num n={6}>End with one slide explaining what the results mean in plain language.</Num>
       </Card></Reveal>
-      <Reveal delay={0.12}><Callout accent={C.blue} bg={C.blueBg}><strong>Exit ticket:</strong> Write one sentence each for the main coefficient, its economic meaning, one diagnostic concern, and one robustness test you would want to see.</Callout></Reveal>
+      <Reveal delay={0.12}><Callout accent={C.blue} bg={C.blueBg}><strong>Presentation output:</strong> prepare a concise group presentation. Use Seminar 2 vocabulary: Y, X, controls, fixed effects, p-values, economic meaning, correlations and robustness.</Callout></Reveal>
     </Wrap>
     <Wrap bg={C.black05}>
       <Reveal><H size={28}>Final Quiz</H><P>Test your understanding of all the methods covered today.</P></Reveal>

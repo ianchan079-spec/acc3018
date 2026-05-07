@@ -1,280 +1,136 @@
-# ACC3018 Group Assignment Brief
+# ACC3018 Staged Group Activities Brief
 
-## Assignment Title
+## Overview
 
-Replication Plus Extension: Learning From a Published Empirical Paper
+The course assessment no longer uses one large paper-replication assignment. Instead, students complete smaller linked activities across Seminars 1 to 5.
 
-## Purpose
+The common thread is simple:
 
-This assignment asks your group to replicate a recent published empirical article and then extend it by adding one relevant new variable. The aim is not only to copy a paper's results. The aim is to understand how a published study moves from research motivation, to literature, to research design, to empirical results, and finally to discussion.
+1. Build a group pool of published papers.
+2. Use one paper to practise reading quantitative results.
+3. Use the same or another paper to identify a real dataset.
+4. Attempt to work with that dataset in Stata.
 
-By the end of the assignment, your group should be able to explain:
+The goal is not perfect replication. The goal is to help students understand how empirical papers connect research questions, data, methods, results and limitations.
 
-- what the original paper studies
-- why the research question matters
-- how the paper measures its key concepts
-- how the paper tests its hypotheses
-- whether your replication produces similar results
-- what your additional variable contributes to the analysis
+## Seminar 1: Group Paper Pool
 
-## Group Size
+Students form groups during Seminar 1.
 
-Students should work in groups of 5 to 6.
+Within each group, each student individually finds one different empirical paper from the approved journal list and completes the prescribed paper walkthrough activity.
 
-Each group should divide the work clearly, but every member must understand the full project. This is a research replication exercise, not a task-splitting exercise where each person only understands one small section.
+Each individual response should cover:
 
-## Paper Selection
+- article citation
+- abstract
+- keywords
+- literature areas
+- paragraph where the research gap is identified
+- hypotheses or research predictions
+- research design
+- key variables and measurement choices
+- main limitations noted from the paper
 
-Your group must choose one published empirical article from a top journal. The article should be published recently, preferably within the past three years. For the current assignment cycle, this means articles published from 2023 onwards, unless the instructor approves an exception.
+The group then collates all individual responses into one group submission.
 
-The article must be:
+The group submission should include:
 
-- empirical, not purely theoretical or conceptual
-- related to accounting, finance, auditing, corporate governance, ESG, capital markets, disclosure, taxation, or another approved applied analytics topic
-- based on data that your group can reasonably access or approximate
-- clear enough for undergraduate students to understand and replicate at least one main analysis
-- from a reputable academic journal
+- all individual one-page responses
+- PDF copies of all papers used by group members
+- a simple cover page listing group members and the paper each person selected
 
-For this assignment, groups should choose from the following approved journal list:
+## Seminars 2 and 3: Results Presentation
 
-- The Accounting Review (TAR)
-- Journal of Accounting and Economics (JAE)
-- Journal of Accounting Research (JAR)
-- Contemporary Accounting Research (CAR)
-- Accounting, Organizations and Society (AOS)
-- Accounting Horizons (AH)
-- Auditing: A Journal of Practice & Theory (AJPT)
-- Journal of Finance (JF)
-- Journal of Financial Economics (JFE)
-- Review of Financial Studies (RFS)
-- Journal of Financial and Quantitative Analysis (JFQA)
-- Review of Finance
+The group chooses one paper from the Seminar 1 paper pool.
 
-If a group wants to use a paper from another journal, it must receive instructor approval before starting the project.
+Using that paper, the group prepares a presentation about the results section.
 
-The article should not be chosen only because it sounds interesting. It must also be feasible. Before selecting a paper, check whether you can identify:
+For Seminar 2, the presentation should explain:
 
-- the dependent variable
-- the main independent variable
-- the control variables
-- the sample period and sample selection rules
-- the main regression model
-- at least one table that your group can try to replicate
-
-## What "Replication Plus Extension" Means
-
-Your project has two connected parts.
-
-First, you replicate part of the original article. This means you try to reproduce one important part of the paper's empirical analysis, such as a main regression table, a descriptive statistics table, or a core test.
-
-Second, you extend the paper by adding one relevant new variable. This variable should be theoretically meaningful. It should not be added randomly just because it is available in the dataset.
-
-Your new variable may be:
-
-- a new explanatory variable
-- a new control variable with strong justification
-- a moderator or interaction variable
-- an alternative measure of an existing concept
-- a variable that captures a newer context, such as ESG, digitalisation, governance quality, analyst attention, media sentiment, market uncertainty, or regulatory pressure
-
-Your group must explain why this variable belongs in the study.
-
-## The New Variable
-
-Your new variable should answer this question:
-
-> What is one factor the original paper did not fully examine, but which may reasonably affect the relationship being studied?
-
-A good new variable has four qualities:
-
-1. It is conceptually relevant.
-2. It can be measured clearly.
-3. It can be linked to prior literature or reasonable theory.
-4. It changes the research design in a meaningful way.
-
-For example, if the original paper studies the relationship between board independence and earnings quality, a possible extension could be to add ESG performance, audit committee expertise, institutional ownership, or analyst coverage, depending on the research logic.
-
-Your group must state the expected direction clearly:
-
-- positive relationship expected
-- negative relationship expected
-- no clear direction, but included as an exploratory extension
-
-## Required Report Structure
-
-Your final report should contain the following sections.
-
-### 1. Introduction
-
-Explain the research problem in simple terms. Introduce the original paper and explain why it is important. Then explain your group's extension.
-
-Your introduction should answer:
-
-- What is the original paper about?
-- Why does the topic matter?
-- What is your added variable?
-- Why might this variable matter?
-- What does your group aim to replicate and extend?
-
-### 2. Literature Review
-
-Summarise the key literature behind the original paper and your new variable.
-
-This section should not be a list of article summaries. It should organise prior research by theme.
-
-Your literature review should include:
-
-- the original paper
-- related papers used by the original paper
-- additional papers that justify your new variable
-- a short explanation of the research gap your extension addresses
-
-### 3. Research Design
-
-Explain how the study is tested.
-
-Your research design section should include:
-
-- sample selection
-- data sources
 - dependent variable
-- main independent variable
-- added variable
+- key independent variable or variables
 - control variables
-- regression model
-- fixed effects, if used
-- standard errors, if relevant
-- expected coefficient signs
-
-Students should write this section in a way that another group could understand and repeat the analysis.
-
-### 4. Results
-
-Present and interpret your empirical findings.
-
-At minimum, your results section should include:
-
-- descriptive statistics
+- sample and unit of observation
+- summary statistics
 - correlation matrix
-- replication result for at least one main analysis
-- extended model including your added variable
-- comparison between the original paper and your results
+- main regression table
+- sign, size and significance of the key coefficient
+- plain-English interpretation of the result
 
-When discussing results, do not only say whether a coefficient is significant. Explain what the sign, size, and significance mean in relation to the research question.
+For Seminar 3, the group adds the identification and endogeneity lens:
 
-### 5. Discussion and Conclusion
+- possible omitted variables
+- possible reverse causality
+- possible selection bias
+- possible measurement error
+- identification strategy used by the paper
+- whether the paper uses fixed effects, DiD, IV/2SLS, matching, event design, or another strategy
+- strongest remaining threat to the conclusion
 
-Explain what your findings mean.
+If the paper uses IV/2SLS, students should explain:
 
-Your discussion should answer:
+- endogenous regressor
+- instrument
+- first-stage evidence
+- exclusion restriction
+- remaining concerns
 
-- Did your replication broadly support the original paper?
-- If your results differ, what might explain the difference?
-- What did the added variable contribute?
-- Did the new variable strengthen, weaken, or change the original conclusion?
-- What are the limitations of your replication?
-- What could future research do next?
+## Seminar 4: Dataset Download Attempt
 
-## Required Deliverables
+The group chooses a dataset identified in one of the papers from the group paper pool.
 
-Each group should submit:
+Where possible, the dataset should come from WRDS, CRSP, Compustat, or another approved research database.
 
-1. LMS group article reservation
-2. Article selection proposal
-3. Final written report
-4. Data and code appendix
-5. Presentation slides
-6. Individual contribution statement
+The group should:
 
-Before starting the project, students should form their group in the LMS and reserve their chosen article through the course site. Each article can only be reserved by one LMS group. If another group has already reserved the article, choose a different paper.
+- identify the dataset named in the paper
+- find the dataset in WRDS, CRSP, Compustat, or another approved source
+- identify the relevant table or file
+- identify variables needed for the paper's main results
+- attempt to download the relevant data
+- record the query choices
+- save the raw download where possible
+- document what worked, what failed, and what data limitations remain
 
-The article reservation should include:
+A failed or partial download is acceptable if the group explains the reason clearly.
 
-- LMS group name or number
-- article title
-- journal
-- publication year
-- DOI or article URL
-- table, model, or analysis the group plans to replicate
-- proposed new variable
-- short explanation of why the new variable is relevant
+## Seminar 5: Stata Main Results Attempt
 
-The article selection proposal should be short. It should include the selected paper, why it is suitable, which table or analysis the group plans to replicate, and the proposed new variable.
+Using the dataset from Seminar 4, the group attempts to use Stata to produce the paper's main results or the closest feasible version.
 
-The data and code appendix should allow the instructor to understand how the analysis was conducted. It should include enough detail to show how variables were cleaned, constructed, and analysed.
+The group should:
 
-## Suggested Report Length
+- keep the raw file unchanged
+- save a working Stata dataset
+- inspect variables and missing values
+- construct or approximate the key variables
+- produce summary statistics
+- produce a correlation matrix
+- run the closest feasible model for the main result
+- export the attempted results table
+- document what could and could not be reproduced
 
-The recommended report length is 4,000 to 6,000 words, excluding references, tables, appendices, and code.
+The purpose is not to perfectly recreate the paper. The purpose is to learn how published results depend on data access, variable construction, sample rules and model specification.
 
-## Suggested Presentation Length
+## Recommended Final Portfolio
 
-Each group should present for 10 to 12 minutes, followed by questions.
+Each group should keep:
 
-The presentation should focus on:
+- Seminar 1 collated paper responses and PDFs
+- Seminar 2 and 3 presentation slides
+- Seminar 4 dataset download notes
+- Seminar 5 Stata do-file and output tables
+- a short reflection on what the group learned about empirical research
 
-- the original paper
-- the research design
-- what was replicated
-- the added variable
-- the main results
-- what the group learned
+## Guardrails
 
-## Marking Rubric
+Do not fabricate papers, data, citations or results.
 
-### Paper Selection and Feasibility: 10%
+Do not hide failed data downloads or failed Stata attempts.
 
-Strong submissions choose a relevant, recent, high-quality empirical paper and explain why it can be replicated by the group.
+Do not present raw software output without interpretation.
 
-### Introduction and Motivation: 15%
+Do not choose a dataset only because it is easy if it does not connect to a paper.
 
-Strong submissions explain the research problem clearly, motivate the topic well, and show why the extension matters.
+Do explain what your group tried, what worked, what failed and why.
 
-### Literature Review and Theory: 20%
-
-Strong submissions organise prior research by theme, explain the logic behind the original paper, and justify the added variable using literature or theory.
-
-### Research Design: 20%
-
-Strong submissions clearly explain the sample, variables, model, controls, and expected signs. The design should be understandable and appropriate.
-
-### Results and Replication Quality: 20%
-
-Strong submissions present descriptive statistics, correlations, replication results, and extended results clearly. They interpret the findings rather than only reporting significance levels.
-
-### Discussion, Reflection, and Limitations: 10%
-
-Strong submissions compare their findings with the original paper, explain possible differences, discuss limitations honestly, and identify what was learned.
-
-### Presentation and Professionalism: 5%
-
-Strong submissions communicate clearly, use well-designed tables or slides, and show that all group members understand the project.
-
-## Important Guardrails
-
-Do not choose a paper that is impossible to replicate with available data.
-
-Do not add a variable only because it is easy to download.
-
-Do not treat replication as copying text, tables, or code from the original paper.
-
-Do not claim your results are wrong simply because they differ from the published paper. Differences may arise because of sample period, data access, measurement choices, cleaning rules, or model specification.
-
-Do not hide failed attempts. A thoughtful explanation of replication difficulty is part of good research practice.
-
-Do not use generative AI to fabricate literature, data, citations, or results.
-
-## What A Good Project Looks Like
-
-A strong group project will usually have this shape:
-
-1. The group chooses a feasible published empirical paper.
-2. The group explains the original paper in plain language.
-3. The group identifies one main table or model to replicate.
-4. The group carefully reconstructs the variables.
-5. The group compares its result with the original paper.
-6. The group adds one meaningful new variable.
-7. The group explains whether the added variable changes the interpretation.
-8. The group reflects honestly on data and design limitations.
-
-The best projects will show that students understand the research logic, not just the software commands.

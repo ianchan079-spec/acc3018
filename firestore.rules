@@ -25,15 +25,6 @@ service cloud.firestore {
       ]);
     }
 
-    function articleClaimFieldsAreSafe() {
-      return request.resource.data.keys().hasOnly([
-        'claimKey', 'normalizedDoi', 'normalizedTitle', 'ownerUid',
-        'status', 'submittedAt', 'updatedAt', 'lmsGroup', 'groupName',
-        'contactName', 'studentHash', 'articleTitle', 'journal', 'year',
-        'doi', 'url', 'replicateTarget', 'newVariable', 'newVariableReason'
-      ]);
-    }
-
     match /students/{hashedId} {
       allow read: if ownsExistingDoc() || isInstructor();
       allow create: if ownsNewDoc() && request.resource.data.hashedId == hashedId;
@@ -62,23 +53,6 @@ service cloud.firestore {
         && request.resource.data.ownerUid == resource.data.ownerUid
         && request.resource.data.hashedId == hashedId;
       allow delete: if ownsExistingDoc() || isInstructor();
-    }
-
-    match /articleClaims/{claimKey} {
-      allow read: if signedIn();
-      allow create: if signedIn()
-        && articleClaimFieldsAreSafe()
-        && request.resource.data.ownerUid == request.auth.uid
-        && request.resource.data.claimKey == claimKey;
-      allow update: if articleClaimFieldsAreSafe()
-        && request.resource.data.claimKey == claimKey
-        && (
-          (signedIn()
-            && resource.data.ownerUid == request.auth.uid
-            && request.resource.data.ownerUid == resource.data.ownerUid)
-          || isInstructor()
-        );
-      allow delete: if isInstructor();
     }
 
   }

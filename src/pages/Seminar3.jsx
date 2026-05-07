@@ -38,7 +38,7 @@ function OverviewTab({next}){
     <Wrap bg={C.black05}>
       <Reveal><Label>Agenda</Label><H size={30}>What we'll cover today</H></Reveal>
       <Reveal delay={0.08}><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
-        {[{n:'01',t:'Endogeneity',d:'Orthogonality, why it matters, and why it cannot be tested'},{n:'02',t:'Omitted Variables',d:'The most common source — bias formula and direction'},{n:'03',t:'Simultaneous Equations',d:'Bidirectional causation: when X and Y move each other'},{n:'04',t:'Selection Bias',d:'Non-random treatment assignment distorts the estimate'},{n:'05',t:'Measurement Error',d:'Mismeasured Xs correlate with the error term'},{n:'06',t:'Instrumental Variables & 2SLS',d:'Natural experiments and the two-stage procedure'},{n:'07',t:'Apply: Build an IV Strategy',d:'Hands-on instrument selection exercise'},{n:'08',t:'Seminar Activity',d:'Find a 2SLS paper and dissect the design'}].map((item,i)=> <Card key={i}><div style={{display:'flex',gap:10}}><div style={{fontSize:20,fontWeight:900,color:C.red,flexShrink:0}}>{item.n}</div><div><div style={{fontSize:14,fontWeight:700,color:C.black,marginBottom:2}}>{item.t}</div><div style={{fontSize:12,color:C.black60,lineHeight:1.5}}>{item.d}</div></div></div></Card>)}
+        {[{n:'01',t:'Endogeneity',d:'Orthogonality, why it matters, and why it cannot be tested'},{n:'02',t:'Omitted Variables',d:'The most common source — bias formula and direction'},{n:'03',t:'Simultaneous Equations',d:'Bidirectional causation: when X and Y move each other'},{n:'04',t:'Selection Bias',d:'Non-random treatment assignment distorts the estimate'},{n:'05',t:'Measurement Error',d:'Mismeasured Xs correlate with the error term'},{n:'06',t:'Instrumental Variables & 2SLS',d:'Natural experiments and the two-stage procedure'},{n:'07',t:'Apply: Build an IV Strategy',d:'Hands-on instrument selection exercise'},{n:'08',t:'Seminar Activity',d:'Add an endogeneity and identification lens to the group results presentation'}].map((item,i)=> <Card key={i}><div style={{display:'flex',gap:10}}><div style={{fontSize:20,fontWeight:900,color:C.red,flexShrink:0}}>{item.n}</div><div><div style={{fontSize:14,fontWeight:700,color:C.black,marginBottom:2}}>{item.t}</div><div style={{fontSize:12,color:C.black60,lineHeight:1.5}}>{item.d}</div></div></div></Card>)}
       </div></Reveal>
       <Reveal delay={0.15}><Card style={{background:C.goldBg,borderColor:C.gold,marginTop:18}}>
         <div style={{fontSize:11,fontWeight:700,letterSpacing:'0.08em',textTransform:'uppercase',color:C.gold,marginBottom:6}}>⬢ Gamification active</div>
@@ -1068,6 +1068,33 @@ function ActivityTab(){
 // APP SHELL
 // ═══════════════════════════════════════════════════════════════
 
+function ActivityPresentationTab(){
+  const { completeTab } = useGame();
+  const [done, setDone] = useState(false);
+  return <div style={{paddingTop:56}}>
+    <Wrap>
+      <Reveal><Label>Activity</Label><H>Results Presentation: Endogeneity and Identification</H><P>Continue with the paper your group selected for the Seminar 2 presentation. Now add the Seminar 3 lens: what could make the results biased, and how does the paper try to deal with that problem?</P></Reveal>
+      <Reveal delay={0.05}><Card style={{marginBottom:18,borderLeft:`4px solid ${C.red}`}}>
+        <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:10}}>Presentation tasks</div>
+        <Num n="1">Identify the key result from the paper that your group presented in Seminar 2.</Num>
+        <Num n="2">Discuss possible endogeneity concerns: omitted variables, reverse causality, selection bias or measurement error.</Num>
+        <Num n="3">Explain the paper's identification strategy. Does it use controls, fixed effects, DiD, IV/2SLS, matching, an event design, or another approach?</Num>
+        <Num n="4">If the paper uses IV/2SLS, identify the endogenous regressor, instrument, first-stage evidence and exclusion restriction. If it does not, explain what design choice is doing the credibility work.</Num>
+        <Num n="5">End with the strongest remaining threat to the paper's conclusion.</Num>
+      </Card></Reveal>
+      <Reveal delay={0.1}><Callout accent={C.amber} bg={C.amberBg}><strong>Presentation output:</strong> update the Seminar 2 presentation with an identification slide. The group should be able to say why the result is more than a simple correlation, or why it may still be vulnerable.</Callout></Reveal>
+      <Reveal delay={0.14}><Callout accent={C.blue} bg={C.blueBg}><strong>Exit ticket:</strong> Write five bullets: key result, possible endogeneity source, identification strategy, main credibility evidence, and strongest remaining threat.</Callout></Reveal>
+    </Wrap>
+    <Wrap bg={C.black05}>
+      <Reveal><Card style={{background:C.white,borderColor:done?C.green:C.black10,borderWidth:done?2:1}}>
+        <div style={{fontSize:11,fontWeight:700,letterSpacing:'0.08em',textTransform:'uppercase',color:done?C.green:C.red,marginBottom:8}}>{done?'Seminar 3 activity noted':'Finish the group interpretation'}</div>
+        <P mb={12}>After the presentation, bring the same paper forward to Seminar 4 if it identifies a dataset your group can access through WRDS, CRSP or another approved database.</P>
+        <Btn onClick={()=>{completeTab('s3:activity');setDone(true);}}>{done?'Activity complete':'Mark activity complete'}</Btn>
+      </Card></Reveal>
+    </Wrap>
+  </div>;
+}
+
 export default function Seminar3(){
   const{progress,awardBadge}=useGame();
   const[tab,setTab]=useState('s3:overview');
@@ -1086,7 +1113,7 @@ export default function Seminar3(){
     {tab==='s3:measurement'&&<MeasurementTab next={nextTab}/>}
     {tab==='s3:iv'&&<IvTab next={nextTab}/>}
     {tab==='s3:apply'&&<ApplyTab next={nextTab}/>}
-    {tab==='s3:activity'&&<ActivityTab/>}
+    {tab==='s3:activity'&&<ActivityPresentationTab/>}
     <footer style={{background:C.black,padding:'36px 0',borderTop:`4px solid ${C.red}`}}>
       <div style={{maxWidth:840,margin:'0 auto',padding:'0 36px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
         <a href="/" style={{fontSize:15,fontWeight:900,color:C.red,textDecoration:'none'}}>SIT</a>
