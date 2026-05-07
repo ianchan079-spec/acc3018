@@ -1288,6 +1288,15 @@ function ActIntro({onStart}){
   return <div>
     <Reveal><Label>In-Class Activities — Individual Work</Label><H>Roychowdhury (2006) Walkthrough</H>
       <P>Find a paper <strong>different</strong> from the example "Earnings Management Through Real Activities Manipulation" (Roychowdhury 2006, JAE) from the top journals. Type the journal name in OneSearch, find the latest issue, and select one paper (choose a different paper from your team/friends) to download.</P></Reveal>
+    <Reveal delay={0.03}><Card style={{marginBottom:20,borderLeft:`4px solid ${C.red}`}}>
+      <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:8}}>Submission Requirement</div>
+      <P mb={8}>This is an <strong>individual activity</strong>. Each student should submit a short one-page write-up to the LMS after completing the walkthrough.</P>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:10}}>
+        <div style={{padding:12,borderRadius:8,background:C.black05,border:`1px solid ${C.black10}`}}><strong>Length</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>About one page.</span></div>
+        <div style={{padding:12,borderRadius:8,background:C.black05,border:`1px solid ${C.black10}`}}><strong>Submit to</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>LMS assignment folder.</span></div>
+        <div style={{padding:12,borderRadius:8,background:C.black05,border:`1px solid ${C.black10}`}}><strong>Focus</strong><br/><span style={{fontSize:13,color:C.black80,lineHeight:1.55}}>Summarise what you found from your selected paper.</span></div>
+      </div>
+    </Card></Reveal>
     <Reveal delay={0.05}><Card style={{marginBottom:20,borderLeft:`4px solid ${C.blue}`}}>
       <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.blue,marginBottom:8}}>What this walkthrough is teaching</div>
       <P mb={10}>The point is not to memorise Roychowdhury (2006). The point is to learn how to reverse-engineer any empirical paper into the pieces you need for your own proposal.</P>
@@ -1299,6 +1308,7 @@ function ActIntro({onStart}){
     </Card></Reveal>
     <Reveal delay={0.1}><Card style={{marginBottom:20}}>
       <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:10}}>Your Task for Each Activity</div>
+      <Li><strong>Prepare your LMS submission:</strong> one page, individual work, based on the paper you selected.</Li>
       <Li><strong>Cite the paper</strong> and copy the abstract. Identify its keywords.</Li>
       <Li><strong>Activity 1 — Literature Review:</strong> Identify your areas of literature. Identify the paragraph where the gap is identified.</Li>
       <Li><strong>Activity 2 — Hypotheses:</strong> Motivation of the hypotheses. Identify the hypotheses.</Li>
