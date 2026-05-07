@@ -28,18 +28,9 @@ service cloud.firestore {
     function articleClaimFieldsAreSafe() {
       return request.resource.data.keys().hasOnly([
         'claimKey', 'normalizedDoi', 'normalizedTitle', 'ownerUid',
-        'status', 'submittedAt', 'updatedAt', 'groupKey', 'groupName',
-        'contactName', 'groupMemberCount', 'studentHash', 'articleTitle',
-        'journal', 'year', 'doi', 'url', 'replicateTarget', 'newVariable',
-        'newVariableReason'
-      ]);
-    }
-
-    function articleGroupFieldsAreSafe() {
-      return request.resource.data.keys().hasOnly([
-        'groupKey', 'normalizedGroupName', 'ownerUid', 'status',
-        'submittedAt', 'updatedAt', 'groupName', 'contactName',
-        'memberNames', 'memberCount', 'notes', 'studentHash'
+        'status', 'submittedAt', 'updatedAt', 'lmsGroup', 'groupName',
+        'contactName', 'studentHash', 'articleTitle', 'journal', 'year',
+        'doi', 'url', 'replicateTarget', 'newVariable', 'newVariableReason'
       ]);
     }
 
@@ -90,21 +81,5 @@ service cloud.firestore {
       allow delete: if isInstructor();
     }
 
-    match /articleGroups/{groupKey} {
-      allow read: if signedIn();
-      allow create: if signedIn()
-        && articleGroupFieldsAreSafe()
-        && request.resource.data.ownerUid == request.auth.uid
-        && request.resource.data.groupKey == groupKey;
-      allow update: if articleGroupFieldsAreSafe()
-        && request.resource.data.groupKey == groupKey
-        && (
-          (signedIn()
-            && resource.data.ownerUid == request.auth.uid
-            && request.resource.data.ownerUid == resource.data.ownerUid)
-          || isInstructor()
-        );
-      allow delete: if isInstructor();
-    }
   }
 }

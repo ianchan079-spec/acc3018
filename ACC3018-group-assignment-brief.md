@@ -179,18 +179,18 @@ Your discussion should answer:
 
 Each group should submit:
 
-1. Group registration and article reservation
+1. LMS group article reservation
 2. Article selection proposal
 3. Final written report
 4. Data and code appendix
 5. Presentation slides
 6. Individual contribution statement
 
-Before starting the project, students must register their group and reserve their chosen article through the course site. Each article can only be reserved by one group. If another group has already reserved the article, choose a different paper.
+Before starting the project, students should form their group in the LMS and reserve their chosen article through the course site. Each article can only be reserved by one LMS group. If another group has already reserved the article, choose a different paper.
 
 The article reservation should include:
 
-- registered group name
+- LMS group name or number
 - article title
 - journal
 - publication year

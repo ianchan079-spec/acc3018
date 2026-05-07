@@ -279,50 +279,6 @@ export function makeArticleClaimKey({ doi, title, journal, year }) {
   return `title-${hashClaimKey(`${normalizedTitle}|${normalizedJournal}|${normalizedYear}`)}`;
 }
 
-export function makeArticleGroupKey(groupName = '') {
-  return `group-${hashClaimKey(normalizeArticleTitle(groupName))}`;
-}
-
-export async function loadArticleGroups() {
-  try {
-    await ensureSignedIn();
-    const snap = await getDocs(collection(db, 'articleGroups'));
-    return snap.docs.map(d => d.data()).sort((a, b) => (a.groupName || '').localeCompare(b.groupName || ''));
-  } catch (e) {
-    console.warn('loadArticleGroups failed:', e);
-    return [];
-  }
-}
-
-export async function submitArticleGroup(group) {
-  const groupKey = makeArticleGroupKey(group.groupName);
-  const now = Date.now();
-  try {
-    const user = await ensureSignedIn();
-    const ref = doc(db, 'articleGroups', groupKey);
-    return await runTransaction(db, async tx => {
-      const existing = await tx.get(ref);
-      if (existing.exists() && existing.data().ownerUid !== user.uid) {
-        return { ok: false, duplicate: true, group: existing.data() };
-      }
-      const saved = {
-        ...group,
-        groupKey,
-        normalizedGroupName: normalizeArticleTitle(group.groupName),
-        ownerUid: user.uid,
-        status: existing.exists() ? existing.data().status || 'active' : 'active',
-        submittedAt: existing.exists() ? existing.data().submittedAt || now : now,
-        updatedAt: now,
-      };
-      tx.set(ref, saved, { merge: true });
-      return { ok: true, group: saved, updated: existing.exists() };
-    });
-  } catch (e) {
-    console.warn('submitArticleGroup failed:', e);
-    return { ok: false, error: e.message || 'Group could not be saved.' };
-  }
-}
-
 export async function loadArticleClaims() {
   try {
     await ensureSignedIn();

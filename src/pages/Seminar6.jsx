@@ -6,14 +6,12 @@ import {
   Li, NextBtn, NextBtnDark, TopNav, ProgressWidget,
 } from '../shared/components';
 import {
-  loadArticleClaims, loadArticleGroups, makeArticleClaimKey,
-  submitArticleClaim, submitArticleGroup,
+  loadArticleClaims, makeArticleClaimKey, submitArticleClaim,
 } from '../shared/storage';
 
 const TABS = [
   { id: 's6:overview', label: 'Overview' },
   { id: 's6:paper', label: 'Choose Paper' },
-  { id: 's6:group', label: 'Build Group' },
   { id: 's6:claim', label: 'Reserve Article' },
   { id: 's6:brief', label: 'Report Brief' },
 ];
@@ -34,7 +32,8 @@ const JOURNALS = [
 ];
 
 const emptyForm = {
-  groupKey: '',
+  lmsGroup: '',
+  contactName: '',
   articleTitle: '',
   journal: '',
   year: '',
@@ -43,13 +42,6 @@ const emptyForm = {
   replicateTarget: '',
   newVariable: '',
   newVariableReason: '',
-};
-
-const emptyGroup = {
-  groupName: '',
-  contactName: '',
-  memberNames: '',
-  notes: '',
 };
 
 const text = { fontSize: 13.5, color: C.black80, lineHeight: 1.6 };
@@ -97,8 +89,7 @@ export default function Seminar6() {
     <TopNav tabs={TABS} activeTab={activeTab} setActiveTab={jump} />
     <ProgressWidget tabs={TABS} />
     {activeTab === 's6:overview' && <OverviewTab next={() => jump('s6:paper')} />}
-    {activeTab === 's6:paper' && <PaperTab next={() => jump('s6:group')} />}
-    {activeTab === 's6:group' && <GroupTab next={() => jump('s6:claim')} />}
+    {activeTab === 's6:paper' && <PaperTab next={() => jump('s6:claim')} />}
     {activeTab === 's6:claim' && <ClaimTab next={() => jump('s6:brief')} />}
     {activeTab === 's6:brief' && <BriefTab />}
   </div>;
@@ -123,10 +114,10 @@ function OverviewTab({ next }) {
       <Reveal delay={0.08}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 12 }}>
           {[
-            ['1', 'Choose', 'Pick a feasible paper from the approved journal list.'],
-            ['2', 'Group', 'Register your project group before reserving a paper.'],
-            ['3', 'Replicate', 'Recreate one important table, model or empirical test.'],
-            ['4', 'Extend', 'Add one relevant new variable and explain why it belongs.'],
+            ['1', 'LMS Group', 'Form your group in the LMS first.'],
+            ['2', 'Choose', 'Pick a feasible paper from the approved journal list.'],
+            ['3', 'Reserve', 'Tell the site which LMS group is tied to the article.'],
+            ['4', 'Replicate', 'Recreate one important table, model or empirical test.'],
             ['5', 'Discuss', 'Compare your evidence with the original paper and reflect on limitations.'],
           ].map((item, i) => {
             const accent = [C.red, C.blue, C.green, C.amber, C.purple][i];
@@ -138,7 +129,7 @@ function OverviewTab({ next }) {
           })}
         </div>
       </Reveal>
-      <Reveal delay={0.12}><Callout accent={C.red} bg={C.white}><strong>Important:</strong> each article can only be reserved by one group. Use the reservation form before your group invests too much time in a paper.</Callout></Reveal>
+      <Reveal delay={0.12}><Callout accent={C.red} bg={C.white}><strong>Important:</strong> form your group in the LMS first. The reservation form will ask for your LMS group so the article can be tied to the correct team.</Callout></Reveal>
       <NextBtn onClick={() => { completeTab('s6:overview'); next(); }} label="Continue to paper selection" />
     </Wrap>
   </div>;
@@ -168,138 +159,7 @@ function PaperTab({ next }) {
           </div>)}
         </div>
       </Reveal>
-      <NextBtn onClick={() => { completeTab('s6:paper'); next(); }} label="Continue to group builder" />
-    </Wrap>
-  </div>;
-}
-
-function GroupTab({ next }) {
-  const { completeTab, identity, showToast } = useGame();
-  const [form, setForm] = useState(emptyGroup);
-  const [groups, setGroups] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState(null);
-
-  const update = (key, value) => {
-    setMessage(null);
-    setForm(prev => ({ ...prev, [key]: value }));
-  };
-
-  const memberList = form.memberNames.split('\n').map(m => m.trim()).filter(Boolean);
-
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      setGroups(await loadArticleGroups());
-      setLoading(false);
-    })();
-  }, []);
-
-  const submit = async e => {
-    e.preventDefault();
-    if (!form.groupName.trim()) {
-      setMessage({ kind: 'error', text: 'Enter a group name or group number.' });
-      return;
-    }
-    if (!form.contactName.trim()) {
-      setMessage({ kind: 'error', text: 'Enter one contact student for the group.' });
-      return;
-    }
-    if (memberList.length < 5 || memberList.length > 6) {
-      setMessage({ kind: 'error', text: 'Enter 5 to 6 group members, one name per line.' });
-      return;
-    }
-    setSaving(true);
-    const result = await submitArticleGroup({
-      groupName: form.groupName.trim(),
-      contactName: form.contactName.trim(),
-      memberNames: memberList,
-      memberCount: memberList.length,
-      notes: form.notes.trim(),
-      studentHash: identity.hashedId || '',
-    });
-    setSaving(false);
-    if (result.duplicate) {
-      setMessage({ kind: 'error', text: `${result.group.groupName || 'This group'} has already been registered. Use a different group name or ask your instructor.` });
-      setGroups(await loadArticleGroups());
-      return;
-    }
-    if (!result.ok) {
-      setMessage({ kind: 'error', text: result.error || 'The group could not be saved.' });
-      return;
-    }
-    setMessage({ kind: 'success', text: result.updated ? 'Your group details were updated.' : 'Your group has been registered.' });
-    showToast?.('Group registered', 'xp');
-    completeTab('s6:group', 25);
-    setGroups(await loadArticleGroups());
-  };
-
-  return <div>
-    <Wrap py={84}>
-      <Reveal><Label>Group Builder</Label><H size={30}>Register your group before choosing the article</H><P>Each article claim must be tied to a registered group. This helps everyone see which teams already exist and which group owns each reserved paper.</P></Reveal>
-      <Reveal delay={0.06}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.25fr) minmax(280px,0.85fr)', gap: 18, alignItems: 'start' }}>
-          <Card>
-            <form onSubmit={submit}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 12 }}>
-                <Field label="Group name / number"><input value={form.groupName} onChange={e => update('groupName', e.target.value)} style={inputStyle} placeholder="Group 3" /></Field>
-                <Field label="Contact student"><input value={form.contactName} onChange={e => update('contactName', e.target.value)} style={inputStyle} placeholder="Name of one group member" /></Field>
-              </div>
-              <div style={{ marginTop: 12 }}>
-                <Field label="Group members" hint="Enter 5 to 6 names, one per line.">
-                  <textarea value={form.memberNames} onChange={e => update('memberNames', e.target.value)} style={{ ...inputStyle, minHeight: 150, resize: 'vertical' }} placeholder={'Student 1\nStudent 2\nStudent 3\nStudent 4\nStudent 5'} />
-                </Field>
-              </div>
-              <div style={{ marginTop: 12 }}>
-                <Field label="Notes" hint="Optional. Use this for tutorial group, availability, or group formation notes.">
-                  <textarea value={form.notes} onChange={e => update('notes', e.target.value)} style={{ ...inputStyle, minHeight: 70, resize: 'vertical' }} />
-                </Field>
-              </div>
-              <div style={{ ...panel(memberList.length >= 5 && memberList.length <= 6 ? C.green : C.amber), marginTop: 14, background: memberList.length >= 5 && memberList.length <= 6 ? C.greenBg : C.amberBg }}>
-                Current member count: <strong>{memberList.length}</strong>. Groups should have 5 to 6 students.
-              </div>
-              {message && (
-                <div style={{ ...panel(message.kind === 'success' ? C.green : C.red), marginTop: 14, background: message.kind === 'success' ? C.greenBg : C.redSubtle }}>
-                  {message.text}
-                </div>
-              )}
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16 }}>
-                <Btn disabled={saving}>{saving ? 'Saving...' : 'Register group'}</Btn>
-                <button type="button" onClick={async () => { setLoading(true); setGroups(await loadArticleGroups()); setLoading(false); }} style={{ ...inputStyle, width: 'auto', cursor: 'pointer', fontWeight: 800 }}>Refresh groups</button>
-              </div>
-            </form>
-          </Card>
-
-          <div style={panel(C.blue)}>
-            <div style={{ fontSize: 15, fontWeight: 900, color: C.black, marginBottom: 8 }}>Why register first?</div>
-            <Li color={C.blue}>Article reservations are attached to a specific group.</Li>
-            <Li color={C.blue}>Students can check existing teams before forming duplicates.</Li>
-            <Li color={C.blue}>The instructor can see group membership and reserved article together.</Li>
-            <Li color={C.blue}>A group can update its own details before final approval.</Li>
-          </div>
-        </div>
-      </Reveal>
-    </Wrap>
-    <Wrap bg={C.black05}>
-      <Reveal><Label>Registered Groups</Label><H size={28}>Groups already formed</H></Reveal>
-      <Reveal delay={0.06}>
-        {loading ? <div style={panel(C.black20)}>Loading groups...</div> : groups.length === 0 ? <div style={panel(C.black20)}>No groups have been registered yet.</div> : (
-          <div style={{ display: 'grid', gap: 10 }}>
-            {groups.map(group => <div key={group.groupKey} style={panel(C.green)}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'flex-start' }}>
-                <div>
-                  <div style={{ fontSize: 16, fontWeight: 900, color: C.black }}>{group.groupName}</div>
-                  <div style={{ ...text, marginTop: 4 }}>Contact: {group.contactName || 'Not provided'} | Members: {group.memberCount || group.memberNames?.length || 0}</div>
-                  {group.memberNames?.length > 0 && <div style={{ fontSize: 12.5, color: C.black60, marginTop: 5 }}>{group.memberNames.join(', ')}</div>}
-                </div>
-                <div style={{ background: C.greenBg, color: C.green, border: `1px solid ${C.green}`, borderRadius: 99, padding: '4px 10px', fontSize: 11, fontWeight: 900, whiteSpace: 'nowrap' }}>Registered</div>
-              </div>
-            </div>)}
-          </div>
-        )}
-      </Reveal>
-      <NextBtn onClick={next} label="Continue to article reservation" />
+      <NextBtn onClick={() => { completeTab('s6:paper'); next(); }} label="Continue to article reservation" />
     </Wrap>
   </div>;
 }
@@ -307,7 +167,6 @@ function GroupTab({ next }) {
 function ClaimTab({ next }) {
   const { completeTab, identity, showToast } = useGame();
   const [form, setForm] = useState(emptyForm);
-  const [groups, setGroups] = useState([]);
   const [claims, setClaims] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -319,22 +178,20 @@ function ClaimTab({ next }) {
   };
 
   const claimKey = useMemo(() => makeArticleClaimKey({ title: form.articleTitle, journal: form.journal, year: form.year, doi: form.doi }), [form.articleTitle, form.journal, form.year, form.doi]);
-  const selectedGroup = groups.find(g => g.groupKey === form.groupKey);
   const duplicate = claims.find(c => c.claimKey === claimKey);
   const titleNearMatch = claims.find(c => c.normalizedTitle && cleanText(form.articleTitle) && c.normalizedTitle === cleanText(form.articleTitle));
 
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const [loadedGroups, loadedClaims] = await Promise.all([loadArticleGroups(), loadArticleClaims()]);
-      setGroups(loadedGroups);
-      setClaims(loadedClaims);
+      setClaims(await loadArticleClaims());
       setLoading(false);
     })();
   }, []);
 
   const validate = () => {
-    if (!form.groupKey || !selectedGroup) return 'Choose your registered group first.';
+    if (!form.lmsGroup.trim()) return 'Enter your LMS group name or number.';
+    if (!form.contactName.trim()) return 'Enter one contact student for the group.';
     if (!form.articleTitle.trim()) return 'Enter the article title.';
     if (!form.journal) return 'Choose an approved journal.';
     const year = Number(form.year);
@@ -359,10 +216,9 @@ function ClaimTab({ next }) {
     }
     setSaving(true);
     const result = await submitArticleClaim({
-      groupKey: selectedGroup.groupKey,
-      groupName: selectedGroup.groupName,
-      contactName: selectedGroup.contactName || '',
-      groupMemberCount: selectedGroup.memberCount || selectedGroup.memberNames?.length || 0,
+      lmsGroup: form.lmsGroup.trim(),
+      groupName: form.lmsGroup.trim(),
+      contactName: form.contactName.trim(),
       studentHash: identity.hashedId || '',
       articleTitle: form.articleTitle.trim(),
       journal: form.journal,
@@ -396,17 +252,10 @@ function ClaimTab({ next }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.4fr) minmax(280px,0.8fr)', gap: 18, alignItems: 'start' }}>
           <Card>
             <form onSubmit={submit}>
-              <Field label="Registered group" hint="Create the group in the previous tab if it is not listed yet.">
-                <select value={form.groupKey} onChange={e => update('groupKey', e.target.value)} style={inputStyle}>
-                  <option value="">Choose your group</option>
-                  {groups.map(group => <option key={group.groupKey} value={group.groupKey}>{group.groupName} ({group.memberCount || group.memberNames?.length || 0} members)</option>)}
-                </select>
-              </Field>
-              {selectedGroup && (
-                <div style={{ ...panel(C.green), marginTop: 12, background: C.greenBg }}>
-                  <strong>{selectedGroup.groupName}</strong> will be tied to this article claim. Contact: {selectedGroup.contactName || 'not provided'}.
-                </div>
-              )}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 12 }}>
+                <Field label="LMS group" hint="Use the exact group name or number from the LMS."><input value={form.lmsGroup} onChange={e => update('lmsGroup', e.target.value)} style={inputStyle} placeholder="Group 3" /></Field>
+                <Field label="Contact student"><input value={form.contactName} onChange={e => update('contactName', e.target.value)} style={inputStyle} placeholder="Name of one group member" /></Field>
+              </div>
               <div style={{ marginTop: 12 }}>
                 <Field label="Article title"><input value={form.articleTitle} onChange={e => update('articleTitle', e.target.value)} style={inputStyle} placeholder="Paste the full published article title" /></Field>
               </div>
@@ -443,7 +292,7 @@ function ClaimTab({ next }) {
               )}
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16 }}>
                 <Btn disabled={saving}>{saving ? 'Checking...' : 'Reserve article'}</Btn>
-                <button type="button" onClick={async () => { setLoading(true); const [loadedGroups, loadedClaims] = await Promise.all([loadArticleGroups(), loadArticleClaims()]); setGroups(loadedGroups); setClaims(loadedClaims); setLoading(false); }} style={{ ...inputStyle, width: 'auto', cursor: 'pointer', fontWeight: 800 }}>Refresh</button>
+                <button type="button" onClick={async () => { setLoading(true); setClaims(await loadArticleClaims()); setLoading(false); }} style={{ ...inputStyle, width: 'auto', cursor: 'pointer', fontWeight: 800 }}>Refresh claims</button>
               </div>
             </form>
           </Card>
