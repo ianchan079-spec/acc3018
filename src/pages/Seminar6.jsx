@@ -72,6 +72,13 @@ const REPORT_SECTIONS = [
   ['Appendix', 'Include data and code notes so the work can be checked.'],
 ];
 
+const FORMAT_GUIDE = [
+  ['Text', 'Use a readable 12-point font with 1.5 or double spacing. Keep headings clear and consistent.'],
+  ['Citations', 'Use a consistent author-year citation style. The reference list should match the in-text citations.'],
+  ['Tables', 'Number tables clearly, place titles above tables, and explain variable definitions below the table or in an appendix.'],
+  ['Regression output', 'Report coefficients with t-statistics or standard errors in parentheses. Explain significance stars below the table.'],
+];
+
 const text = { fontSize: 13.5, color: C.black80, lineHeight: 1.6 };
 const panel = (accent = C.red) => ({
   background: C.white,
@@ -428,6 +435,18 @@ function BriefTab() {
           </div>)}
         </div>
       </Reveal>
+    </Wrap>
+    <Wrap py={64}>
+      <Reveal><Label>Formatting</Label><H size={28}>Use journal style, with a clear fallback</H><P>Follow the broad formatting conventions of the journal your article came from, especially for citations, references, tables and regression output. If the journal style is unclear or too difficult to apply cleanly, use the default ACC3018 TAR/JAE-inspired format below.</P></Reveal>
+      <Reveal delay={0.06}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(230px,1fr))', gap: 12 }}>
+          {FORMAT_GUIDE.map((item, i) => <div key={item[0]} style={panel([C.red, C.blue, C.green, C.amber][i])}>
+            <div style={{ fontSize: 15, fontWeight: 900, color: C.black, marginBottom: 5 }}>{item[0]}</div>
+            <div style={text}>{item[1]}</div>
+          </div>)}
+        </div>
+      </Reveal>
+      <Reveal delay={0.1}><Callout accent={C.blue} bg={C.black05}><strong>Rule of thumb:</strong> the goal is a professional empirical-paper format, not perfect imitation of every journal submission rule.</Callout></Reveal>
     </Wrap>
     <Wrap py={64}>
       <Reveal><Label>Guardrails</Label><H size={28}>What not to do</H></Reveal>
