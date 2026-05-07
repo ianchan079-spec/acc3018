@@ -10,7 +10,7 @@ import {
 } from '../shared/storage';
 
 const TABS = [
-  { id: 's6:overview', label: 'Overview' },
+  { id: 's6:overview', label: 'Assignment Brief' },
   { id: 's6:paper', label: 'Choose Paper' },
   { id: 's6:claim', label: 'Reserve Article' },
   { id: 's6:brief', label: 'Report Brief' },
@@ -43,6 +43,34 @@ const emptyForm = {
   newVariable: '',
   newVariableReason: '',
 };
+
+const DELIVERABLES = [
+  'LMS group article reservation',
+  'Article selection proposal',
+  'Final written report',
+  'Data and code appendix',
+  'Presentation slides',
+  'Individual contribution statement',
+];
+
+const RUBRIC = [
+  ['10%', 'Paper selection and feasibility'],
+  ['15%', 'Introduction and motivation'],
+  ['20%', 'Literature review and theory'],
+  ['20%', 'Research design'],
+  ['20%', 'Results and replication quality'],
+  ['10%', 'Discussion, reflection and limitations'],
+  ['5%', 'Presentation and professionalism'],
+];
+
+const REPORT_SECTIONS = [
+  ['Introduction', 'What is the paper about, why does it matter, and what is your extension?'],
+  ['Literature Review', 'Organise prior research by themes. Do not only summarise one paper at a time.'],
+  ['Research Design', 'Explain sample, data, variables, model, controls and expected signs.'],
+  ['Results', 'Show descriptive statistics, correlations, replication results and extended results.'],
+  ['Discussion', 'Compare with the original paper and explain what your added variable contributes.'],
+  ['Appendix', 'Include data and code notes so the work can be checked.'],
+];
 
 const text = { fontSize: 13.5, color: C.black80, lineHeight: 1.6 };
 const panel = (accent = C.red) => ({
@@ -105,31 +133,53 @@ function OverviewTab({ next }) {
         <Reveal>
           <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: C.red, marginBottom: 14 }}>ACC3018 | Seminar 6</div>
           <h1 style={{ fontSize: 'clamp(32px,5.5vw,60px)', fontWeight: 900, lineHeight: 1.06, letterSpacing: '-0.025em', color: C.white, marginBottom: 14 }}>Mini Group Assignment</h1>
-          <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.48)', maxWidth: 620, lineHeight: 1.6 }}>Choose a recent top-journal article, replicate one important analysis, then extend it with one meaningful new variable.</p>
+          <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.48)', maxWidth: 640, lineHeight: 1.6 }}>Replication Plus Extension: choose a recent top-journal article, replicate one important analysis, then extend it with one meaningful new variable.</p>
         </Reveal>
       </div>
     </div>
-    <Wrap bg={C.black05}>
-      <Reveal><Label>What You Are Building</Label><H size={30}>Replication plus extension</H><P>This assignment teaches students how published empirical research is put together. Your group is not only copying a table. You are learning how a paper motivates a question, reviews literature, designs a test, reports results and discusses what the evidence means.</P></Reveal>
+    <Wrap bg={C.black05} py={72}>
+      <Reveal><Label>Assignment Brief</Label><H size={30}>Learning from a published empirical paper</H><P>This assignment asks your group to replicate a recent published empirical article and then extend it by adding one relevant new variable. The aim is not only to copy a paper's results. The aim is to understand how a study moves from motivation, to literature, to research design, to results and discussion.</P></Reveal>
       <Reveal delay={0.08}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 12 }}>
           {[
-            ['1', 'LMS Group', 'Form your group in the LMS first.'],
-            ['2', 'Choose', 'Pick a feasible paper from the approved journal list.'],
-            ['3', 'Reserve', 'Tell the site which LMS group is tied to the article.'],
-            ['4', 'Replicate', 'Recreate one important table, model or empirical test.'],
-            ['5', 'Discuss', 'Compare your evidence with the original paper and reflect on limitations.'],
+            ['Group size', '5 to 6 students', 'Form the group in the LMS. The site only records which LMS group reserves which article.'],
+            ['Paper', 'Published 2023 onwards', 'Choose a recent empirical article from the approved journal list unless an exception is approved.'],
+            ['Core task', 'Replicate plus extend', 'Replicate one important analysis, then add one meaningful new variable.'],
+            ['Length', '4,000 to 6,000 words', 'This excludes references, tables, appendices and code.'],
+            ['Presentation', '10 to 12 minutes', 'Focus on the original paper, design, replication, extension and learning.'],
           ].map((item, i) => {
             const accent = [C.red, C.blue, C.green, C.amber, C.purple][i];
             return <div key={item[0]} style={panel(accent)}>
-            <div style={{ fontSize: 12, fontWeight: 900, color: accent, marginBottom: 5 }}>STEP {item[0]}</div>
+            <div style={{ fontSize: 12, fontWeight: 900, color: accent, marginBottom: 5 }}>{item[0]}</div>
             <div style={{ fontSize: 17, fontWeight: 900, color: C.black, marginBottom: 5 }}>{item[1]}</div>
             <div style={text}>{item[2]}</div>
           </div>;
           })}
         </div>
       </Reveal>
-      <Reveal delay={0.12}><Callout accent={C.red} bg={C.white}><strong>Important:</strong> form your group in the LMS first. The reservation form will ask for your LMS group so the article can be tied to the correct team.</Callout></Reveal>
+    </Wrap>
+    <Wrap py={64}>
+      <Reveal><Label>What You Submit</Label><H size={28}>Required deliverables</H><P>The final package has several parts because the assignment is meant to show both research thinking and empirical execution.</P></Reveal>
+      <Reveal delay={0.06}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(230px,1fr))', gap: 10 }}>
+          {DELIVERABLES.map((item, i) => <div key={item} style={panel([C.red, C.blue, C.green, C.amber, C.purple, C.black20][i])}>
+            <div style={{ fontSize: 12, fontWeight: 900, color: [C.red, C.blue, C.green, C.amber, C.purple, C.black60][i] }}>DELIVERABLE {i + 1}</div>
+            <div style={{ fontSize: 15, fontWeight: 900, color: C.black, marginTop: 4 }}>{item}</div>
+          </div>)}
+        </div>
+      </Reveal>
+      <Reveal delay={0.1}><Callout accent={C.red} bg={C.black05}><strong>Important:</strong> form your group in the LMS first. The reservation form will ask for your LMS group so the article can be tied to the correct team.</Callout></Reveal>
+    </Wrap>
+    <Wrap bg={C.black05}>
+      <Reveal><Label>Assessment</Label><H size={28}>How the assignment is marked</H></Reveal>
+      <Reveal delay={0.06}>
+        <div style={{ display: 'grid', gap: 8 }}>
+          {RUBRIC.map(([pct, item], i) => <div key={item} style={{ ...panel([C.red, C.blue, C.green, C.amber, C.purple, C.black20, C.red][i]), display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16 }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: C.black }}>{item}</div>
+            <div style={{ fontSize: 18, fontWeight: 900, color: [C.red, C.blue, C.green, C.amber, C.purple, C.black60, C.red][i], whiteSpace: 'nowrap' }}>{pct}</div>
+          </div>)}
+        </div>
+      </Reveal>
       <NextBtn onClick={() => { completeTab('s6:overview'); next(); }} label="Continue to paper selection" />
     </Wrap>
   </div>;
@@ -150,6 +200,23 @@ function PaperTab({ next }) {
       </Reveal>
     </Wrap>
     <Wrap bg={C.black05}>
+      <Reveal><Label>Extension Variable</Label><H size={28}>Add one variable for a reason</H><P>Your new variable should answer this question: what is one factor the original paper did not fully examine, but which may reasonably affect the relationship being studied?</P></Reveal>
+      <Reveal delay={0.06}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(230px,1fr))', gap: 12 }}>
+          {[
+            ['Conceptually relevant', 'The variable should connect to the research question, not just be easy to download.'],
+            ['Measurable', 'Your group must be able to explain how the variable is constructed.'],
+            ['Linked to theory', 'Use prior literature or clear reasoning to explain why it belongs.'],
+            ['Direction stated', 'Say whether you expect a positive, negative or exploratory relationship.'],
+          ].map((item, i) => <div key={item[0]} style={panel([C.red, C.blue, C.green, C.amber][i])}>
+            <div style={{ fontSize: 15, fontWeight: 900, color: C.black, marginBottom: 5 }}>{item[0]}</div>
+            <div style={text}>{item[1]}</div>
+          </div>)}
+        </div>
+      </Reveal>
+      <Reveal delay={0.1}><Callout accent={C.amber} bg={C.white}><strong>Example:</strong> if the original paper studies board independence and earnings quality, a possible extension could add ESG performance, audit committee expertise, institutional ownership, or analyst coverage, depending on the research logic.</Callout></Reveal>
+    </Wrap>
+    <Wrap py={64}>
       <Reveal><Label>Approved Journals</Label><H size={28}>Use this list unless your instructor approves otherwise</H></Reveal>
       <Reveal delay={0.06}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 10 }}>
@@ -340,17 +407,37 @@ function BriefTab() {
       <Reveal><Label>Final Output</Label><H size={30}>What your group submits</H><P>The final assignment should read like a small empirical paper. It should explain the original study, reproduce one important part of the analysis, and show what your new variable adds.</P></Reveal>
       <Reveal delay={0.06}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(230px,1fr))', gap: 12 }}>
-          {[
-            ['Introduction', 'What is the paper about, why does it matter, and what is your extension?'],
-            ['Literature Review', 'Organise prior research by themes. Do not only summarise one paper at a time.'],
-            ['Research Design', 'Explain sample, data, variables, model, controls and expected signs.'],
-            ['Results', 'Show descriptive statistics, correlations, replication results and extended results.'],
-            ['Discussion', 'Compare with the original paper and explain what your added variable contributes.'],
-            ['Appendix', 'Include data and code notes so the work can be checked.'],
-          ].map((item, i) => <div key={item[0]} style={panel([C.red, C.blue, C.green, C.amber, C.purple, C.black20][i])}>
+          {REPORT_SECTIONS.map((item, i) => <div key={item[0]} style={panel([C.red, C.blue, C.green, C.amber, C.purple, C.black20][i])}>
             <div style={{ fontSize: 15, fontWeight: 900, color: C.black, marginBottom: 5 }}>{item[0]}</div>
             <div style={text}>{item[1]}</div>
           </div>)}
+        </div>
+      </Reveal>
+    </Wrap>
+    <Wrap bg={C.black05}>
+      <Reveal><Label>Results Standard</Label><H size={28}>Do more than report significance</H><P>When discussing results, explain the direction, size and credibility of the evidence. A coefficient is not useful just because it has stars beside it.</P></Reveal>
+      <Reveal delay={0.06}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 12 }}>
+          {[
+            ['Direction', 'Is the relationship positive, negative, or different from what the paper expected?'],
+            ['Size', 'Is the effect economically meaningful, or only statistically visible?'],
+            ['Credibility', 'Could the result be driven by sample choice, measurement, controls, or model design?'],
+          ].map((item, i) => <div key={item[0]} style={panel([C.red, C.blue, C.green][i])}>
+            <div style={{ fontSize: 15, fontWeight: 900, color: C.black, marginBottom: 5 }}>{item[0]}</div>
+            <div style={text}>{item[1]}</div>
+          </div>)}
+        </div>
+      </Reveal>
+    </Wrap>
+    <Wrap py={64}>
+      <Reveal><Label>Guardrails</Label><H size={28}>What not to do</H></Reveal>
+      <Reveal delay={0.06}>
+        <div style={panel(C.red)}>
+          <Li>Do not choose a paper that is impossible to replicate with available data.</Li>
+          <Li>Do not add a variable only because it is easy to download.</Li>
+          <Li>Do not treat replication as copying text, tables or code from the original paper.</Li>
+          <Li>Do not claim your results are wrong simply because they differ from the published paper.</Li>
+          <Li>Do not use generative AI to fabricate literature, data, citations or results.</Li>
         </div>
       </Reveal>
     </Wrap>
