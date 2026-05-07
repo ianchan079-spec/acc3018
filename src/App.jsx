@@ -6,6 +6,7 @@ import Seminar2 from './pages/Seminar2';
 import Seminar3 from './pages/Seminar3';
 import Seminar4 from './pages/Seminar4';
 import Seminar5 from './pages/Seminar5';
+import Seminar6 from './pages/Seminar6';
 
 export default function App() {
   return (
@@ -18,7 +19,7 @@ export default function App() {
           <Route path="/seminar/3" element={<Seminar3 />} />
           <Route path="/seminar/4" element={<Seminar4 />} />
           <Route path="/seminar/5" element={<Seminar5 />} />
-          {/* <Route path="/seminar/6" element={<Seminar6 />} /> */}
+          <Route path="/seminar/6" element={<Seminar6 />} />
         </Routes>
       </GameProvider>
     </BrowserRouter>
