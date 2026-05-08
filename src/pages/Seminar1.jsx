@@ -1307,14 +1307,14 @@ function ActIntro({onStart}){
       </div>
     </Card></Reveal>
     <Reveal delay={0.1}><Card style={{marginBottom:20}}>
-      <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:10}}>Your Task for Each Activity</div>
-      <Li><strong>Prepare your individual response:</strong> about one page, based on the paper you selected.</Li>
-      <Li><strong>Submit as a group:</strong> collate all group members' responses and attach PDF copies of all selected papers.</Li>
-      <Li><strong>Cite the paper</strong> and copy the abstract. Identify its keywords.</Li>
-      <Li><strong>Activity 1 — Literature Review:</strong> Identify your areas of literature. Identify the paragraph where the gap is identified.</Li>
-      <Li><strong>Activity 2 — Hypotheses:</strong> Motivation of the hypotheses. Identify the hypotheses.</Li>
-      <Li><strong>Activity 3 — Research Design:</strong> How to measure the key concept in the hypotheses. How to test the hypotheses. Any limitations.</Li>
-      <Li><strong>Activity 4 — Peer Reviewer:</strong> Play reviewer. Spot the weaknesses in a mock introduction.</Li>
+      <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:10}}>Your Walkthrough Guide</div>
+      <P mb={10}>Write about <strong>one page</strong> on your selected paper. Your response should read like a short explanation, not a question-and-answer checklist. Use the activities below to guide your paragraphs.</P>
+      <Li><strong>Cite the paper:</strong> Give the full citation and briefly explain, in your own words, what the paper is about. Do <strong>not</strong> copy the abstract.</Li>
+      <Li><strong>Activity 1 — Literature Review:</strong> Explain the broad literature area the paper belongs to. Identify where the paper explains the research gap or motivation.</Li>
+      <Li><strong>Activity 2 — Hypotheses:</strong> Explain the motivation for the hypotheses or predictions. Identify what the paper expects to find and why.</Li>
+      <Li><strong>Activity 3 — Research Design:</strong> Explain how the paper measures the key concept and tests the hypotheses. Identify the main data source, key variables, and any limitations you notice.</Li>
+      <Li><strong>Activity 4 — Peer Reviewer:</strong> Play reviewer. Briefly identify one weakness, concern, or question you would raise about the paper.</Li>
+      <Callout accent={C.black60}><strong>Group submission:</strong> Collate all group members' individual walkthroughs into one file and attach PDF copies of all selected papers.</Callout>
     </Card></Reveal>
     <Reveal delay={0.15}><div style={{background:C.black,borderRadius:8,padding:'22px 24px',marginBottom:24}}>
       <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:10}}>Key Concept: Earnings Management</div>

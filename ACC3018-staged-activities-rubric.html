@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>ACC3018 Staged Seminar Activities Rubric</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 16mm 15mm 16mm 15mm;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Source Sans 3", "Segoe UI", Arial, sans-serif;
+      color: #1D1D1B;
+      background: #FFFFFF;
+      font-size: 10.5pt;
+      line-height: 1.42;
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    .cover {
+      min-height: 255mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #1D1D1B;
+      color: #FFFFFF;
+      padding: 24mm 20mm 18mm;
+      margin: -16mm -15mm 0;
+      page-break-after: always;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4mm;
+      background: #E4002B;
+    }
+
+    .cover::after {
+      content: "";
+      position: absolute;
+      top: -55mm;
+      right: -60mm;
+      width: 155mm;
+      height: 155mm;
+      border-radius: 0 0 0 100%;
+      background: rgba(228, 0, 43, 0.15);
+    }
+
+    .cover-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      color: #E4002B;
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      font-size: 10pt;
+      margin-bottom: 8mm;
+    }
+
+    h1 {
+      font-size: 34pt;
+      line-height: 1.04;
+      font-weight: 900;
+      max-width: 150mm;
+      margin-bottom: 7mm;
+    }
+
+    .subtitle {
+      color: rgba(255,255,255,0.62);
+      font-size: 13pt;
+      line-height: 1.5;
+      max-width: 145mm;
+    }
+
+    .cover-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 5mm;
+      margin-top: 18mm;
+      max-width: 150mm;
+    }
+
+    .cover-card {
+      border: 1px solid rgba(255,255,255,0.13);
+      border-left: 3mm solid #E4002B;
+      border-radius: 3mm;
+      padding: 5mm;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .cover-card strong {
+      display: block;
+      margin-bottom: 1.5mm;
+      color: #FFFFFF;
+      font-size: 11pt;
+    }
+
+    .cover-card span {
+      color: rgba(255,255,255,0.62);
+      font-size: 9.5pt;
+      line-height: 1.4;
+    }
+
+    .footer-note {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      color: rgba(255,255,255,0.38);
+      font-size: 9.5pt;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      padding-top: 6mm;
+    }
+
+    section {
+      page-break-inside: avoid;
+      margin-bottom: 9mm;
+    }
+
+    h2 {
+      font-size: 19pt;
+      line-height: 1.1;
+      font-weight: 900;
+      margin-bottom: 3mm;
+      color: #1D1D1B;
+    }
+
+    h3 {
+      font-size: 12pt;
+      font-weight: 900;
+      margin-bottom: 2mm;
+      color: #1D1D1B;
+    }
+
+    .label {
+      color: #E4002B;
+      text-transform: uppercase;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      font-size: 8.5pt;
+      margin-bottom: 2mm;
+    }
+
+    .intro {
+      font-size: 11pt;
+      color: #4A4A48;
+      max-width: 166mm;
+      margin-bottom: 5mm;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 3mm;
+      margin: 5mm 0 8mm;
+    }
+
+    .summary-box {
+      background: #F4F4F3;
+      border: 1px solid #E8E8E7;
+      border-left: 2.2mm solid #E4002B;
+      border-radius: 2.5mm;
+      padding: 3.5mm;
+      min-height: 25mm;
+    }
+
+    .summary-box:nth-child(2) { border-left-color: #1A5FA0; }
+    .summary-box:nth-child(3) { border-left-color: #1A7F4B; }
+    .summary-box:nth-child(4) { border-left-color: #E67700; }
+    .summary-box:nth-child(5) { border-left-color: #6F3FA7; }
+
+    .summary-box .pct {
+      font-size: 15pt;
+      font-weight: 900;
+      color: #E4002B;
+      line-height: 1;
+      margin-bottom: 2mm;
+    }
+
+    .summary-box:nth-child(2) .pct { color: #1A5FA0; }
+    .summary-box:nth-child(3) .pct { color: #1A7F4B; }
+    .summary-box:nth-child(4) .pct { color: #E67700; }
+    .summary-box:nth-child(5) .pct { color: #6F3FA7; }
+
+    .summary-box .title {
+      font-size: 9.2pt;
+      line-height: 1.25;
+      font-weight: 800;
+      color: #1D1D1B;
+    }
+
+    .note {
+      background: #FFF0F3;
+      border-left: 3mm solid #E4002B;
+      border-radius: 0 2.5mm 2.5mm 0;
+      padding: 4mm 5mm;
+      color: #4A4A48;
+      margin-bottom: 7mm;
+    }
+
+    .note strong {
+      color: #1D1D1B;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      page-break-inside: auto;
+      margin-top: 4mm;
+      margin-bottom: 6mm;
+      font-size: 8.7pt;
+    }
+
+    tr {
+      page-break-inside: avoid;
+    }
+
+    th {
+      background: #1D1D1B;
+      color: #FFFFFF;
+      font-weight: 800;
+      text-align: left;
+      padding: 3mm;
+      border: 1px solid #1D1D1B;
+      vertical-align: middle;
+    }
+
+    td {
+      border: 1px solid #E8E8E7;
+      padding: 3mm;
+      vertical-align: top;
+      color: #4A4A48;
+    }
+
+    td strong {
+      color: #1D1D1B;
+    }
+
+    .rubric-table th:nth-child(1),
+    .rubric-table td:nth-child(1) {
+      width: 18%;
+    }
+
+    .rubric-table th:nth-child(2),
+    .rubric-table td:nth-child(2) {
+      width: 10%;
+      text-align: center;
+      font-weight: 900;
+      color: #E4002B;
+    }
+
+    .rubric-table th:nth-child(3),
+    .rubric-table td:nth-child(3),
+    .rubric-table th:nth-child(4),
+    .rubric-table td:nth-child(4),
+    .rubric-table th:nth-child(5),
+    .rubric-table td:nth-child(5) {
+      width: 24%;
+    }
+
+    .evidence {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 4mm;
+      margin-top: 5mm;
+    }
+
+    .evidence-card {
+      border: 1px solid #E8E8E7;
+      border-left: 2.5mm solid #1A5FA0;
+      border-radius: 2.5mm;
+      padding: 4mm;
+      background: #FFFFFF;
+    }
+
+    .evidence-card:nth-child(2) { border-left-color: #1A7F4B; }
+    .evidence-card:nth-child(3) { border-left-color: #E67700; }
+    .evidence-card:nth-child(4) { border-left-color: #6F3FA7; }
+
+    .evidence-card ul {
+      margin: 2mm 0 0 4mm;
+      padding-left: 3mm;
+    }
+
+    .evidence-card li {
+      margin-bottom: 1.5mm;
+      color: #4A4A48;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+  </style>
+</head>
+<body>
+  <div class="cover">
+    <div class="cover-content">
+      <div class="eyebrow">ACC3018 Applied Analytics Capstone</div>
+      <h1>Staged Seminar Activities Rubric</h1>
+      <p class="subtitle">Rubric for the linked group activities across Seminars 1 to 5: paper pool, results presentation, dataset download attempt, and Stata main-results attempt.</p>
+      <div class="cover-grid">
+        <div class="cover-card"><strong>Not a full replication assignment</strong><span>The goal is progressive research skill-building, not perfect reproduction of a published paper.</span></div>
+        <div class="cover-card"><strong>Group submission logic</strong><span>Individual paper work begins in Seminar 1, then the group builds shared outputs across later seminars.</span></div>
+        <div class="cover-card"><strong>Evidence matters</strong><span>Students should show what they tried, what worked, what failed, and why.</span></div>
+        <div class="cover-card"><strong>Undergraduate-friendly</strong><span>Marks reward clear interpretation, careful documentation, and honest reflection.</span></div>
+      </div>
+    </div>
+    <div class="footer-note">
+      <span>SIT | ACC3018</span>
+      <span>Assessment rubric handout</span>
+    </div>
+  </div>
+
+  <section>
+    <div class="label">Overview</div>
+    <h2>Rubric Structure</h2>
+    <p class="intro">This rubric assesses the staged seminar activities as one connected portfolio. Students begin by building a group paper pool, then practise reading results, identifying data, and attempting Stata analysis.</p>
+    <div class="summary-grid">
+      <div class="summary-box"><div class="pct">20%</div><div class="title">Seminar 1<br />Group paper pool</div></div>
+      <div class="summary-box"><div class="pct">30%</div><div class="title">Seminars 2-3<br />Results presentation</div></div>
+      <div class="summary-box"><div class="pct">20%</div><div class="title">Seminar 4<br />Dataset download</div></div>
+      <div class="summary-box"><div class="pct">20%</div><div class="title">Seminar 5<br />Stata attempt</div></div>
+      <div class="summary-box"><div class="pct">10%</div><div class="title">Professionalism<br />and reflection</div></div>
+    </div>
+    <div class="note"><strong>Marking principle:</strong> students should not be penalised simply because a dataset is difficult to access or a paper cannot be fully reproduced. They should be assessed on clarity, effort, documentation, interpretation, and honest explanation of limitations.</div>
+  </section>
+
+  <section>
+    <div class="label">Detailed Criteria</div>
+    <h2>Performance Rubric</h2>
+    <table class="rubric-table">
+      <thead>
+        <tr>
+          <th>Criterion</th>
+          <th>Weight</th>
+          <th>Excellent</th>
+          <th>Good / Satisfactory</th>
+          <th>Developing / Needs Work</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Seminar 1: Group paper pool</strong><br />Individual paper walkthroughs and group collation.</td>
+          <td>20%</td>
+          <td>Each member selects a clearly relevant and different empirical paper. Responses accurately identify abstract, keywords, literature, gap, hypotheses, design, variables and limitations. PDFs and cover page are complete.</td>
+          <td>Most papers are suitable and different. Responses cover the main required items, though some discussion may be brief or descriptive. PDFs are mostly complete.</td>
+          <td>Papers overlap, are unsuitable, or are weakly connected to the course. Responses are incomplete, mostly copied, or missing key items. PDFs or group collation are incomplete.</td>
+        </tr>
+        <tr>
+          <td><strong>Seminars 2-3: Results presentation</strong><br />Reading tables using methods and identification concepts.</td>
+          <td>30%</td>
+          <td>Presentation clearly explains Y, X, controls, sample, model, summary statistics, correlations and main coefficients. It gives a strong endogeneity/identification discussion and explains why results are credible or vulnerable.</td>
+          <td>Presentation identifies the main variables and results with reasonable accuracy. It discusses some endogeneity or design concerns, but may not fully connect them to the paper's strongest result.</td>
+          <td>Presentation summarises the paper without explaining the results table. Key variables or coefficients are unclear. Endogeneity discussion is missing, generic, or inaccurate.</td>
+        </tr>
+        <tr>
+          <td><strong>Seminar 4: Dataset download attempt</strong><br />Moving from paper data description to database query.</td>
+          <td>20%</td>
+          <td>Group clearly identifies the dataset, source, table/file, sample period, identifiers and variables. Download attempt is well documented with query choices, screenshots or notes, and a clear account of access/data limitations.</td>
+          <td>Group identifies a plausible dataset and attempts a download. Documentation covers the main choices, but some details about variables, sample rules or limitations are thin.</td>
+          <td>Dataset source is unclear or not linked to the paper. Download attempt is poorly documented, or limitations are not explained.</td>
+        </tr>
+        <tr>
+          <td><strong>Seminar 5: Stata main-results attempt</strong><br />Using data to attempt the paper's main result.</td>
+          <td>20%</td>
+          <td>Do-file and outputs show a clear Stata workflow: preserving raw data, cleaning, constructing variables, summary statistics, correlations, and the closest feasible model. Differences from the paper are explained thoughtfully.</td>
+          <td>Stata attempt produces some useful outputs and a reasonable model attempt. Workflow is understandable, though variable construction or documentation may be incomplete.</td>
+          <td>Stata work is minimal, not reproducible, or disconnected from the paper. Outputs are pasted without explanation, or the group does not explain what could not be reproduced.</td>
+        </tr>
+        <tr>
+          <td><strong>Professionalism, integrity and reflection</strong><br />Organisation, honesty and research practice.</td>
+          <td>10%</td>
+          <td>Submission is well organised, properly cited, clearly written and honest about failed attempts. Reflection shows what the group learned about empirical research, data and methods.</td>
+          <td>Submission is generally clear and complete. Citations and organisation are acceptable. Reflection identifies some learning points but may be brief.</td>
+          <td>Submission is disorganised, missing citations or unclear about individual/group contributions. Reflection is superficial or hides problems.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="page-break">
+    <div class="label">Submission Evidence</div>
+    <h2>What Students Should Submit or Keep</h2>
+    <p class="intro">The portfolio should show the development of the group project across the seminars. The exact LMS submission structure can be adjusted, but students should preserve the following evidence.</p>
+    <div class="evidence">
+      <div class="evidence-card">
+        <h3>Seminar 1 Evidence</h3>
+        <ul>
+          <li>Group cover page with members and selected papers.</li>
+          <li>One individual response per student.</li>
+          <li>PDF copies of all selected papers.</li>
+        </ul>
+      </div>
+      <div class="evidence-card">
+        <h3>Seminars 2-3 Evidence</h3>
+        <ul>
+          <li>Presentation slides on the paper's results section.</li>
+          <li>Slide(s) explaining key variables and coefficients.</li>
+          <li>Slide(s) explaining endogeneity and identification.</li>
+        </ul>
+      </div>
+      <div class="evidence-card">
+        <h3>Seminar 4 Evidence</h3>
+        <ul>
+          <li>Dataset source and database path.</li>
+          <li>Query choices, selected variables and sample period.</li>
+          <li>Downloaded data or notes explaining why download was partial or blocked.</li>
+        </ul>
+      </div>
+      <div class="evidence-card">
+        <h3>Seminar 5 Evidence</h3>
+        <ul>
+          <li>Raw file and working Stata dataset where available.</li>
+          <li>Do-file or command log.</li>
+          <li>Summary statistics, correlations and attempted main results table.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="label">Instructor Notes</div>
+    <h2>Suggested Grading Interpretation</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Score Range</th>
+          <th>Interpretation</th>
+          <th>Typical Evidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>85-100</strong></td>
+          <td>Excellent staged research portfolio.</td>
+          <td>Clear paper reading, strong results interpretation, careful data attempt, reproducible Stata workflow, thoughtful limitations.</td>
+        </tr>
+        <tr>
+          <td><strong>70-84</strong></td>
+          <td>Good and mostly complete portfolio.</td>
+          <td>Main tasks completed with reasonable accuracy; some parts may be less detailed but the research logic is visible.</td>
+        </tr>
+        <tr>
+          <td><strong>55-69</strong></td>
+          <td>Developing but acceptable attempt.</td>
+          <td>Some seminar stages are incomplete or descriptive, but the group shows meaningful effort and basic understanding.</td>
+        </tr>
+        <tr>
+          <td><strong>Below 55</strong></td>
+          <td>Incomplete or weak attempt.</td>
+          <td>Missing key evidence, weak link to the selected paper, little interpretation, or poor documentation of data/Stata work.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</body>
+</html>
