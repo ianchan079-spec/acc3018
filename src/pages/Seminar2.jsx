@@ -686,23 +686,23 @@ function ActivityTab(){
   const discussionRounds=[
     {id:'stats',label:'Summary stats',title:'Point to the summary statistics table',body:'As a group, open the exact table in the paper. Record the table number and the row names for Y and the key X. Read the mean, standard deviation, minimum and maximum from the table, then discuss whether the variables look reasonable, skewed, rare, or affected by outliers.',prompt:'Evidence check: point to the exact row showing the most surprising mean, spread, or range.'},
     {id:'corr',label:'Correlation',title:'Point to the correlation matrix',body:'Open the correlation matrix and record the exact pair of variables being discussed. First check whether Y and key X move in the expected direction. Then check whether any two independent variables are highly correlated with each other.',prompt:'Evidence check: point to one exact correlation cell and explain whether it is useful, worrying, or irrelevant.'},
-    {id:'coef',label:'Main coefficient',title:'Point to the main coefficient cell',body:'Open the main regression table. Record the table number, model column, row name, coefficient, t-statistic or p-value, and stars for the key X. The group should explain what this one cell means before writing any slide text.',prompt:'Evidence check: point to the coefficient cell and explain it in one plain-English sentence.'},
+    {id:'coef',label:'Main coefficient',title:'Point to the main coefficient cell',body:'Open the main regression table. Record the table number, model column, row name, coefficient, t-statistic or p-value, and stars for the key X. The group should explain what this one cell means before writing the final group sentence.',prompt:'Evidence check: point to the coefficient cell and explain it in one plain-English sentence.'},
     {id:'model',label:'Model choice',title:'Point to the model notes',body:'Use the table notes, variable definitions, or research design section to identify whether the paper uses OLS, fixed effects, DiD, logit, Fama-MacBeth, or another method introduced in Seminar 2. If there are fixed effects, record exactly which fixed effects are included.',prompt:'Evidence check: where does the paper tell you the controls, fixed effects, standard errors, or model type?'},
     {id:'challenge',label:'Challenge',title:'Ask a table-based challenge question',body:'Another group should ask one methods question that can be answered only by looking at the paper table or notes. The question should target sample choice, multicollinearity, coefficient size, p-value, controls, fixed effects, or whether the model fits the type of data.',prompt:'Challenge prompt: show the exact table detail that makes you more or less confident in this result.'},
   ];
   const selectedRound=discussionRounds.find(r=>r.id===activeRound)||discussionRounds[0];
   return <div style={{paddingTop:56}}>
     <Wrap>
-      <Reveal><Label>Seminar Activity</Label><H>Results Presentation: Quantitative Methods</H><P>As a group, choose <strong>one paper</strong> from your Seminar 1 paper pool. Prepare a short presentation that explains the paper's results section using the concepts from Seminar 2.</P></Reveal>
+      <Reveal><Label>Seminar Activity</Label><H>Group Discussion: Reading Results Tables</H><P>As a group, choose <strong>one paper</strong> from your Seminar 1 paper pool. Use the paper's results section to practise reading evidence with the concepts from Seminar 2.</P></Reveal>
       <Reveal delay={0.05}><Card style={{marginBottom:20,borderColor:C.red,borderLeft:`4px solid ${C.red}`}}>
-        <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:8}}>Your tasks</div>
-        <P mb={12}>Work through the paper in the same order a researcher reads evidence: understand the sample, inspect relationships, read the main coefficient, then ask whether the result survives alternative checks.</P>
+        <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.red,marginBottom:8}}>Your discussion tasks</div>
+        <P mb={12}>Work through the paper in the same order a researcher reads evidence: understand the sample, inspect relationships, read the main coefficient, then decide what the result means.</P>
         <Num n={1}>Name the paper, research question, sample period, data source and unit of observation.</Num>
         <Num n={2}>Identify the <strong>dependent variable (Y)</strong>, key <strong>independent variable(s) (X)</strong>, controls and fixed effects.</Num>
         <Num n={3}>Explain the <strong>summary statistics</strong>. Give the table number and exact row names for Y and the key X.</Num>
         <Num n={4}>Explain the <strong>correlation matrix</strong>. Point to one exact correlation cell and say whether there is any possible multicollinearity concern, such as r {'>'} |0.7|.</Num>
         <Num n={5}>Read the <strong>main regression table</strong>. Give the table number, model column, row name, coefficient, t-statistic or p-value, and stars for the key coefficient.</Num>
-        <Num n={6}>End with one slide explaining what the results mean in plain language.</Num>
+        <Num n={6}>End by writing one group sentence explaining what the result means in plain language.</Num>
       </Card></Reveal>
       <Reveal delay={0.1}><Card style={{marginBottom:20,borderLeft:`4px solid ${C.amber}`}}>
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.amber,marginBottom:8}}>Evidence lock</div>
@@ -711,10 +711,10 @@ function ActivityTab(){
         <Li><strong>For model choices:</strong> point to the table notes, variable definitions, or research design section.</Li>
         <Li><strong>For interpretation:</strong> explain what the number means in your own words, then show where it came from.</Li>
       </Card></Reveal>
-      <Reveal delay={0.12}><Callout accent={C.blue} bg={C.blueBg}><strong>Presentation output:</strong> prepare a concise group presentation. Use Seminar 2 vocabulary: Y, X, controls, fixed effects, p-values, economic meaning, correlations and robustness. Be ready to point to the exact table cell behind your interpretation.</Callout></Reveal>
+      <Reveal delay={0.12}><Callout accent={C.blue} bg={C.blueBg}><strong>Discussion output:</strong> prepare a short group note, not a presentation. Use Seminar 2 vocabulary: Y, X, controls, fixed effects, p-values, economic meaning, correlations and robustness. Be ready to point to the exact table cell behind your interpretation if called on.</Callout></Reveal>
       <Reveal delay={0.16}><Card style={{marginTop:20,marginBottom:20,borderLeft:`4px solid ${C.blue}`}}>
         <div style={{fontSize:12,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',color:C.blue,marginBottom:8}}>Seminar 2 discussion rounds</div>
-        <P mb={12}>Use these rounds to connect the group presentation directly to today's methods. Each group should discuss the paper using Seminar 2 vocabulary before presenting to the class.</P>
+        <P mb={12}>Use these rounds to connect the paper directly to today's methods. Each group should discuss the paper using Seminar 2 vocabulary and keep notes from the conversation.</P>
         <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>
           {discussionRounds.map(r=><button key={r.id} onClick={()=>setActiveRound(r.id)} style={{padding:'9px 13px',border:`1px solid ${activeRound===r.id?C.blue:C.black20}`,background:activeRound===r.id?C.blueBg:C.white,color:activeRound===r.id?C.blue:C.black80,borderRadius:6,fontFamily:"'Source Sans 3',sans-serif",fontSize:13,fontWeight:800,cursor:'pointer'}}>{r.label}</button>)}
         </div>
